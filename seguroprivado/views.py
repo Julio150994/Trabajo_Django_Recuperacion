@@ -3,5 +3,5 @@ from django.views.generic import TemplateView
 
 # Create your views here.
 
-class InicioView(TemplateView):
+class TemplateInicioView(TemplateView):
     template_name = "seguroprivado/inicio.html"
