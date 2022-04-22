@@ -17,5 +17,6 @@ from django.urls import path
 from seguroprivado import views
 
 urlpatterns = [
-    path('', views.TemplateInicioView.as_view(), name="inicio"),
+    path('', views.RedirectToInicioView.as_view(), name="inicio"),
+    path('inicio/',views.TemplateInicioView.as_view(), name="inicio"),
 ]
