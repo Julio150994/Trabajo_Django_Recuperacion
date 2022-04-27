@@ -21,8 +21,8 @@ class Medico(models.Model):
     password = models.CharField(max_length=30, null=False, blank=False, verbose_name="Contraseña")
 
     class Meta:
-        verbose_name="médico"
-        verbose_name_plural = "médicos"
+        verbose_name="medico"
+        verbose_name_plural = "medicos"
         ordering = ["-id"]
     
     def __str__(self):
@@ -44,7 +44,7 @@ class Medicamento(models.Model):
     
     class Meta:
         verbose_name="medicamento"
-        verbose_name_plural = "médicamentos"
+        verbose_name_plural = "medicamentos"
         ordering = ["-id"]
 
     def __str__(self):
@@ -102,6 +102,10 @@ class Compra(models.Model):
 class CompraMedicamento(models.Model):
     idMedicamento = models.ForeignKey(Medicamento, verbose_name="Medicamento", on_delete=models.CASCADE)
     idCompra = models.ForeignKey(Compra, verbose_name="Compra", on_delete=models.CASCADE)
+    
+    class Meta:
+        verbose_name="compramedicamento"
+        verbose_name_plural = "compramedicamentos"
     
     def __str__(self):
         return str(self.idMedicamento)+" "+str(self.idCompra)
