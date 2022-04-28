@@ -39,6 +39,13 @@
     </nav>
   </header>
 
+  {% comment %} Mensaje mostrado después de registrar a un paciente {% endcomment %}
+  {% if 'registered' in request.GET %}
+  <div class="container alert alert-success text-center text-white">
+    Paciente registrado correctamente
+  </div>
+  {% endif %}
+
   <div class="page-hero bg-image overlay-dark row m-0 justify-content-center align-items-center" id="img_fondo">
     <div class="rounded p-5 bg-light col-sm-3 row m-0 justify-content-center align-items-center">
       <span class="navbar-brand text-primary" id="titulo">Login de usuarios</span>
