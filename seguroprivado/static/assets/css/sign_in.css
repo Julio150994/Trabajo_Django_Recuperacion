@@ -1,0 +1,40 @@
+#img_fondo {
+    padding-top: 3.6%;
+    background-image: url('/static/assets/img/bg_image_1.jpg');
+}
+
+#titulo {
+    margin-top: 4%;
+    margin-bottom: 3.2%;
+    margin-left: 2.6em;
+}
+
+#formulario {
+    max-width: 500px !important;
+    max-height: 400px !important;
+    margin-left: 40em;
+    padding-top: 1%;
+    padding-bottom: 21.6%;
+    padding-left: 5.6%;
+    border-radius: 4px;
+}
+
+#username {
+    margin-bottom: 2.1em;
+}
+
+#password {
+    margin-bottom: 9%;
+}
+
+#registro {
+    margin-bottom: 5.7%;
+}
+
+#mensaje {
+    font-size: 14px;
+}
+
+#login {
+    padding-right: 2.5em;
+}

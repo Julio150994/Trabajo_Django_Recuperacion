@@ -15,8 +15,12 @@ Including another URLconf
 """
 from django.urls import path
 from seguroprivado import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.RedirectToInicioView.as_view(), name="inicio"),
     path('inicio/',views.TemplateInicioView.as_view(), name="inicio"),
-]
+    path('login/',views.LoginSegPrivadoView.as_view(), name="login"),
+]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
