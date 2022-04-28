@@ -2,12 +2,12 @@
 # $ conda create --name <env> --file <this file>
 # platform: win-64
 @EXPLICIT
-https://conda.anaconda.org/anaconda/win-64/ca-certificates-2020.10.14-0.tar.bz2
+https://conda.anaconda.org/conda-forge/win-64/ca-certificates-2021.10.8-h5b45459_0.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/vs2015_runtime-14.16.27012-hf0eaf9b_3.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/vc-14.1-h0510ff6_4.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/jpeg-9b-vc14h4d7706e_1.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/lz4-c-1.9.2-hf4a77e7_3.tar.bz2
-https://conda.anaconda.org/anaconda/win-64/openssl-1.1.1h-he774522_0.tar.bz2
+https://conda.anaconda.org/conda-forge/win-64/openssl-1.1.1l-h8ffe710_0.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/tk-8.6.10-he774522_0.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/xz-5.2.5-h62dcd97_0.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/zlib-1.2.11-vc14h1cdd9ab_1.tar.bz2
@@ -20,14 +20,16 @@ https://conda.anaconda.org/anaconda/win-64/libpq-12.2-h3235a2c_0.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/libtiff-4.1.0-h56a325e_1.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/python-3.8.5-h5fd99cc_1.tar.bz2
 https://conda.anaconda.org/anaconda/noarch/asgiref-3.3.0-py_0.tar.bz2
-https://conda.anaconda.org/anaconda/win-64/certifi-2020.6.20-py38_0.tar.bz2
 https://conda.anaconda.org/anaconda/noarch/olefile-0.46-py_0.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/psycopg2-2.8.5-py38h7a1dbc1_0.tar.bz2
+https://conda.anaconda.org/conda-forge/win-64/python_abi-3.8-2_cp38.tar.bz2
 https://conda.anaconda.org/anaconda/noarch/pytz-2020.1-py_0.tar.bz2
 https://conda.anaconda.org/anaconda/noarch/sqlparse-0.4.1-py_0.tar.bz2
 https://conda.anaconda.org/anaconda/noarch/wheel-0.35.1-py_0.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/wincertstore-0.2-py38_0.tar.bz2
+https://conda.anaconda.org/conda-forge/win-64/certifi-2021.10.8-py38haa244fe_2.tar.bz2
 https://conda.anaconda.org/anaconda/noarch/django-3.1.2-py_0.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/pillow-8.0.0-py38hca74424_0.tar.bz2
+https://conda.anaconda.org/conda-forge/noarch/django-cleanup-6.0.0-pyhd8ed1ab_0.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/setuptools-50.3.0-py38h9490d1a_1.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/pip-20.2.4-py38_0.tar.bz2
