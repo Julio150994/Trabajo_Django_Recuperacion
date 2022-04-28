@@ -1,4 +1,5 @@
 from django import forms
+from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import make_password
 from seguroprivado.models import Paciente
 
@@ -38,3 +39,31 @@ class PacienteForm(forms.ModelForm):
             'username': {'required': 'Debe escribir el nombre de usuario', 'max_length':'El nombre de usuario debe tener como máximo 30 caracteres'},
             'password': {'required': 'Debe escribir una contraseña', 'min_length': 'La contraseña debe tener como mínimo 8 caracteres', 'max_length':'La contraseña debe tener como máximo 30 caracteres'}
         }
+        
+    # Comprobamos si un paciente está o no registrado en el sistema
+    def clean_username(self):
+        paciente = self.cleaned_data['username']
+        
+        if Paciente.objects.filter(username=paciente).exists():
+             raise forms.ValidationError("El paciente "+str(paciente)+" ya está registrado, pruebe registrar otro.")
+        return paciente
+    
+    # Registramos a un nuevo paciente
+    def save(self, commit=True):
+        paciente = super(PacienteForm, self).save()
+        paciente.nombre = self.cleaned_data["nombre"]
+        paciente.apellidos = self.cleaned_data["apellidos"]
+        paciente.edad = self.cleaned_data["edad"]
+        paciente.direccion = self.cleaned_data["direccion"]
+        paciente.foto = self.cleaned_data["foto"]
+        paciente.username = self.cleaned_data["username"]
+        paciente.password = self.cleaned_data["password"]
+        
+        if paciente.nombre is not None or paciente.apellidos is not None or paciente.edad is not None or paciente.direccion is not None or paciente.foto is not None or paciente.username is not None or paciente.password is not None:
+            set_paciente = Paciente(nombre=paciente.nombre, apellidos=paciente.apellidos, edad=paciente.edad,
+            fechaalta=paciente.fechaalta, especialidad=paciente.especialidad, username=paciente.username, password=paciente.password)
+            set_paciente.password = make_password(set_paciente.password)
+            set_paciente.save()
+            return set_paciente
+        else:
+            return HttpResponseRedirect('registro')
