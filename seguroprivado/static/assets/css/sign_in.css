@@ -1,7 +1,5 @@
 #img_fondo {
     background-image: url('/static/assets/img/bg_image_1.jpg');
-    max-height: 50%;
-    object-fit: contain;
 }
 
 #titulo {
