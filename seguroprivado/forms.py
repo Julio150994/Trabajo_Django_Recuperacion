@@ -61,7 +61,7 @@ class PacienteForm(forms.ModelForm):
         
         if paciente.nombre is not None or paciente.apellidos is not None or paciente.edad is not None or paciente.direccion is not None or paciente.foto is not None or paciente.username is not None or paciente.password is not None:
             set_paciente = Paciente(nombre=paciente.nombre, apellidos=paciente.apellidos, edad=paciente.edad,
-            fechaalta=paciente.fechaalta, especialidad=paciente.especialidad, username=paciente.username, password=paciente.password)
+            direccion=paciente.direccion, foto=paciente.foto, username=paciente.username, password=paciente.password)
             set_paciente.password = make_password(set_paciente.password)
             set_paciente.save()
             return set_paciente
