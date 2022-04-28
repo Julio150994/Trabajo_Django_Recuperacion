@@ -1,7 +1,9 @@
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, CreateView
 from django.contrib.auth.views import LoginView
+from seguroprivado.models import Paciente
+from seguroprivado.forms import PacienteForm
 
 # Create your views here.
 
@@ -13,6 +15,14 @@ class TemplateInicioView(TemplateView):
     template_name = "seguroprivado/inicio.html"
 
 
+class RegistroPacientesView(CreateView):
+    model = Paciente
+    form_class = PacienteForm
+    template_name = "seguroprivado/registro.html"
+    
+    def get_success_url(self):
+        return reverse_lazy('login')+'?registered'
+    
 class LoginSegPrivadoView(LoginView):
     template_name = "seguroprivado/login.html"
 
