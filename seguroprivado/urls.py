@@ -23,5 +23,6 @@ urlpatterns = [
     path('inicio/',views.TemplateInicioView.as_view(), name="inicio"),
     path('registro/',views.RegistroPacientesView.as_view(),name="registro"),
     path('login/',views.LoginSegPrivadoView.as_view(), name="login"),
+    path('logout/',views.LogoutView.as_view(), name="logout"),
 ]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

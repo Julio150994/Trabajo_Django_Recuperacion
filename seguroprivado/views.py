@@ -1,7 +1,9 @@
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
-from django.views.generic import TemplateView, CreateView
+from django.contrib import messages
+from django.views.generic import RedirectView, TemplateView, CreateView
 from django.contrib.auth.views import LoginView
+from django.contrib.auth import logout
 from seguroprivado.models import Paciente
 from seguroprivado.forms import PacienteForm
 
@@ -43,3 +45,11 @@ class LoginSegPrivadoView(LoginView):
         else:
             #messages.error(request, 'Este usuario ya está registrado')
             return HttpResponseRedirect('login')
+        
+class LogoutView(RedirectView):
+    pattern_name = 'login'
+    
+    def dispatch(self, request, *args, **kwargs):
+        logout(request)
+        messages.success(request,"Ha cerrado sesión.")
+        return super().dispatch(request, *args, **kwargs)
