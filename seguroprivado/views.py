@@ -1,7 +1,7 @@
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.views.generic import RedirectView, TemplateView, CreateView
+from django.views.generic import RedirectView, TemplateView, CreateView, UpdateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
 from seguroprivado.models import Paciente
@@ -53,3 +53,11 @@ class LogoutView(RedirectView):
         logout(request)
         messages.success(request,"Ha cerrado sesión.")
         return super().dispatch(request, *args, **kwargs)
+    
+class EditarPerfilView(UpdateView):
+    model = Paciente
+    form_class = PacienteForm
+    template_name = "seguroprivado/perfil_paciente.html"
+    
+    def get_success_url(self):
+        return reverse_lazy('inicio')+'?updated'
