@@ -15,7 +15,7 @@ class PacienteForm(forms.ModelForm):
             'nombre': 'Debe escribir un nombre y que tenga un máximo de 30 caracteres.',
             'apellidos': 'Debe escribir unos apellidos y que formen un máximo de 50 caracteres.',
             'edad': 'Debe escribir una edad.',
-            'direccion': 'Debe escribir una fecha de alta.',
+            'direccion': 'Debe escribir una dirección.',
             'foto': 'Debe seleccionar una foto.',
             'username': 'Debe escribir un nombre de usuario y que tenga un máximo de 30 caracteres.',
             'password': 'Debe escribir una contraseña y que tenga un mínimo de 8 caracteres y un máximo de 30 caracteres.'
