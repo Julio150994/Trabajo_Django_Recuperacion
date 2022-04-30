@@ -22,13 +22,13 @@ class PacienteForm(forms.ModelForm):
         }
         
         widgets = {
-            'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm', 'placeholder':'Escriba un nombre'}),
-            'apellidos': forms.TextInput(attrs={'class':'form-control form-control-sm', 'placeholder':'Escriba unos apellidos'}),
-            'edad': forms.NumberInput(attrs={'class':'form-control form-control-sm', 'placeholder':'Escriba una edad'}),
-            'direccion': forms.TextInput(attrs={'class':'form-control form-control-sm', 'placeholder':'Escriba una dirección'}),
-            'foto': forms.FileInput(attrs={'class':'form-control form-control-sm'}),
-            'username': forms.TextInput(attrs={'class':'form-control form-control-sm', 'placeholder':'Escriba un nombre de usuario'}),
-            'password':  forms.PasswordInput(attrs={'class':'form-control form-control-sm', 'placeholder':'Escriba una contraseña'})   
+            'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm row', 'placeholder':'Escriba un nombre'}),
+            'apellidos': forms.TextInput(attrs={'class':'form-control form-control-sm row', 'placeholder':'Escriba unos apellidos'}),
+            'edad': forms.NumberInput(attrs={'class':'form-control form-control-sm row', 'placeholder':'Escriba una edad'}),
+            'direccion': forms.TextInput(attrs={'class':'form-control form-control-sm row', 'placeholder':'Escriba una dirección'}),
+            'foto': forms.FileInput(attrs={'class':'form-control form-control-sm row'}),
+            'username': forms.TextInput(attrs={'class':'form-control form-control-sm row', 'placeholder':'Escriba un nombre de usuario'}),
+            'password':  forms.PasswordInput(attrs={'class':'form-control form-control-sm row', 'placeholder':'Escriba una contraseña'})   
         }
         
         error_messages = {

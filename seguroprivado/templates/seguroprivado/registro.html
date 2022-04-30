@@ -8,7 +8,7 @@
 
   <meta name="copyright" content="MACode ID, https://macodeid.com/">
 
-  <title>{% block title %} Formulario de Registro {% endblock %}</title>
+  <title>{% block title %} Formulario de Registro de Pacientes {% endblock %}</title>
   
   {% load static %}
   
@@ -29,6 +29,7 @@
 
 </head>
 <body>
+  {% block registro %}
   <div class="back-to-top"></div>
   <header>
     <nav class="navbar navbar-light navbar-expand-sm shadow-sm">
@@ -41,82 +42,83 @@
   <div class="page-hero bg-image overlay-dark row m-0 justify-content-center align-items-center" id="img_fondo">
     
     <div class="rounded p-5 bg-light col-3 row m-0 justify-content-center align-items-center" id="formulario">
-      <span class="navbar-brand text-primary" id="titulo">Registro de pacientes</span>
+      <span class="navbar-brand text-primary mb-3">Registro de pacientes</span>
 
       <form action="{% url 'registro' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <span class="text-primary" id="paciente">Nombre</span>
-        
+        <span class="text-primary" id="dato">Nombre</span>
+
         <div class="input-group input-navbar mb-2" id="paciente">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="icon-addon1"><span class="fas fa-regular fa-id-badge"></span></span>
+          <div class="input-group-prepend row justify-content-left">
+            <span class="row input-group-text" id="icon-addon1"><span class="fas fa-regular fa-id-badge"></span></span>
           </div>
           {{ form.nombre }}
         </div>
         {{ form.nombre.errors }}
 
-        <span class="text-primary" id="paciente">Apellidos</span>
+        <span class="text-primary" id="dato">Apellidos</span>
         
         <div class="input-group input-navbar mb-2" id="paciente">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="icon-addon1"><span class="fas fa-regular fa-id-badge"></span></span>
+          <div class="input-group-prepend row justify-content-left">
+            <span class="row input-group-text" id="icon-addon1"><span class="fas fa-regular fa-id-badge"></span></span>
           </div>
           {{ form.apellidos }}
         </div>
         {{ form.apellidos.errors }}
 
-        <span class="text-primary" id="paciente">Edad</span>
+        <span class="text-primary" id="dato">Edad</span>
 
         <div class="input-group input-navbar mb-2" id="paciente">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="icon-addon1"><span class="fas fa-regular fa-user-clock"></span></span>
+          <div class="input-group-prepend row justify-content-left">
+            <span class="row input-group-text" id="icon-addon1"><span class="fas fa-regular fa-user-clock"></span></span>
           </div>
           {{ form.edad }}
         </div>
         {{ form.edad.errors }}
 
-        <span class="text-primary" id="paciente">Dirección</span>
+        <span class="text-primary" id="dato">Dirección</span>
         <div class="input-group input-navbar mb-2" id="paciente">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-house-user"></span></span>
+          <div class="input-group-prepend row justify-content-left">
+            <span class="row input-group-text" id="icon-addon1"><span class="fas fa-solid fa-house-user"></span></span>
           </div>
           {{ form.direccion }}
         </div>
         {{ form.direccion.errors }}
 
-        <span class="text-primary" id="paciente">Foto</span>
+        <span class="text-primary" id="dato">Foto</span>
 
         <div class="input-group input-navbar mb-2" id="paciente">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-image"></span></span>
+          <div class="input-group-prepend row justify-content-left">
+            <span class="row input-group-text" id="icon-addon1"><span class="fas fa-solid fa-image"></span></span>
           </div>
           {{ form.foto }}
         </div>
         {{ form.foto.errors }}
 
-        <span class="text-primary" id="paciente">Nombre de usuario</span>
+        
+        <span class="text-primary" id="dato">Nombre de usuario</span>
 
         <div class="input-group input-navbar mb-2" id="paciente">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="icon-addon1"><span class="fas fa-user"></span></span>
+          <div class="input-group-prepend row justify-content-left">
+            <span class="row input-group-text" id="icon-addon1"><span class="fas fa-user"></span></span>
           </div>
           {{ form.username }}
         </div>
         {{ form.username.errors }}
 
-        <span class="text-primary" id="paciente">Contraseña</span>
+        <span class="text-primary" id="dato">Contraseña</span>
 
-        <div class="input-group input-navbar mb-3" id="password">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="icon-addon1"><span class="fas fa-lock"></span></span>
+        <div class="input-group input-navbar mb-4" id="paciente">
+          <div class="input-group-prepend row justify-content-left">
+            <span class="row input-group-text" id="icon-addon1"><span class="fas fa-lock"></span></span>
           </div>
           {{ form.password }}
         </div>
         {{ form.password.errors }}
 
         
-        <a href="{% url 'login' %}" class="btn btn-danger btn-block">
+        <a href="{% url 'sign_in' %}" class="btn btn-danger btn-block">
           <span class="fas fa-arrow-left"></span>
           <span>Cancelar</span>
         </a>
@@ -140,6 +142,7 @@
 <script src="{% static 'assets/vendor/wow/wow.min.js' %}"></script>
 
 <script src="{% static 'assets/js/theme.js' %}"></script>
-  
+
+{% endblock registro %}
 </body>
 </html>
