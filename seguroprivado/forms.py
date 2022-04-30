@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import make_password
 from seguroprivado.models import Paciente
@@ -39,14 +40,34 @@ class PacienteForm(forms.ModelForm):
             'username': {'required': 'Debe escribir el nombre de usuario', 'max_length':'El nombre de usuario debe tener como máximo 30 caracteres'},
             'password': {'required': 'Debe escribir una contraseña', 'min_length': 'La contraseña debe tener como mínimo 8 caracteres', 'max_length':'La contraseña debe tener como máximo 30 caracteres'}
         }
+    
         
-    # Comprobamos si un paciente está o no registrado en el sistema
+    # Comprobamos que los datos del formulario sean correctos
+    def clean_nombre(self):
+        return self.cleaned_data['nombre']
+    
+    def clean_apellidos(self):
+        return self.cleaned_data['apellidos']
+    
+    def clean_edad(self):
+        return self.cleaned_data['edad']
+    
+    def clean_direccion(self):
+        return self.cleaned_data['direccion']
+    
+    def clean_foto(self):
+        return self.cleaned_data['foto']
+    
     def clean_username(self):
         paciente = self.cleaned_data['username']
         
         if Paciente.objects.filter(username=paciente).exists():
-             raise forms.ValidationError("El paciente "+str(paciente)+" ya está registrado, pruebe registrar otro.")
+            raise forms.ValidationError("El paciente "+str(paciente)+" ya está registrado, pruebe registrar otro.")
         return paciente
+    
+    def clean_password(self):
+        return self.cleaned_data['password']
+    
     
     # Registramos a un nuevo paciente
     def save(self, commit=True):
@@ -64,6 +85,9 @@ class PacienteForm(forms.ModelForm):
             direccion=paciente.direccion, foto=paciente.foto, username=paciente.username, password=paciente.password)
             set_paciente.password = make_password(set_paciente.password)
             set_paciente.save()
+            
+            usuario_paciente = User.objects.create(username = paciente.username, password = paciente.password)
+            usuario_paciente.save()
             return set_paciente
         else:
             return HttpResponseRedirect('registro')
