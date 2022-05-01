@@ -1,4 +1,5 @@
-from django.urls import reverse_lazy
+from django.shortcuts import redirect
+from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic import RedirectView, TemplateView, CreateView, UpdateView
@@ -43,10 +44,11 @@ class RegistroPacientesView(CreateView):
                 set_paciente.save()
                 
                 User.objects.create(username=username, password=set_paciente.password)
+                return redirect(reverse('sign_in')+"?registered")
             else:
-                return HttpResponseRedirect('registro')
+                return redirect('registro')
         else:
-            return HttpResponseRedirect('registro')
+            return redirect('registro')
     
 class LoginSegPrivadoView(LoginView):
     template_name = "seguroprivado/login.html"
