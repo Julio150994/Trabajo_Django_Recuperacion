@@ -67,27 +67,3 @@ class PacienteForm(forms.ModelForm):
     
     def clean_password(self):
         return self.cleaned_data['password']
-    
-    
-    # Registramos a un nuevo paciente
-    def save(self, commit=True):
-        paciente = super(PacienteForm, self).save()
-        paciente.nombre = self.cleaned_data["nombre"]
-        paciente.apellidos = self.cleaned_data["apellidos"]
-        paciente.edad = self.cleaned_data["edad"]
-        paciente.direccion = self.cleaned_data["direccion"]
-        paciente.foto = self.cleaned_data["foto"]
-        paciente.username = self.cleaned_data["username"]
-        paciente.password = self.cleaned_data["password"]
-        
-        if paciente.nombre is not None or paciente.apellidos is not None or paciente.edad is not None or paciente.direccion is not None or paciente.foto is not None or paciente.username is not None or paciente.password is not None:
-            set_paciente = Paciente(nombre=paciente.nombre, apellidos=paciente.apellidos, edad=paciente.edad,
-            direccion=paciente.direccion, foto=paciente.foto, username=paciente.username, password=paciente.password)
-            set_paciente.password = make_password(set_paciente.password)
-            set_paciente.save()
-            
-            usuario_paciente = User.objects.create(username = paciente.username, password = paciente.password)
-            usuario_paciente.save()
-            return set_paciente
-        else:
-            return HttpResponseRedirect('registro')

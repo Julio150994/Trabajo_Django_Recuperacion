@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.views.generic import RedirectView, TemplateView, CreateView, UpdateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 from seguroprivado.models import Paciente
 from seguroprivado.forms import PacienteForm
 
@@ -20,10 +22,31 @@ class TemplateInicioView(TemplateView):
 class RegistroPacientesView(CreateView):
     model = Paciente
     form_class = PacienteForm
-    template_name = "seguroprivado/registro.html"
+    template_name = "login/registro.html"
     
     def get_success_url(self):
-        return reverse_lazy('login')+'?registered'
+        return reverse_lazy('sign_in')+'?registered'
+    
+    def post(self, request, *args, **kwargs):
+        nombre = request.POST.get('nombre')
+        apellidos = request.POST.get('apellidos')
+        edad = request.POST.get('edad')
+        direccion = request.POST.get('direccion')
+        foto = request.POST.get('foto')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        if request.method == "POST":
+            if nombre is not None or apellidos is not None or edad is not None or direccion is not None or foto is not None or username is not None or password is not None:
+                set_paciente = Paciente(nombre=nombre, apellidos=apellidos, edad=edad, direccion=direccion, foto=foto, activo=False, username=username, password=password)
+                set_paciente.password = make_password(set_paciente.password)
+                set_paciente.save()
+                
+                User.objects.create(username=username, password=set_paciente.password)
+            else:
+                return HttpResponseRedirect('registro')
+        else:
+            return HttpResponseRedirect('registro')
     
 class LoginSegPrivadoView(LoginView):
     template_name = "seguroprivado/login.html"
