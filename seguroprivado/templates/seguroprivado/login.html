@@ -22,7 +22,7 @@
 
   <link rel="stylesheet" href="{% static 'assets/css/theme.css' %}">
 
-  <link rel="stylesheet" href="{% static 'assets/css/sign_in.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/login.css' %}">
   
   {% comment %} Font Awesome icons (free version) {% endcomment %}
   <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
@@ -41,21 +41,19 @@
 
   {% comment %} Mensaje mostrado después de registrar a un paciente {% endcomment %}
   {% if 'registered' in request.GET %}
-  <div class="container alert alert-success text-center text-white">
-    Paciente registrado correctamente
+  <div class="container-fluid alert alert-success text-center">
+    <div>Paciente registrado correctamente</div>
   </div>
   {% endif %}
 
   <div class="page-hero bg-image overlay-dark row m-0 justify-content-center align-items-center" id="img_fondo">
-    <div class="rounded p-5 bg-light col-sm-3 row m-0 justify-content-center align-items-center">
-      {% comment %} Mensaje mostrado después de registrar a un paciente {% endcomment %}
-      {% if 'registered' in request.GET %}
-      <div class="container alert alert-success d-flex text-center text-white" role="alert">
-        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
-        <div>Paciente registrado correctamente</div>
-      </div>
-      {% endif %}
-      
+    {% comment %} Mensaje mostrado después de registrar a un paciente {% endcomment %}
+    {% if 'registered' in request.GET %}
+    <div class="container-fluid alert alert-success text-center" role="alert">
+      <div>Paciente registrado correctamente</div>
+    </div>
+    {% endif %}
+    <div class="rounded p-5 bg-light col-sm-3 row mx-auto mb-5 justify-content-center align-items-center">
       <span class="navbar-brand text-primary" id="titulo">Login de usuarios</span>
 
       <form action="" method="POST">
@@ -79,7 +77,7 @@
           <span>Registrar paciente</span>
         </a>
 
-        {% comment %} Mensaje de que se ha cerrado sesión {% endcomment %}
+        {% comment %} Mensaje de logout del sistema y de credenciales erróneas {% endcomment %}
         {% if messages %}
           {% for logout in messages %}
           <div class="input-group input-navbar alert alert-info text-center" id="mensaje">
@@ -87,12 +85,6 @@
           </div>
           {% endfor %}
         {% endif %}
-
-        {% comment %} Mensaje de error en las credenciales por validar {% endcomment %}
-        {% if form.non_field_errors %}
-        <div class="input-group input-navbar alert alert-danger text-center">Credenciales erróneas</div>
-        {% endif %}
-
   
         <a href="{% url 'inicio' %}" class="btn btn-danger">
           <span class="fas fa-arrow-left"></span>
@@ -101,7 +93,7 @@
   
         <button class="btn btn-primary" id="login">
           <span class="fas fa-sign-in-alt"></span>
-          <span class="navbar-toggler-icon">Login</span>
+          <span>Sign In</span>
         </button>
       </form>
     </div>
