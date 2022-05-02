@@ -33,102 +33,103 @@
   <header>
     <nav class="navbar navbar-light navbar-expand-sm shadow-sm">
       <div class="container">
-        <span class="navbar-brand text-primary">Proyecto Django</span>
+        <span class="navbar-brand text-primary">Proyecto <span class="text-dark">Django</span></span>
         <span class="navbar-brand text-right text-info">Nombre de usuario: {{ request.user }}</span>
       </div>
     </nav>
   </header>
 
-  <div class="page-hero bg-image overlay-dark" id="img_fondo">
+  <div class="page-hero bg-image overlay-dark row m-0 justify-content-center align-items-center" id="img_fondo">
     
-    <div class="container bg-light col-md-3" id="formulario" style="border-radius: 4px;">
-    
+    <div class="rounded p-5 bg-light col-3 row m-2 justify-content-center align-items-center" id="formulario">
+      <span class="navbar-brand text-primary mb-3">Perfil de Paciente</span>
+
       <form action="{% url 'perfil_paciente' user.id %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
         
-        <span class="text-primary" id="paciente">Nombre</span>
-      
+        <span class="text-primary" id="dato" style="margin-left: -1.96em;">Nombre</span>
+
         <div class="input-group input-navbar mb-2" id="paciente">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="icon-addon1"><span class="fas fa-regular fa-id-badge"></span></span>
+          <div class="input-group-prepend row">
+            <span class="input-group-text" id="icon-addon1" style="margin-left: -1em;"><span class="fas fa-regular fa-id-badge"></span></span>
           </div>
           {{ form.nombre }}
         </div>
         {{ form.nombre.errors }}
 
-        <span class="text-primary" id="paciente">Apellidos</span>
+        <span class="text-primary" id="dato" style="margin-left: -1.96em;">Apellidos</span>
         
         <div class="input-group input-navbar mb-2" id="paciente">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="icon-addon1"><span class="fas fa-regular fa-id-badge"></span></span>
+          <div class="input-group-prepend row">
+            <span class="input-group-text" id="icon-addon1" style="margin-left: -1em;"><span class="fas fa-regular fa-id-badge"></span></span>
           </div>
           {{ form.apellidos }}
         </div>
         {{ form.apellidos.errors }}
 
-        <span class="text-primary" id="paciente">Edad</span>
+        <span class="text-primary" id="dato" style="margin-left: -1.96em;">Edad</span>
 
         <div class="input-group input-navbar mb-2" id="paciente">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="icon-addon1"><span class="fas fa-regular fa-user-clock"></span></span>
+          <div class="input-group-prepend row">
+            <span class="input-group-text" id="icon-addon1" style="margin-left: -1em;"><span class="fas fa-regular fa-user-clock"></span></span>
           </div>
           {{ form.edad }}
         </div>
         {{ form.edad.errors }}
 
-        <span class="text-primary" id="paciente">Dirección</span>
+        <span class="text-primary" id="dato" style="margin-left: -1.96em;">Dirección</span>
         <div class="input-group input-navbar mb-2" id="paciente">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-house-user"></span></span>
+          <div class="input-group-prepend row">
+            <span class="input-group-text" id="icon-addon1" style="margin-left: -1em;"><span class="fas fa-solid fa-house-user"></span></span>
           </div>
           {{ form.direccion }}
         </div>
         {{ form.direccion.errors }}
 
-        <span class="text-primary" id="paciente">Foto</span>
+        <span class="text-primary" id="dato" style="margin-left: -1.96em;">Foto</span>
 
         <div class="input-group input-navbar mb-2" id="paciente">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-image"></span></span>
+          <div class="input-group-prepend row">
+            <span class="input-group-text" id="icon-addon1" style="margin-left: -1em;"><span class="fas fa-solid fa-image"></span></span>
           </div>
           {{ form.foto }}
         </div>
         {{ form.foto.errors }}
 
-        <span class="text-primary" id="paciente">Nombre de usuario</span>
+        
+        <span class="text-primary" id="dato" style="margin-left: -1.96em;">Nombre de usuario</span>
 
         <div class="input-group input-navbar mb-2" id="paciente">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="icon-addon1"><span class="fas fa-user"></span></span>
+          <div class="input-group-prepend row">
+            <span class="input-group-text" id="icon-addon1" style="margin-left: -1em;"><span class="fas fa-user"></span></span>
           </div>
           {{ form.username }}
         </div>
         {{ form.username.errors }}
 
-        <span class="text-primary" id="paciente">Contraseña</span>
+        <span class="text-primary" id="dato" style="margin-left: -1.96em;">Contraseña</span>
 
-        <div class="input-group input-navbar mb-3" id="password">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="icon-addon1"><span class="fas fa-lock"></span></span>
+        <div class="input-group input-navbar mb-4" id="paciente">
+          <div class="input-group-prepend row">
+            <span class="input-group-text" id="icon-addon1" style="margin-left: -1em;"><span class="fas fa-lock"></span></span>
           </div>
           {{ form.password }}
         </div>
         {{ form.password.errors }}
 
-        <a href="{% url 'inicio' %}" class="btn btn-danger btn-block">
+        <a href="{% url 'inicio' %}" class="row btn btn-danger btn-block">
           <span class="fas fa-arrow-left"></span>
           <span>Cancelar</span>
         </a>
   
-        <button class="btn btn-info btn-block" id="perfil">
-          <span class="fas fa-solid fa-user-pen"></span>
-          <span class="navbar-toggler-icon">Editar Perfil</span>
+        <button class="row btn btn-info btn-block" id="perfil">
+          <span class="fas fa-solid fa-user-edit"></span>
+          <span>Editar Perfil</span>
         </button>
       </form>
     </div>
-    <span class="navbar-brand"></span>
   </div>
 
-{% include "login/footer.html" %}
 
 <script src="{% static 'assets/js/jquery-3.5.1.min.js' %}"></script>
 
