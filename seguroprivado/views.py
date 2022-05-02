@@ -33,7 +33,7 @@ class RegistroPacientesView(CreateView):
         apellidos = request.POST.get('apellidos')
         edad = request.POST.get('edad')
         direccion = request.POST.get('direccion')
-        foto = request.POST.get('foto')
+        foto = request.FILES.get('foto')
         username = request.POST.get('username')
         password = request.POST.get('password')
         
