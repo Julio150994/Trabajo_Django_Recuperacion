@@ -58,7 +58,7 @@
 
                 {% comment %} Para usuarios logueados como pacientes {% endcomment %}
                 {% if not request.user.is_staff %}
-                <a href="{% url 'perfil_paciente' user.id  %}" class="btn btn-primary text-white ml-lg-5">
+                <a href="{% url 'perfil' user.id  %}" class="btn btn-primary text-white ml-lg-5">
                   <span class="fas fa-user-edit"></span>
                   <span>Editar perfil</span>
                 </a>
