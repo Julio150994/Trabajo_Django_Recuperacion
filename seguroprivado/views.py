@@ -95,7 +95,7 @@ class EditarPerfilView(UpdateView):
             password = request.POST.get('password')
         
             if nombre is not None or apellidos is not None or edad is not None or direccion is not None or foto is not None or username is not None or password is not None:
-                set_paciente = Paciente(nombre=nombre, apellidos=apellidos, edad=edad, direccion=direccion, foto=foto, activo=False, username=username, password=password)
+                set_paciente = Paciente(nombre=nombre, apellidos=apellidos, edad=edad, direccion=direccion, foto=foto, username=username, password=password)
                 set_paciente.password = make_password(set_paciente.password)
                 set_paciente.save()
                 
