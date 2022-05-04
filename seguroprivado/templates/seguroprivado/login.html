@@ -85,6 +85,12 @@
           </div>
           {% endfor %}
         {% endif %}
+
+        {% if form.non_field.errors %}
+        <div class="input-group input-navbar alert alert-danger justify-content-center align-content-center" id="mensaje">
+          Credenciales erróneas
+        </div>
+        {% endif %}
   
         <a href="{% url 'inicio' %}" class="btn btn-danger">
           <span class="fas fa-arrow-left"></span>

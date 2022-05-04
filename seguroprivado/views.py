@@ -57,16 +57,13 @@ class LoginSegPrivadoView(LoginView):
     def dispatch(self, request, *args, **kwargs):
         if request.user is not None:
             if request.user.is_active:
-                #messages.error(request, 'Este usuario ya está logueado')
                 return HttpResponseRedirect('login')
             else:
                 if request.user.is_authenticated:
                     return HttpResponseRedirect('inicio')
                 else:
-                    #messages.error(request, 'Credenciales de usuario erróneas')
                     return super().dispatch(request, *args, **kwargs)
         else:
-            #messages.error(request, 'Este usuario ya está registrado')
             return HttpResponseRedirect('login')
         
 class LogoutView(RedirectView):
