@@ -68,7 +68,7 @@ class LoginSegPrivadoView(LoginView):
         else:
             return HttpResponseRedirect('login')
 
-@method_decorator(login_required)      
+@method_decorator(login_required, name='dispatch')      
 class LogoutView(RedirectView):
     pattern_name = 'login'
     
@@ -77,8 +77,7 @@ class LogoutView(RedirectView):
         messages.success(request,"Ha cerrado sesión.")
         return super().dispatch(request, *args, **kwargs)
 
-@method_decorator(login_required)
-@method_decorator(permission_required)
+@method_decorator(login_required, name='dispatch')
 class EditarPerfilView(UpdateView):
     model = Paciente
     form_class = PacienteForm
