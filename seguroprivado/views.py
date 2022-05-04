@@ -7,7 +7,6 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from seguroprivado.models import Paciente
