@@ -79,24 +79,9 @@ class EditarPerfilView(UpdateView):
     form_class = PacienteForm
     template_name = "seguroprivado/perfil_paciente.html"
     
-    def post(self, request, *args, **kwargs):
-        if request.method == "POST":
-            nombre = request.POST.get('nombre')
-            apellidos = request.POST.get('apellidos')
-            edad = request.POST.get('edad')
-            direccion = request.POST.get('direccion')
-            foto = request.FILES.get('foto')
-            username = request.POST.get('username')
-            password = request.POST.get('password')
-        
-            if nombre is not None or apellidos is not None or edad is not None or direccion is not None or foto is not None or username is not None or password is not None:
-                set_paciente = Paciente(nombre=nombre, apellidos=apellidos, edad=edad, direccion=direccion, foto=foto, username=username, password=password)
-                set_paciente.password = make_password(set_paciente.password)
-                set_paciente.save()
-                
-                User.objects.update(username=username, password=set_paciente.password)
-                return redirect(reverse('inicio')+"?updated")
-            else:
-                return redirect('perfil_paciente')
-        else:
-            return redirect('perfil_paciente')
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_success_url(self):
+        return reverse_lazy('inicio')+'?updated'

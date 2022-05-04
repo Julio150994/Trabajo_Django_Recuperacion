@@ -8,7 +8,7 @@
 
   <meta name="copyright" content="MACode ID, https://macodeid.com/">
 
-  <title>{% block title %} Formulario de Perfil de Paciente {% endblock %}</title>
+  <title>{% block title %} Formulario de Perfil {% endblock %}</title>
   
   {% load static %}
   
@@ -34,7 +34,6 @@
     <nav class="navbar navbar-light navbar-expand-sm shadow-sm">
       <div class="container">
         <span class="navbar-brand text-primary">Proyecto <span class="text-dark">Django</span></span>
-        <span class="navbar-brand text-right text-info">Nombre de usuario: {{ request.user }}</span>
       </div>
     </nav>
   </header>
@@ -46,8 +45,8 @@
 
       <form action="{% url 'perfil' user.id %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        
-        <span class="text-primary" id="dato" style="margin-left: -1.96em;">Nombre</span>
+
+        <span class="text-primary" id="dato" style="margin-left: -1em;">Nombre</span>
 
         <div class="input-group input-navbar mb-2" id="paciente">
           <div class="input-group-prepend row">
@@ -57,7 +56,7 @@
         </div>
         {{ form.nombre.errors }}
 
-        <span class="text-primary" id="dato" style="margin-left: -1.96em;">Apellidos</span>
+        <span class="text-primary" id="dato" style="margin-left: -1em;">Apellidos</span>
         
         <div class="input-group input-navbar mb-2" id="paciente">
           <div class="input-group-prepend row">
@@ -67,7 +66,7 @@
         </div>
         {{ form.apellidos.errors }}
 
-        <span class="text-primary" id="dato" style="margin-left: -1.96em;">Edad</span>
+        <span class="text-primary" id="dato" style="margin-left: -1em;">Edad</span>
 
         <div class="input-group input-navbar mb-2" id="paciente">
           <div class="input-group-prepend row">
@@ -77,7 +76,7 @@
         </div>
         {{ form.edad.errors }}
 
-        <span class="text-primary" id="dato" style="margin-left: -1.96em;">Dirección</span>
+        <span class="text-primary" id="dato" style="margin-left: -1em;">Dirección</span>
         <div class="input-group input-navbar mb-2" id="paciente">
           <div class="input-group-prepend row">
             <span class="input-group-text" id="icon-addon1" style="margin-left: -1em;"><span class="fas fa-solid fa-house-user"></span></span>
@@ -86,7 +85,7 @@
         </div>
         {{ form.direccion.errors }}
 
-        <span class="text-primary" id="dato" style="margin-left: -1.96em;">Foto</span>
+        <span class="text-primary" id="dato" style="margin-left: -1em;">Foto</span>
 
         <div class="input-group input-navbar mb-2" id="paciente">
           <div class="input-group-prepend row">
@@ -96,8 +95,9 @@
         </div>
         {{ form.foto.errors }}
 
+        <p class="text-info" style="margin-left: -1em; font-size: 12px;">Foto actual: <span class="text-dark">{{paciente.foto.url}}</span></p>
         
-        <span class="text-primary" id="dato" style="margin-left: -1.96em;">Nombre de usuario</span>
+        <span class="text-primary" id="dato" style="margin-left: -1em;">Nombre de usuario</span>
 
         <div class="input-group input-navbar mb-2" id="paciente">
           <div class="input-group-prepend row">
@@ -107,7 +107,7 @@
         </div>
         {{ form.username.errors }}
 
-        <span class="text-primary" id="dato" style="margin-left: -1.96em;">Contraseña</span>
+        <span class="text-primary" id="dato" style="margin-left: -1em;">Contraseña</span>
 
         <div class="input-group input-navbar mb-4" id="paciente">
           <div class="input-group-prepend row">
@@ -117,12 +117,12 @@
         </div>
         {{ form.password.errors }}
 
-        <a href="{% url 'inicio' %}" class="row btn btn-danger btn-block">
+        <a href="{% url 'inicio' %}" class="row btn btn-danger">
           <span class="fas fa-arrow-left"></span>
           <span>Cancelar</span>
         </a>
   
-        <button class="row btn btn-info btn-block" id="perfil">
+        <button class="row btn btn-info" id="editar" style="margin-left: 10%; padding-left: 4.5%;">
           <span class="fas fa-solid fa-user-edit"></span>
           <span>Editar Perfil</span>
         </button>
