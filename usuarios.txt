@@ -1,0 +1,4 @@
+USERNAME    		PASSWORD	    ROL DE USUARIO
+admin		    	123456		    Administrador
+sandralo93		    12345678@	    Paciente
+alfredo67		    12345678@	    Paciente
