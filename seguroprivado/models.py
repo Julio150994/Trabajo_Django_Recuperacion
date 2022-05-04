@@ -56,7 +56,7 @@ class Paciente(models.Model):
     apellidos = models.CharField(max_length=50, null=False, blank=False, verbose_name="Apellidos")
     edad = models.IntegerField(null=False, blank=False, verbose_name="Edad")
     direccion = models.CharField(max_length=100, null=False, blank=False, verbose_name="Dirección")
-    foto = models.ImageField(verbose_name="Foto", upload_to="pacientes", null=False, blank=False)
+    foto = models.ImageField(verbose_name="Foto", upload_to="fotos_pacientes/", unique=True, null=False, blank=False)
     activo = models.BooleanField(default=False)
     username = models.CharField(max_length=30, unique=True, null=False, blank=False, verbose_name="Nombre de usuario")
     password = models.CharField(max_length=30, null=False, blank=False, verbose_name="Contraseña")
