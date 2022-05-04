@@ -23,10 +23,7 @@ class TemplateInicioView(TemplateView):
 class RegistroPacientesView(CreateView):
     model = Paciente
     form_class = PacienteForm
-    template_name = "login/registro.html"
-    
-    def get_success_url(self):
-        return reverse_lazy('sign_in')+'?registered'
+    template_name = "seguroprivado/registro.html"
     
     def post(self, request, *args, **kwargs):
         nombre = request.POST.get('nombre')
@@ -39,12 +36,13 @@ class RegistroPacientesView(CreateView):
         
         if request.method == "POST":
             if nombre is not None or apellidos is not None or edad is not None or direccion is not None or foto is not None or username is not None or password is not None:
-                set_paciente = Paciente(nombre=nombre, apellidos=apellidos, edad=edad, direccion=direccion, foto=foto, activo=False, username=username, password=password)
+                # Activamos el usuario con el usuario administrador automáticamente
+                set_paciente = Paciente(nombre=nombre, apellidos=apellidos, edad=edad, direccion=direccion, foto=foto, activo=True, username=username, password=password)
                 set_paciente.password = make_password(set_paciente.password)
                 set_paciente.save()
                 
                 User.objects.create(username=username, password=set_paciente.password)
-                return redirect(reverse('sign_in')+"?registered")
+                return redirect(reverse('login')+"?registered")
             else:
                 return redirect('registro')
         else:

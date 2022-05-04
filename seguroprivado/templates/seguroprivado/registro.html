@@ -29,12 +29,11 @@
 
 </head>
 <body>
-  {% block registro %}
   <div class="back-to-top"></div>
   <header>
     <nav class="navbar navbar-light navbar-expand-sm shadow-sm">
       <div class="container">
-        <p class="navbar-brand text-primary">Proyecto <span class="text-dark">Django</span></p>
+        <span class="navbar-brand text-primary">Proyecto <span class="text-dark">Django</span></span>
       </div>
     </nav>
   </header>
@@ -47,6 +46,7 @@
       <form action="{% url 'registro' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
+        {% block form_paciente %}
         <span class="text-primary" id="dato">Nombre</span>
 
         <div class="input-group input-navbar mb-2" id="paciente">
@@ -95,7 +95,6 @@
           {{ form.foto }}
         </div>
         {{ form.foto.errors }}
-
         
         <span class="text-primary" id="dato">Nombre de usuario</span>
 
@@ -116,6 +115,7 @@
           {{ form.password }}
         </div>
         {{ form.password.errors }}
+        {% endblock %}
 
         <a href="{% url 'sign_in' %}" class="row btn btn-danger btn-block">
           <span class="fas fa-arrow-left"></span>
@@ -142,6 +142,5 @@
 
 <script src="{% static 'assets/js/theme.js' %}"></script>
 
-{% endblock registro %}
 </body>
 </html>

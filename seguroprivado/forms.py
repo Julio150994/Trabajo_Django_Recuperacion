@@ -1,7 +1,4 @@
 from django import forms
-from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
-from django.contrib.auth.hashers import make_password
 from seguroprivado.models import Paciente
 
 # Create your forms here.
@@ -22,13 +19,13 @@ class PacienteForm(forms.ModelForm):
         }
         
         widgets = {
-            'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto','placeholder':'Escriba un nombre'}),
-            'apellidos': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba unos apellidos'}),
-            'edad': forms.NumberInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba una edad'}),
-            'direccion': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba una dirección'}),
-            'foto': forms.FileInput(attrs={'class':'form-control form-control-sm row mx-auto'}),
-            'username': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba un nombre de usuario'}),
-            'password':  forms.PasswordInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba una contraseña'})   
+            'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto','placeholder':'Escriba un nombre', 'required':'required'}),
+            'apellidos': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba unos apellidos', 'required':'required'}),
+            'edad': forms.NumberInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba una edad', 'required':'required'}),
+            'direccion': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba una dirección', 'required':'required'}),
+            'foto': forms.FileInput(attrs={'class':'form-control form-control-sm row mx-auto', 'required':'required'}),
+            'username': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba un nombre de usuario', 'required':'required'}),
+            'password':  forms.PasswordInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba una contraseña', 'required':'required'})   
         }
         
         error_messages = {
@@ -41,8 +38,8 @@ class PacienteForm(forms.ModelForm):
             'password': {'required': 'Debe escribir una contraseña', 'min_length': 'La contraseña debe tener como mínimo 8 caracteres', 'max_length':'La contraseña debe tener como máximo 30 caracteres'}
         }
     
-        
-    # Comprobamos que los datos del formulario sean correctos
+    
+    # Comprobamos los datos introducidos, y si un paciente está o no registrado
     def clean_nombre(self):
         return self.cleaned_data['nombre']
     
@@ -59,11 +56,7 @@ class PacienteForm(forms.ModelForm):
         return self.cleaned_data['foto']
     
     def clean_username(self):
-        paciente = self.cleaned_data['username']
-        
-        if Paciente.objects.filter(username=paciente).exists():
-            raise forms.ValidationError("El paciente "+str(paciente)+" ya está registrado, pruebe registrar otro.")
-        return paciente
+        return self.cleaned_data['username']
     
     def clean_password(self):
         return self.cleaned_data['password']
