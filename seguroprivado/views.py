@@ -7,6 +7,9 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 from seguroprivado.models import Paciente
 from seguroprivado.forms import PacienteForm
 
@@ -65,7 +68,8 @@ class LoginSegPrivadoView(LoginView):
                     return super().dispatch(request, *args, **kwargs)
         else:
             return HttpResponseRedirect('login')
-        
+
+@method_decorator(login_required)      
 class LogoutView(RedirectView):
     pattern_name = 'login'
     
@@ -73,7 +77,9 @@ class LogoutView(RedirectView):
         logout(request)
         messages.success(request,"Ha cerrado sesión.")
         return super().dispatch(request, *args, **kwargs)
-    
+
+@method_decorator(login_required)
+@method_decorator(permission_required)
 class EditarPerfilView(UpdateView):
     model = Paciente
     form_class = PacienteForm
