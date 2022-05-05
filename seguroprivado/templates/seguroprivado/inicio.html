@@ -62,13 +62,18 @@
                   <span class="fas fa-user-edit"></span>
                   <span>Editar perfil</span>
                 </a>
-                {% endif %}
 
+                {% else %}
                 {% comment %} Botones para admin {% endcomment %}
                 <a href="{% url 'pacientes' %}" class="btn btn-info text-white ml-lg-5">
                   <span class="fas fa-users"></span>
                   <span>Pacientes</span>
                 </a>
+                <a href="#" class="btn btn-info text-white ml-lg-5">
+                  <span class="fas fa-users"></span>
+                  <span>Médicos</span>
+                </a>
+                {% endif %}
                 
                 <a href="{% url 'logout' %}" class="btn btn-info text-white ml-lg-5">
                   <span class="fas fa-sign-out-alt"></span>
