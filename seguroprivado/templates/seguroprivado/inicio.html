@@ -98,20 +98,17 @@
     <div class="hero-section">
       <div class="container text-center wow zoomIn">
         {% if not request.user.is_authenticated %}
-          <!--<span class="subhead"></span>-->
           <h1 class="display-4">Seguro Privado Salesin</h1>
         {% else %}
           <h1 class="display-4">Bienvenido a nuestra plataforma, {{ request.user }}</span>
         {% endif %}
       </div>
     </div>
-    <div class="container mt-5 mb-1">
-      {# Bloque para la tabla pacientes #}
-      {% block lista_pacientes %}{% endblock %}
+    {# Bloque para la tabla pacientes #}
+    {% block lista_pacientes %}{% endblock %}
           
-      {# Bloque para la tabla médicos #}
-      {% block lista_medicos %}{% endblock %}
-    </div>
+    {# Bloque para la tabla médicos #}
+    {% block lista_medicos %}{% endblock %}
   </div>
 </div>
 
