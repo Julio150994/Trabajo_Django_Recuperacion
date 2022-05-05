@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
-from seguroprivado.models import Paciente
+from seguroprivado.models import Paciente, Medico
 from seguroprivado.forms import PacienteForm
 
 # Create your views here.
@@ -95,8 +95,8 @@ class EditarPerfilView(UpdateView):
 class PacienteList(ListView):
     model = Paciente
     template_name = "seguroprivado/pacientes.html"
-    
 
-"""class MedicosListView(ListView):
+@method_decorator(login_required, name='dispatch')
+class MedicoList(ListView):
     model = Medico
-    template_name = "seguroprivado/medicos.html"""
+    template_name = "seguroprivado/medicos.html"
