@@ -17,7 +17,7 @@
                 <th>Dirección</th>
                 <th>Foto</th>
                 <th>Nombre de usuario</th>
-                <th colspan="2">Operaciones</th>
+                <th>Operaciones</th>
             </tr>
         </thead>
         <tbody>
@@ -29,6 +29,12 @@
                 <td>{{ paciente.direccion }}</td>
                 <td>{{ paciente.foto }}</td>
                 <td>{{ paciente.username }}</td>
+                <td>
+                    <a href="#" class="btn btn-primary">
+                        <span class="fas fa-toggle-off"></span>
+                        <span>Activar</span>
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
