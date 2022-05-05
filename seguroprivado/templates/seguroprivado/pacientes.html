@@ -21,22 +21,24 @@
             </tr>
         </thead>
         <tbody>
-            {% for paciente in pacientes_list %}
-            <tr>
-                <td>{{ paciente.nombre }}</td>
-                <td>{{ paciente.apellidos }}</td>
-                <td>{{ paciente.edad }}</td>
-                <td>{{ paciente.direccion }}</td>
-                <td>{{ paciente.foto }}</td>
-                <td>{{ paciente.username }}</td>
-                <td>
-                    <a href="#" class="btn btn-primary">
-                        <span class="fas fa-toggle-off"></span>
-                        <span>Activar</span>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
+            <div class="overflow-auto">
+                {% for paciente in pacientes_list %}
+                <tr>
+                    <td>{{ paciente.nombre }}</td>
+                    <td>{{ paciente.apellidos }}</td>
+                    <td>{{ paciente.edad }}</td>
+                    <td>{{ paciente.direccion }}</td>
+                    <td>{{ paciente.foto }}</td>
+                    <td>{{ paciente.username }}</td>
+                    <td>
+                        <a href="#" class="btn btn-primary">
+                            <span class="fas fa-toggle-off"></span>
+                            <span>Activar</span>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </div>
         </tbody>
     </table>
 </div>
