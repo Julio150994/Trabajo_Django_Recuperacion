@@ -2,7 +2,7 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.views.generic import RedirectView, TemplateView, CreateView, UpdateView
+from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
@@ -89,3 +89,17 @@ class EditarPerfilView(UpdateView):
     
     def get_success_url(self):
         return reverse_lazy('inicio')+'?updated'
+
+
+@method_decorator(login_required, name='dispatch')
+class PacienteListView(ListView):
+    model = Paciente
+    template_name = "seguroprivado/pacientes.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+
+"""class MedicosListView(ListView):
+    model = Medico
+    template_name = "seguroprivado/medicos.html"""

@@ -27,7 +27,7 @@
 
 </head>
 <body>
-
+  {% block inicio %}
   <!-- Back to top button -->
   <div class="back-to-top"></div>
 
@@ -63,6 +63,12 @@
                   <span>Editar perfil</span>
                 </a>
                 {% endif %}
+
+                {% comment %} Botones para admin {% endcomment %}
+                <a href="#" class="btn btn-info text-white ml-lg-5">
+                  <span class="fas fa-users-medical"></span>
+                  <span>Pacientes</span>
+                </a>
                 
                 <a href="{% url 'logout' %}" class="btn btn-info text-white ml-lg-5">
                   <span class="fas fa-sign-out-alt"></span>
@@ -109,6 +115,7 @@
 <script src="{% static 'assets/vendor/wow/wow.min.js' %}"></script>
 
 <script src="{% static 'assets/js/theme.js' %}"></script>
-  
+
+{% endblock  %}
 </body>
 </html>

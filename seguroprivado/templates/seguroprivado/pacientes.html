@@ -1,0 +1,37 @@
+{% comment %} Extendido de inicio.html {% endcomment %}
+{% extends "inicio.html" %}
+{% load static %}
+
+{% block title %} Listado de pacientes {% endblock  %}
+
+{% block inicio %}
+<div class="container">
+    <h1 class="text-center text-success">Pacientes</h1>
+
+    <table class="table table-bordered text-center">
+        <thead class="table table-info text-white">
+            <tr>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Edad</th>
+                <th>Dirección</th>
+                <th>Foto</th>
+                <th>Nombre de usuario</th>
+                <th colspan="2">Operaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paciente in pacientes_list %}
+            <tr>
+                <td>{{ paciente.nombre }}</td>
+                <td>{{ paciente.apellidos }}</td>
+                <td>{{ paciente.edad }}</td>
+                <td>{{ paciente.direccion }}</td>
+                <td>{{ paciente.foto }}</td>
+                <td>{{ paciente.username }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
