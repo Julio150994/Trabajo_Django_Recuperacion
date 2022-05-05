@@ -25,6 +25,6 @@ urlpatterns = [
     path('login/',views.LoginSegPrivadoView.as_view(), name="login"),
     path('logout/',views.LogoutView.as_view(), name="logout"),
     path('perfil_paciente/<int:pk>/', views.EditarPerfilView.as_view(), name="perfil"),
-    path('pacientes/',views.PacienteListView.as_view(), name="pacientes"),
+    path('pacientes/',views.PacienteList.as_view(), name="pacientes"),
 ]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -92,13 +92,10 @@ class EditarPerfilView(UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class PacienteListView(ListView):
+class PacienteList(ListView):
     model = Paciente
     template_name = "seguroprivado/pacientes.html"
-
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
+    
 
 """class MedicosListView(ListView):
     model = Medico

@@ -1,11 +1,13 @@
-{% comment %} Extendido de inicio.html {% endcomment %}
 {% extends 'seguroprivado/inicio.html' %}
 {% load static %}
 
 {% block title %} Listado de pacientes {% endblock  %}
 
 {% block inicio %}
-<div class="container">
+<div class="container mt-5">
+    {% if not paciente_list %}
+    <div class="alert alert-warning text-center">No se han encontrado pacientes</div>
+    {% else %}
     <h1 class="text-center text-success">Lista de Pacientes</h1>
 
     <table class="table table-bordered text-center">
@@ -21,8 +23,8 @@
             </tr>
         </thead>
         <tbody>
+            {% for paciente in paciente_list %}
             <div class="overflow-auto">
-                {% for paciente in pacientes %}
                 <tr>
                     <td>{{ paciente.nombre }}</td>
                     <td>{{ paciente.apellidos }}</td>
@@ -37,9 +39,10 @@
                         </a>
                     </td>
                 </tr>
-                {% endfor %}
             </div>
+            {% endfor %}
         </tbody>
     </table>
+    {% endif %}
 </div>
 {% endblock %}
