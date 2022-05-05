@@ -3,15 +3,15 @@
 
 {% block title %} Listado de pacientes {% endblock  %}
 
-{% block inicio %}
-<div class="container mt-5">
+{% block lista_pacientes %}
+<div class="container mt-5 bg-light rounded">
     {% if not paciente_list %}
     <div class="alert alert-warning text-center">No se han encontrado pacientes</div>
     {% else %}
-    <h1 class="text-center text-success">Lista de Pacientes</h1>
+    <h1 class="text-center text-primary mb-4">Lista de Pacientes</h1>
 
     <table class="table table-bordered text-center">
-        <thead class="table table-info text-white">
+        <thead class="table table-dark text-white">
             <tr>
                 <th>Nombre</th>
                 <th>Apellidos</th>
@@ -22,7 +22,7 @@
                 <th>Operaciones</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="table table-light">
             {% for paciente in paciente_list %}
             <div class="overflow-auto">
                 <tr>
@@ -30,13 +30,20 @@
                     <td>{{ paciente.apellidos }}</td>
                     <td>{{ paciente.edad }}</td>
                     <td>{{ paciente.direccion }}</td>
-                    <td><img src="{{ paciente.foto.url }}" class="img-circle" width="100" height="100"></td>
+                    <td><img src="{{ paciente.foto.url }}" class="img-circle" width="80" height="80"></td>
                     <td>{{ paciente.username }}</td>
                     <td>
+                        {% if paciente.activo == 1 %}
+                        <a href="#" class="btn btn-warning text-white">
+                            <span class="fas fa-toggle-on"></span>
+                            <span>Desactivar</span>
+                        </a>
+                        {% else %}
                         <a href="#" class="btn btn-primary">
                             <span class="fas fa-toggle-off"></span>
                             <span>Activar</span>
                         </a>
+                        {% endif %}
                     </td>
                 </tr>
             </div>
@@ -44,11 +51,5 @@
         </tbody>
     </table>
     {% endif %}
-    <div class="container">
-        <a href="{% url 'inicio' %}" class="btn btn-dark">
-            <span class="fas fa-arrow-left"></span>
-            <span>Volver al menú</span>
-        </a>
-    </div>
 </div>
 {% endblock %}
