@@ -1,12 +1,12 @@
 {% comment %} Extendido de inicio.html {% endcomment %}
-{% extends "seguroprivado/inicio.html" %}
+{% extends 'seguroprivado/inicio.html' %}
 {% load static %}
 
 {% block title %} Listado de pacientes {% endblock  %}
 
 {% block inicio %}
 <div class="container">
-    <h1 class="text-center text-success">Pacientes</h1>
+    <h1 class="text-center text-success">Lista de Pacientes</h1>
 
     <table class="table table-bordered text-center">
         <thead class="table table-info text-white">
@@ -22,13 +22,13 @@
         </thead>
         <tbody>
             <div class="overflow-auto">
-                {% for paciente in pacientes_list %}
+                {% for paciente in pacientes %}
                 <tr>
                     <td>{{ paciente.nombre }}</td>
                     <td>{{ paciente.apellidos }}</td>
                     <td>{{ paciente.edad }}</td>
                     <td>{{ paciente.direccion }}</td>
-                    <td>{{ paciente.foto }}</td>
+                    <td><img src="{{ paciente.foto.url }}" class="img-circle" width="100" height="100"></td>
                     <td>{{ paciente.username }}</td>
                     <td>
                         <a href="#" class="btn btn-primary">
