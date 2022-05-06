@@ -1,21 +1,22 @@
-{% extends 'seguroprivado/registro.html' %}
+{# Extendido de registro.html #}
+{% extends 'login/registro.html' %}
 
 {% block title %} Listado de médicos {% endblock %}
 
 {% block lista_medicos %}
-<div class="container bg-light rounded">
-    <div class="container mt-5 rounded">
-        <a href="#" class="btn btn-success">
+<div class="container-xl bg-light rounded">
+    <div class="container-xl mt-3 rounded">
+        <a href="{% url 'form_medico' %}" class="btn btn-success">
             <span class="fas fa-user-plus"></span>
             <span>Añadir médico</span>
         </a>
     </div>
     
-    <div class="container">
+    <div class="container-xl mx-auto mt-2 bg-light rounded">
         {% if not medico_list %}
         <div class="alert alert-warning text-center">No se han encontrado médicos</div>
         {% else %}
-        <h1 class="text-center text-success">Lista de Médicos</h1>
+        <h1 class="text-primary mb-4 p-md-3">Lista de Médicos</h1>
     
         <table class="table table-bordered text-center">
             <thead class="table table-info text-white">
@@ -40,7 +41,7 @@
                         <td>{{ medico.especialidad }}</td>
                         <td>{{ medico.username }}</td>
                         <td>
-                            <a href="#" class="btn btn-dark">
+                            <a href="#" class="btn btn-light text-dark">
                                 <span class="fas fa-list"></span>
                                 <span>Dato de médico</span>
                             </a>
@@ -48,10 +49,10 @@
                                 <span class="fas fa-edit"></span>
                                 <span>Editar</span>
                             </a>
-                            <a href="#" class="btn btn-danger">
+                            <button class="btn btn-danger">
                                 <span class="fas fa-trash"></span>
                                 <span>Eliminar</span>
-                            </a>
+                            </button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -69,5 +70,5 @@
 
 {% block copyright %}
     {% comment %} Código del copyright {% endcomment %}
-    {% include "login/footer.html" %}
+    {% include "seguroprivado/footer.html" %}
 {% endblock  %}

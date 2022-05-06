@@ -1,13 +1,33 @@
+{# Extendido de registro.html #}
 {% extends 'seguroprivado/registro.html' %}
 
 {% block title %} Listado de pacientes {% endblock  %}
 
 {% block lista_pacientes %}
-<div class="container mt-5 bg-light rounded">
+
+{% for paciente in paciente_list %}
+    {% for actived in messages %}
+    <div class="alert alert-info mx-auto justify-content-center align-items-center mt-2">
+        {{ actived }}
+    </div>
+    {% endfor %}
+
+{% if paciente.activo == True %}
+        
+    {% else %}
+        {% for deactived in messages %}
+        <div class="alert alert-warning mx-auto text-center justify-content-center align-items-center mt-2">
+            {{ deactived }}
+        </div>
+        {% endfor %}
+    {% endif %}
+{% endfor %}
+
+<div class="container-xl mx-auto mt-5 mb-5 bg-light rounded pr-4 pl-4">
     {% if not paciente_list %}
     <div class="alert alert-warning text-center">No se han encontrado pacientes</div>
     {% else %}
-    <h1 class="text-center text-primary mb-4">Lista de Pacientes</h1>
+    <h1 class="text-center text-primary mb-4 p-md-3">Lista de Pacientes</h1>
 
     <table class="table table-bordered text-center">
         <thead class="table table-dark text-white">
@@ -59,5 +79,5 @@
 
 {% block copyright %}
     {% comment %} Código del copyright {% endcomment %}
-    {% include "login/footer.html" %}
+    {% include "seguroprivado/footer.html" %}
 {% endblock  %}
