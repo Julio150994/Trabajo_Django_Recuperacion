@@ -2,7 +2,7 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView
+from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
@@ -109,16 +109,19 @@ class PacienteActivedView(UpdateView):
     
     def get_object(self, queryset=None):
         return Paciente.objects.get(id=self.kwargs.get("id"))
-    
+
+  
 @method_decorator(login_required, name='dispatch')
 class MedicoList(ListView):
     model = Medico
     template_name = "seguroprivado/medicos.html"
 
+
 @method_decorator(login_required, name='dispatch')
 class MedicoDetail(DetailView):
     model = Medico
     template_name = "seguroprivado/datos_medico.html"
+
     
 @method_decorator(login_required, name='dispatch')
 class MedicoCreate(CreateView):
@@ -128,3 +131,12 @@ class MedicoCreate(CreateView):
     
     def get_success_url(self):
         return reverse_lazy('medicos')+"?added"
+
+   
+@method_decorator(login_required, name='dispatch')
+class MedicoDelete(DeleteView):
+    model = Medico
+    
+    def get_success_url(self):
+        return reverse_lazy('medicos')+"?deleted"
+    

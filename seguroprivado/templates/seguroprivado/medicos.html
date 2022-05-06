@@ -5,10 +5,16 @@
 
 {% block lista_medicos %}
 
-{# Mensaje de médico añadido #}
+
 {% if 'added' in request.GET %}
 <div class="container-fluid alert alert-success mx-auto justify-content-center align-content-center">
     Médico {{ medico.username }} añadido correctamente
+</div>
+{% endif %}
+
+{% if 'deleted' in request.GET %}
+<div class="container-fluid alert alert-danger mx-auto justify-content-center align-content-center">
+    Médico {{ medico.username }} eliminado correctamente
 </div>
 {% endif %}
 
@@ -57,7 +63,7 @@
                                 <span class="fas fa-edit"></span>
                                 <span>Editar</span>
                             </a>
-                            <button class="btn btn-danger">
+                            <button class="btn btn-danger" onclick="eliminar({{ medico.id }})">
                                 <span class="fas fa-trash"></span>
                                 <span>Eliminar</span>
                             </button>
