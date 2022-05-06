@@ -22,8 +22,8 @@
             </tr>
         </thead>
         <tbody class="table table-light">
-            {% for paciente in paciente_list %}
             <div class="overflow-auto">
+            {% for paciente in paciente_list %}
                 <tr>
                     <td>{{ paciente.nombre }}</td>
                     <td>{{ paciente.apellidos }}</td>
@@ -32,21 +32,21 @@
                     <td><img src="{{ paciente.foto.url }}" class="img-circle" width="80" height="80"></td>
                     <td>{{ paciente.username }}</td>
                     <td>
-                        {% if paciente.activo == 1 %}
-                        <a href="#" class="btn btn-warning text-white">
-                            <span class="fas fa-toggle-on"></span>
-                            <span>Desactivar</span>
-                        </a>
-                        {% else %}
-                        <a href="#" class="btn btn-primary">
+                        {% if paciente.activo == False %}
+                        <a href="{% url 'pacientes' paciente.id %}" class="btn btn-primary text-white">
                             <span class="fas fa-toggle-off"></span>
                             <span>Activar</span>
+                        </a>
+                        {% else %}
+                        <a href="{% url 'pacientes' paciente.id %}" class="btn btn-warning text-white">
+                            <span class="fas fa-toggle-on"></span>
+                            <span>Desactivar</span>
                         </a>
                         {% endif %}
                     </td>
                 </tr>
-            </div>
             {% endfor %}
+            </div>
         </tbody>
     </table>
     {% endif %}

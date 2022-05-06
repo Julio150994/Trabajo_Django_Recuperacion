@@ -95,7 +95,20 @@ class EditarPerfilView(UpdateView):
 class PacienteList(ListView):
     model = Paciente
     template_name = "seguroprivado/pacientes.html"
-
+    
+@method_decorator(login_required, name='dispatch')
+class PacienteActivedView(UpdateView):
+    model = Paciente
+    form_class = PacienteForm
+    queryset = Paciente.objects.all()
+    success_url = reverse_lazy('pacientes')
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_object(self, queryset=None):
+        return Paciente.objects.get(id=self.kwargs.get("id"))
+    
 @method_decorator(login_required, name='dispatch')
 class MedicoList(ListView):
     model = Medico
