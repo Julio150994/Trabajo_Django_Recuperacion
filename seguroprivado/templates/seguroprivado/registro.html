@@ -39,7 +39,14 @@
   </header>
 
   <div class="page-hero bg-image overlay-dark row m-0 justify-content-center align-items-center" id="img_fondo">
-    
+    {% if request.user.is_authenticated and request.user.is_staff %}
+      {# Para la tabla de pacientes #}
+      {% block lista_pacientes %}{% endblock %}
+      
+      {# Para el CRUD de médicos #}
+      {% block lista_medicos %}{% endblock %}
+    {% else %}
+
     <div class="rounded p-5 bg-light col-3 row m-0 justify-content-center align-items-center" id="formulario">
       <span class="navbar-brand text-primary mb-3">Registro de pacientes</span>
 
@@ -128,6 +135,7 @@
         </button>
       </form>
     </div>
+    {% endif %}
     <span class="navbar-brand"></span>
   </div>
 
