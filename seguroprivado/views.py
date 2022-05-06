@@ -10,7 +10,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.decorators import method_decorator
 from seguroprivado.models import Paciente, Medico
-from seguroprivado.forms import PacienteForm
+from seguroprivado.forms import MedicoForm, PacienteForm
 
 # Create your views here.
 
@@ -113,3 +113,13 @@ class PacienteActivedView(UpdateView):
 class MedicoList(ListView):
     model = Medico
     template_name = "seguroprivado/medicos.html"
+    
+
+@method_decorator(login_required, name='dispatch')
+class MedicoCreate(CreateView):
+    model = Medico
+    form_class = MedicoForm
+    template_name = "seguroprivado/form_medico.html"
+    
+    def get_success_url(self):
+        return reverse_lazy('medicos')+"?added"

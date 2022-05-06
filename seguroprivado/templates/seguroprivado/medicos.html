@@ -4,9 +4,17 @@
 {% block title %} Listado de médicos {% endblock %}
 
 {% block lista_medicos %}
+
+{# Mensaje de médico añadido #}
+{% if 'added' in request.GET %}
+<div class="container-fluid alert alert-success mx-auto justify-content-center align-content-center">
+    Médico {{ medico.username }} añadido correctamente
+</div>
+{% endif %}
+
 <div class="container-xl bg-light rounded">
     <div class="container-xl mt-3 rounded">
-        <a href="#" class="btn btn-success">
+        <a href="{% url 'form_medico' %}" class="btn btn-success">
             <span class="fas fa-user-plus"></span>
             <span>Añadir médico</span>
         </a>

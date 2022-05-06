@@ -1,5 +1,5 @@
 from django import forms
-from seguroprivado.models import Paciente
+from seguroprivado.models import Paciente, Medico
 
 # Create your forms here.
 
@@ -38,7 +38,6 @@ class PacienteForm(forms.ModelForm):
             'password': {'required': 'Debe escribir una contraseña', 'min_length': 'La contraseña debe tener como mínimo 8 caracteres', 'max_length':'La contraseña debe tener como máximo 30 caracteres'}
         }
     
-    
     # Comprobamos los datos introducidos, y si un paciente está o no registrado
     def clean_nombre(self):
         return self.cleaned_data['nombre']
@@ -54,6 +53,72 @@ class PacienteForm(forms.ModelForm):
     
     def clean_foto(self):
         return self.cleaned_data['foto']
+    
+    def clean_username(self):
+        return self.cleaned_data['username']
+    
+    def clean_password(self):
+        return self.cleaned_data['password']
+    
+
+class MedicoForm(forms.ModelForm):
+    class Meta:
+        model = Medico
+        fields = '__all__'
+        
+    help_texts = {
+        'nombre': 'Debe escribir un nombre y que tenga un máximo de 30 caracteres.',
+        'apellidos': 'Debe escribir unos apellidos y que formen un máximo de 50 caracteres.',
+        'edad': 'Debe introducir una edad.',
+        'fechaalta': 'Debe introducir una fecha de alta.',
+        'especialidad': 'Debe seleccionar una especialidad.',
+        'username': 'Debe escribir un nombre de usuario y que tenga un máximo de 30 caracteres.',
+        'password': 'Debe escribir una contraseña y que tenga un mínimo de 8 caracteres y un máximo de 30 caracteres.'
+    }
+        
+    especialidades = (
+        (1,'familia'),
+        (2,'digestivo'),
+        (3,'neurólogo'),
+        (4,'dermatólogo'),
+        (5,'traumatólogo')
+    )
+    
+    widgets = {
+        'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm', 'placeholder':'Escriba un nombre'}),
+        'apellidos': forms.TextInput(attrs={'class':'form-control form-control-sm', 'placeholder':'Escriba unos apellidos'}),
+        'edad': forms.NumberInput(attrs={'class':'form-control form-control-sm', 'placeholder':'Escriba una edad'}),
+        'fechaalta': forms.DateInput(format = ('%d/%m/%Y'), attrs={'class':'form-control form-control-sm', 'placeholder':'Fecha de alta', 'type':'date'}),
+        'especialidad': forms.Select(choices=especialidades ,attrs={'class':'form-control form-control-sm'}),
+        'username': forms.TextInput(attrs={'class':'form-control form-control-sm', 'placeholder':'Escriba un nombre de usuario'}),
+        'password':  forms.PasswordInput(attrs={'class':'form-control form-control-sm', 'placeholder':'Escriba una contraseña'})   
+    }
+    
+    error_messages = {
+        'nombre': {'required': 'Debe escribir el nombre','max_length':'El nombre debe tener como máximo 30 caracteres'},
+        'apellidos': {'required': 'Debe escribir unos apellidos', 'max_length':'Sus apellidos deben formar como máximo 50 caracteres'},
+        'edad': {'required': 'Debe introducir una edad'},
+        'fechaalta': {'required': 'Debe escribir una fecha de alta'},
+        'especialidad': {'required':'Debe seleccionar una especialidad'},
+        'username': {'required': 'Debe escribir el nombre de usuario', 'max_length':'El nombre de usuario debe tener como máximo 30 caracteres'},
+        'password': {'required': 'Debe escribir una contraseña', 'min_length': 'La contraseña debe tener como mínimo 8 caracteres', 'max_length':'La contraseña debe tener como máximo 30 caracteres'}
+    }
+    
+    # Comprobamos los datos del médico que se hayan introducido #
+    def clean_nombre(self):
+        return self.cleaned_data['nombre']
+    
+    def clean_apellidos(self):
+        return self.cleaned_data['apellidos']
+    
+    def clean_edad(self):
+        return self.cleaned_data['edad']
+    
+    def clean_fechaalta(self):
+        return self.cleaned_data['fechaalta']
+    
+    def clean_especialidad(self):
+        return self.cleaned_data['especialidad']
     
     def clean_username(self):
         return self.cleaned_data['username']
