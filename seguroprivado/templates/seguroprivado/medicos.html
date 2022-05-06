@@ -49,7 +49,7 @@
                         <td>{{ medico.especialidad }}</td>
                         <td>{{ medico.username }}</td>
                         <td>
-                            <a href="#" class="btn btn-light text-dark">
+                            <a href="{% url 'datos_medico' medico.id %}" class="btn btn-light text-dark">
                                 <span class="fas fa-list"></span>
                                 <span>Dato de médico</span>
                             </a>

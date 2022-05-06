@@ -1,0 +1,33 @@
+{# Extendido de registro.html #}
+{% extends 'seguroprivado/registro.html' %}
+
+{% block title %} Datos del médico del seguro {% endblock %}
+
+{% block medico %}
+<div class="container-xl mx-auto mt-5 bg-light rounded pr-4 pl-4">
+    <h1 class="text-primary mb-4 p-md-3">Datos de médico</h1>
+
+    <div class="container-fluid mx-auto">
+        <ul class="list-group">
+            <li class="list-group-item"><strong>Nombre:</strong> <span>{{ medico.nombre }}</span></li> 
+            <li class="list-group-item"><strong>Apellidos:</strong> <span>{{ medico.apellidos }}</span></li>
+            <li class="list-group-item"><strong>Edad:</strong> <span>{{ medico.edad }}</span></li>
+            <li class="list-group-item"><strong>Fecha de alta:</strong> <span>{{ medico.fechaalta }}</span></li>
+            <li class="list-group-item"><strong>Especialidad:</strong> <span>{{ medico.especialidad }}</span></li>
+            <li class="list-group-item"><strong>Nombre de usuario:</strong> <span>{{ medico.username }}</span></li>
+        </ul>
+
+        <div class="container">
+            <a href="{% url 'inicio' %}" class="btn btn-dark">
+                <span class="fas fa-arrow-left"></span>
+                <span>Volver al menú</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block copyright %}
+    {% comment %} Código del copyright {% endcomment %}
+    {% include "seguroprivado/footer.html" %}
+{% endblock  %}

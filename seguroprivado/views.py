@@ -3,6 +3,7 @@ from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView
+from django.views.generic.detail import DetailView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
@@ -113,8 +114,12 @@ class PacienteActivedView(UpdateView):
 class MedicoList(ListView):
     model = Medico
     template_name = "seguroprivado/medicos.html"
-    
 
+@method_decorator(login_required, name='dispatch')
+class MedicoDetail(DetailView):
+    model = Medico
+    template_name = "seguroprivado/datos_medico.html"
+    
 @method_decorator(login_required, name='dispatch')
 class MedicoCreate(CreateView):
     model = Medico
