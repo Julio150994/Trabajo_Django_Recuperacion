@@ -59,6 +59,15 @@
             </tbody>
         </table>
         {% endif %}
+        <a href="{% url 'inicio' %}" class="btn btn-dark mt-2 mb-3">
+            <span class="fas fa-arrow-left"></span>
+            <span>Volver al menú</span>
+        </a>
     </div>
 </div>
 {% endblock %}
+
+{% block copyright %}
+    {% comment %} Código del copyright {% endcomment %}
+    {% include "login/footer.html" %}
+{% endblock  %}
