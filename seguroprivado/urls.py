@@ -30,7 +30,7 @@ urlpatterns = [
     path('actived/<int:id>/',views.PacienteActivedView.as_view(), name="pacientes"),
     
     path('medicos/',views.MedicoList.as_view(), name="medicos"),
-    path('medico/<int:id>/',views, name="datos_medico"),
+    path('medico/<int:id>/',views.MedicoDetail.as_view(), name="datos_medico"),
     path('aniadir_medico/',views.MedicoCreate.as_view(), name="form_medico"),
     path('eliminar_medico/<int:id>/',views.MedicoDelete.as_view(), name="delete"),
 ]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
