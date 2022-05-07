@@ -18,7 +18,7 @@
 </div>
 {% endif %}
 
-<div class="container-xl bg-light rounded">
+<div class="container-xl mx-auto bg-light rounded pr-4 pl-4 mb-md-2">
     <div class="container-xl mt-3 rounded">
         <a href="{% url 'form_medico' %}" class="btn btn-success">
             <span class="fas fa-user-plus"></span>
@@ -26,7 +26,7 @@
         </a>
     </div>
     
-    <div class="container-xl mx-auto mt-2 bg-light rounded">
+    <div class="container-xl mx-auto bg-light rounded mt-2">
         {% if not medico_list %}
         <div class="alert alert-warning text-center">No se han encontrado médicos</div>
         {% else %}
@@ -44,33 +44,31 @@
                     <th colspan="3">Operaciones</th>
                 </tr>
             </thead>
-            <tbody>
-                <div class="overflow-auto">
-                    {% for medico in medico_list %}
-                    <tr>
-                        <td>{{ medico.nombre }}</td>
-                        <td>{{ medico.apellidos }}</td>
-                        <td>{{ medico.edad }}</td>
-                        <td>{{ medico.fechaalta }}</td>
-                        <td>{{ medico.especialidad }}</td>
-                        <td>{{ medico.username }}</td>
-                        <td>
-                            <a href="{% url 'datos_medico' medico.id %}" class="btn btn-light text-dark">
-                                <span class="fas fa-list"></span>
-                                <span>Dato de médico</span>
-                            </a>
-                            <a href="#" class="btn btn-info">
-                                <span class="fas fa-edit"></span>
-                                <span>Editar</span>
-                            </a>
-                            <button class="btn btn-danger" onclick="eliminar({{ medico.id }})">
-                                <span class="fas fa-trash"></span>
-                                <span>Eliminar</span>
-                            </button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </div>
+            <tbody class="table table-light overflow-auto">
+                {% for medico in medico_list %}
+                <tr>
+                    <td>{{ medico.nombre }}</td>
+                    <td>{{ medico.apellidos }}</td>
+                    <td>{{ medico.edad }}</td>
+                    <td>{{ medico.fechaalta }}</td>
+                    <td>{{ medico.especialidad }}</td>
+                    <td>{{ medico.username }}</td>
+                    <td>
+                        <a href="{% url 'datos_medico' medico.id %}" class="btn btn-light text-dark">
+                            <span class="fas fa-list"></span>
+                            <span>Dato de médico</span>
+                        </a>
+                        <a href="#" class="btn btn-info">
+                            <span class="fas fa-edit"></span>
+                            <span>Editar</span>
+                        </a>
+                        <button class="btn btn-danger" onclick="eliminar({{ medico.id }})">
+                            <span class="fas fa-trash"></span>
+                            <span>Eliminar</span>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
         {% endif %}
