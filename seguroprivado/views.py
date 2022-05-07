@@ -102,13 +102,26 @@ class PacienteActivedView(UpdateView):
     model = Paciente
     form_class = PacienteForm
     queryset = Paciente.objects.all()
-    success_url = reverse_lazy('pacientes')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
     def get_object(self, queryset=None):
         return Paciente.objects.get(id=self.kwargs.get("id"))
+    
+    def form_valid(self, form):
+        paciente = form['paciente'].save(commit=True)
+        
+        if paciente.activo == False:
+            paciente.activo = True
+            messages.success(self.request,"Paciente "+str(paciente.username)+" activado correctamente.")
+        else:
+            paciente.activo = False
+            messages.success(self.request,"Paciente "+str(paciente.username)+" desactivado correctamente.")
+        
+        paciente.password = make_password(paciente.password)# mantenemos la contraseña encriptada
+        paciente.save()
+        return HttpResponseRedirect('pacientes')
 
   
 @method_decorator(login_required, name='dispatch')
