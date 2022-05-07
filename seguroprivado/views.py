@@ -97,7 +97,8 @@ class EditarPerfilView(UpdateView):
 class PacienteList(ListView):
     model = Paciente
     template_name = "seguroprivado/pacientes.html"
-    
+
+@method_decorator(login_required, name='dispatch')
 class PacienteActived(UpdateView):
     model = Paciente
     fields = ['activo']
