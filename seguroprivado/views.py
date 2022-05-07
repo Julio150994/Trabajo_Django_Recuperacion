@@ -114,12 +114,12 @@ class PacienteActivedView(UpdateView):
         
         if paciente.activo == False:
             paciente.activo = True
-            messages.success(self.request,"Paciente "+str(paciente.username)+" activado correctamente.")
+            messages.add_message(self.request,level=messages.INFO, message="Paciente "+str(paciente.username)+" activado corretamente")
         else:
             paciente.activo = False
-            messages.success(self.request,"Paciente "+str(paciente.username)+" desactivado correctamente.")
+            messages.add_message(self.request,level=messages.WARNING, message="Paciente "+str(paciente.username)+" desactivado corretamente")
         
-        paciente.password = make_password(paciente.password)# mantenemos la contraseña encriptada
+        paciente.password = make_password(paciente.password) # mantenemos la contraseña encriptada
         paciente.save()
         return HttpResponseRedirect('pacientes')
 

@@ -5,23 +5,16 @@
 
 {% block lista_pacientes %}
 
-{% for paciente in paciente_list %}
-    {% for actived in messages %}
-    <div class="alert alert-info mx-auto justify-content-center align-items-center mt-2">
-        {{ actived }}
+{# Mostrar mensajes de que se ha activado o desactivado a pacientes #}
+{% if messages %}
+    {% for paciente in messages %}
+    {% if paciente.tags %}
+    <div class="container-xl alert alert-{{ paciente.tags }} mx-auto mt-auto text-center">
+        {{ paciente }}
     </div>
-    {% endfor %}
-
-{% if paciente.activo == True %}
-        
-    {% else %}
-        {% for deactived in messages %}
-        <div class="alert alert-warning mx-auto text-center justify-content-center align-items-center mt-2">
-            {{ deactived }}
-        </div>
-        {% endfor %}
     {% endif %}
-{% endfor %}
+    {% endfor %}
+{% endif %}
 
 <div class="container-xl mx-auto mt-5 mb-5 bg-light rounded pr-4 pl-4">
     {% if not paciente_list %}
