@@ -27,7 +27,7 @@ urlpatterns = [
     path('perfil_paciente/<int:pk>/', views.EditarPerfilView.as_view(), name="perfil"),
     
     path('pacientes/',views.PacienteList.as_view(), name="pacientes"),
-    path('actived/<int:pk>/',views.PacienteActivedView.as_view(), name="pacientes"),
+    path('actived/<int:pk>/',views.PacienteActived.as_view(), name="pacientes"),
     
     path('medicos/',views.MedicoList.as_view(), name="medicos"),
     path('medico/<int:pk>/',views.MedicoDetail.as_view(), name="datos_medico"),

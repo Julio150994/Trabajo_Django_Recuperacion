@@ -98,32 +98,25 @@ class PacienteList(ListView):
     model = Paciente
     template_name = "seguroprivado/pacientes.html"
     
-@method_decorator(login_required, name='dispatch')
-class PacienteActivedView(UpdateView):
+class PacienteActived(UpdateView):
     model = Paciente
-    form_class = PacienteForm
+    fields = ['activo']
     queryset = Paciente.objects.all()
-    
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-    
-    def get_object(self, queryset=None):
-        return Paciente.objects.get(id=self.kwargs.get("id"))
-    
-    def form_valid(self, form):
-        paciente = form['paciente'].save(commit=True)
+    success_url = reverse_lazy('pacientes')
+       
+    def get_context_data(self, **kwargs):
+        # Recogemos el objeto de paciente #
+        paciente = self.object
         
+        # Activamos o desactivamos paciente #
         if paciente.activo == False:
             paciente.activo = True
-            messages.add_message(self.request,level=messages.INFO, message="Paciente "+str(paciente.username)+" activado corretamente")
+            messages.add_message(self.request,level=messages.INFO, message="Paciente "+str(paciente.username)+" activado correctamente")
         else:
             paciente.activo = False
-            messages.add_message(self.request,level=messages.WARNING, message="Paciente "+str(paciente.username)+" desactivado corretamente")
-        
-        paciente.password = make_password(paciente.password) # mantenemos la contraseña encriptada
+            messages.add_message(self.request,level=messages.WARNING, message="Paciente "+str(paciente.username)+" desactivado correctamente")
         paciente.save()
-        return HttpResponseRedirect('pacientes')
-
+        
   
 @method_decorator(login_required, name='dispatch')
 class MedicoList(ListView):
