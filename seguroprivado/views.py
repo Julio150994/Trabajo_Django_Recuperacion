@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
@@ -140,20 +141,33 @@ class MedicoDetail(DetailView):
 class MedicoCreate(CreateView):
     model = Medico
     form_class = MedicoForm
-    template_name = "seguroprivado/form_medico.html"
+    template_name = "login/form_medico.html"
     success_url = reverse_lazy('medicos')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
-    def form_valid(self, form):
+    def form_valid(self, form):        
         medico = form['medico'].save(commit=False)
-        medico.password = make_password(medico.password)
         
-        usuario = User.objects.create(username=medico.username, password=medico.password)
-        medico.usuario = usuario
-        medico.save()
-        messages.add_message(self.request, level=messages.SUCCESS, message="Médico "+str(medico.username)+" añadido correctamente.")
+        anio = str(medico.fechaalta)[0:str(medico.fechaalta).find('-')]# año de alta
+        aux_fecha1 = str(medico.fechaalta)[str(medico.fechaalta).find('-')+1:]
+        mes = aux_fecha1[0:aux_fecha1.find('-')] # mes de alta
+        aux_fecha2 = aux_fecha1[aux_fecha1.find('-')+1:]
+        cad_aux = aux_fecha2[0:aux_fecha2.find('-')]
+        dia = cad_aux[0:cad_aux.find(' ')]# día de alta
+        
+        fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
+        fecha_alta = datetime(int(anio),int(mes),int(dia))
+        
+        if fecha_alta <= fecha_actual:
+            medico.password = make_password(medico.password)
+            
+            usuario = User.objects.create(username=medico.username, password=medico.password)
+            medico.usuario = usuario
+            medico.save()
+            messages.add_message(self.request, level=messages.SUCCESS, message="Médico "+str(medico.username)+" añadido correctamente.")
+            return HttpResponseRedirect('medicos')
    
 @method_decorator(login_required, name='dispatch')
 class MedicoDelete(DeleteView):

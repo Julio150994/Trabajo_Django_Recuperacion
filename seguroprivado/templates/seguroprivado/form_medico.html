@@ -4,11 +4,11 @@
 {% block title %} Formulario de Médicos {% endblock  %}
 
 {% block form_medico %}
-<div class="rounded p-5 bg-light col-3 row m-0 justify-content-center align-items-center">
+<div class="rounded bg-light col-3 row m-0 justify-content-center align-items-center" id="formulario">
   
-  <span class="navbar-brand text-primary mb-3">Añadir Médico</span>
+  <span class="navbar-brand text-primary m-3">Añadir Médico</span>
   
-  <form action="{% url 'form_medico' %}" method="POST">
+  <form action="{% url 'form_medico' %}" method="POST" id="data_medico">
     {% csrf_token %}
 
     <span class="text-primary" id="dato">Nombre</span>
@@ -44,7 +44,7 @@
     <span class="text-primary" id="dato">Fecha de alta</span>
     <div class="input-group input-navbar mb-2" id="medico">
       <div class="input-group-prepend row">
-        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-house-user"></span></span>
+        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-calendar-day"></span></span>
       </div>
       {{ form.fechaalta }}
     </div>
@@ -54,7 +54,7 @@
 
     <div class="input-group input-navbar mb-2" id="medico">
       <div class="input-group-prepend row">
-        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-image"></span></span>
+        <span class="input-group-text" id="icon-addon1"><span class="fas fa-list"></span></span>
       </div>
       {{ form.especialidad }}
     </div>
@@ -64,7 +64,7 @@
 
     <div class="input-group input-navbar mb-2" id="medico">
       <div class="input-group-prepend row">
-        <span class="input-group-text" id="icon-addon1"><span class="fas fa-user"></span></span>
+        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-user"></span></span>
       </div>
       {{ form.username }}
     </div>
