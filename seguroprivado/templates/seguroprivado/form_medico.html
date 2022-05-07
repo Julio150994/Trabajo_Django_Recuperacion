@@ -4,10 +4,12 @@
 {% block title %} Formulario de Médicos {% endblock  %}
 
 {% block form_medico %}
-<form action="{% url 'form_medico' %}" method="POST" enctype="multipart/form-data">
+<div class="rounded p-5 bg-light col-3 row m-0 justify-content-center align-items-center">
+  
+  <span class="navbar-brand text-primary mb-3">Añadir Médico</span>
+  
+  <form action="{% url 'form_medico' %}" method="POST">
     {% csrf_token %}
-
-    <span class="navbar-brand text-primary mb-3">Añadir Médico</span>
 
     <span class="text-primary" id="dato">Nombre</span>
 
@@ -84,8 +86,9 @@
     </a>
 
     <button class="row btn btn-primary btn-block text-center">
-        <span class="fas fa-user-plus"></span>
-        <span class="navbar-toggler-icon">Añadir</span>
+      <span class="fas fa-user-plus"></span>
+      <span class="navbar-toggler-icon">Añadir</span>
     </button>
   </form>
+</div>
 {% endblock %}

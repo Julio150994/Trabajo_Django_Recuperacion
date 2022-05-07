@@ -141,10 +141,19 @@ class MedicoCreate(CreateView):
     model = Medico
     form_class = MedicoForm
     template_name = "seguroprivado/form_medico.html"
+    success_url = reverse_lazy('medicos')
     
-    def get_success_url(self):
-        return reverse_lazy('medicos')+"?added"
-
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        medico = form['medico'].save(commit=False)
+        medico.password = make_password(medico.password)
+        
+        usuario = User.objects.create(username=medico.username, password=medico.password)
+        medico.usuario = usuario
+        medico.save()
+        messages.add_message(self.request, level=messages.SUCCESS, message="Médico "+str(medico.username)+" añadido correctamente.")
    
 @method_decorator(login_required, name='dispatch')
 class MedicoDelete(DeleteView):

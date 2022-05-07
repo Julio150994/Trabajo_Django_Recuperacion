@@ -5,11 +5,15 @@
 
 {% block lista_medicos %}
 
-
-{% if 'added' in request.GET %}
-<div class="container-fluid alert alert-success mx-auto justify-content-center align-content-center">
-    Médico {{ medico.username }} añadido correctamente
-</div>
+{# Mensajes para el CRUD de médicos #}
+{% if messages %}
+    {% for medico in messages %}
+        {% if medico.tags %}
+        <div class="container-xl alert alert-{{ medico.tags }} mx-auto mt-auto text-center">
+            {{ medico }}
+        </div>
+        {% endif %}
+    {% endfor %}
 {% endif %}
 
 {% if 'deleted' in request.GET %}
