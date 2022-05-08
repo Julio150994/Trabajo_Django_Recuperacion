@@ -84,20 +84,14 @@ class MedicoForm(forms.ModelForm):
             (5,'traumatólogo')
         )
         
-        """aux_especialidades = list()
-        
-        for especialidad in especialidades:
-            aux_especialidades.append(especialidad[1])"""
-        
         widgets = {
-            'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba un nombre'}),
-            'apellidos': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba unos apellidos'}),
-            'edad': forms.NumberInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba una edad'}),
-            'fechaalta': forms.DateInput(format = ('%d/%m/%Y'), attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Fecha de alta', 'type':'date'}),
-            'especialidad': forms.Select(choices=especialidades ,attrs={'class':'form-control form-control-sm row mx-auto'}),
-            'username': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba nombre de usuario'}),
-            'password': forms.PasswordInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba una contraseña'})
-            #render_value=True <---- para visualizar cualquier dato en editar datos# 
+            'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba un nombre', 'required':'required'}),
+            'apellidos': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba unos apellidos', 'required':'required'}),
+            'edad': forms.NumberInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba una edad', 'required':'required'}),
+            'fechaalta': forms.DateInput(format = ('%d/%m/%Y'), attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Fecha de alta', 'type':'date', 'required':'required'}),
+            'especialidad': forms.Select(choices=especialidades ,attrs={'class':'form-control form-control-sm row mx-auto', 'required':'required'}),
+            'username': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba nombre de usuario', 'required':'required'}),
+            'password': forms.PasswordInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba una contraseña', 'required':'required'}) 
         }
         
         error_messages = {
