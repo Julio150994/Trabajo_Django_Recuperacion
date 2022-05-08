@@ -179,7 +179,19 @@ class MedicoCreate(CreateView):
 @method_decorator(login_required, name='dispatch')
 class MedicoDelete(DeleteView):
     model = Medico
+    queryset = Medico.objects.all()
+    success_url = reverse_lazy('medicos')
     
-    def get_success_url(self):
-        return reverse_lazy('medicos')+"?deleted"
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
     
+    def post(self, request, *args, **kwargs):
+        if request.method == "POST":
+            medico = Medico.objects.filter(pk=self.kwargs.get("id"))
+            medico.delete()
+            
+            usuario = User.objects.get(username=medico.username)
+            usuario.delete()
+            messages.add_message(request,level=messages.ERROR, message="Médico eliminado correctamente")
+            
+            return super().delete(request, *args, **kwargs)
