@@ -175,6 +175,14 @@ class MedicoCreate(CreateView):
                 else:
                     messages.add_message(request,level=messages.WARNING, message="La fecha de alta es errónea.")
                     return redirect('form_medico')
+                
+
+@method_decorator(login_required, name='dispatch')
+class MedicoUpdate(UpdateView):
+    model = Medico
+    form_class = MedicoForm
+    template_name = "login/form_medico.html"
+    success_url = reverse_lazy('medicos')
 
 @method_decorator(login_required, name='dispatch')
 class MedicoDelete(DeleteView):
