@@ -180,10 +180,12 @@ class MedicoCreate(CreateView):
 class MedicoDelete(DeleteView):
     model = Medico
     queryset = Medico.objects.all()
-    success_url = reverse_lazy('medicos')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+    
+    def get_success_url(self):
+        return reverse_lazy('medicos')
     
     def post(self, request, *args, **kwargs):
         if request.method == "POST":
@@ -193,5 +195,3 @@ class MedicoDelete(DeleteView):
             usuario = User.objects.get(username=medico.username)
             usuario.delete()
             messages.add_message(request,level=messages.ERROR, message="Médico eliminado correctamente")
-            
-            return super().delete(request, *args, **kwargs)
