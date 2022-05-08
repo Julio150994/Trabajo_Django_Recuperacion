@@ -141,28 +141,41 @@ class MedicoCreate(CreateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
-    def form_valid(self, form):        
-        medico = form['medico'].save(commit=False)
-        
-        anio = str(medico.fechaalta)[0:str(medico.fechaalta).find('-')]# año de alta
-        aux_fecha1 = str(medico.fechaalta)[str(medico.fechaalta).find('-')+1:]
-        mes = aux_fecha1[0:aux_fecha1.find('-')] # mes de alta
-        aux_fecha2 = aux_fecha1[aux_fecha1.find('-')+1:]
-        cad_aux = aux_fecha2[0:aux_fecha2.find('-')]
-        dia = cad_aux[0:cad_aux.find(' ')]# día de alta
-        
-        fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
-        fecha_alta = datetime(int(anio),int(mes),int(dia))
-        
-        if fecha_alta <= fecha_actual:
-            medico.password = make_password(medico.password)
+    def post(self, request, *args, **kwargs):
+        if request.method == "POST":
+            nombre = request.POST.get('nombre')
+            apellidos = request.POST.get('apellidos')
+            edad = request.POST.get('edad')
+            fechaalta = request.POST.get('fechaalta')
+            especialidad = request.POST.get('especialidad')
+            username = request.POST.get('username')
+            password = request.POST.get('password')
             
-            usuario = User.objects.create(username=medico.username, password=medico.password)
-            medico.usuario = usuario
-            medico.save()
-            messages.add_message(self.request, level=messages.SUCCESS, message="Médico "+str(medico.username)+" añadido correctamente.")
-            return HttpResponseRedirect('medicos')
-   
+            # Validamos correctamente la fecha de alta si los datos no son nulos
+            if nombre is not None or apellidos is not None or edad is not None or fechaalta is not None or especialidad is not None or username is not None or password is not None:
+                anio = str(fechaalta)[0:str(fechaalta).find('-')]# año de alta
+                aux_fecha1 = str(fechaalta)[str(fechaalta).find('-')+1:]
+                mes = aux_fecha1[0:aux_fecha1.find('-')] # mes de alta
+                aux_fecha2 = aux_fecha1[aux_fecha1.find('-')+1:]
+                cad_aux = aux_fecha2[0:aux_fecha2.find('-')]
+                dia = cad_aux[0:cad_aux.find(' ')]# día de alta
+            
+                fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
+                fecha_alta = datetime(int(anio),int(mes),int(dia))
+                
+                if fecha_alta <= fecha_actual:
+                    set_medico = Medico(nombre=nombre, apellidos=apellidos, edad=edad, fechaalta=fechaalta, especialidad=especialidad, username=username, password=password)
+                    set_medico.password = make_password(set_medico.password)
+                    set_medico.save()
+                
+                    # Creamos un usuario médico para iniciar sesión posteriormente
+                    User.objects.create(username=username, password=set_medico.password)
+                    messages.add_message(request,level=messages.SUCCESS, message="Médico "+str(username)+" añadido correctamente")
+                    return redirect('medicos')
+                else:
+                    messages.add_message(request,level=messages.WARNING, message="La fecha de alta es errónea.")
+                    return redirect('form_medico')
+
 @method_decorator(login_required, name='dispatch')
 class MedicoDelete(DeleteView):
     model = Medico
