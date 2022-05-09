@@ -9,14 +9,14 @@
 {% if messages %}
     {% for paciente in messages %}
     {% if paciente.tags %}
-    <div class="container-xl alert alert-{{ paciente.tags }} mx-auto mt-auto text-center">
+    <div class="container-fluid alert alert-{{ paciente.tags }} mx-auto mt-auto text-center">
         {{ paciente }}
     </div>
     {% endif %}
     {% endfor %}
 {% endif %}
 
-<div class="container-xxl mx-auto bg-light rounded pr-5 pl-5 mb-md-2">
+<div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mb-md-2">
     {% if not paciente_list %}
     <div class="alert alert-warning text-center">No se han encontrado pacientes</div>
     {% else %}
