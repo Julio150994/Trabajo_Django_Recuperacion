@@ -17,7 +17,7 @@
 {% endif %}
 
 
-<div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mb-md-2 mt-5">
+<div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4">
     <div class="container-xl mt-3 ml-4 rounded">
         <a href="{% url 'form_medico' %}" class="btn btn-success">
             <span class="fas fa-user-plus"></span>
@@ -31,7 +31,7 @@
         {% else %}
         <h1 class="text-primary text-center mb-4 p-md-3">Lista de Médicos</h1>
         {# Contenedor para poner un scroll a la tabla #}
-        <div class="container-fluid" style="max-height: 130px; overflow: auto; display: inline-block;">
+        <div class="container-fluid" style="max-height: 200px; overflow: auto; display: inline-block;">
             <table class="table table-bordered text-center">
                 <thead class="table table-dark text-white">
                     <tr>
@@ -77,7 +77,7 @@
             </table>
         </div>
         {% endif %}
-        <a href="{% url 'inicio' %}" class="btn btn-dark mt-5 mb-3 ml-3">
+        <a href="{% url 'inicio' %}" class="btn btn-dark mt-2 mb-3 ml-3">
             <span class="fas fa-arrow-left"></span>
             <span>Volver al menú</span>
         </a>
