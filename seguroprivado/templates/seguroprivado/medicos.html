@@ -9,7 +9,7 @@
 {% if messages %}
     {% for medico in messages %}
         {% if medico.tags %}
-        <div class="container-xl alert alert-{{ medico.tags }} mx-auto mt-auto text-center">
+        <div class="container-fluid alert alert-{{ medico.tags }} mx-auto mt-auto text-center">
             {{ medico }}
         </div>
         {% endif %}
@@ -17,7 +17,7 @@
 {% endif %}
 
 
-<div class="container-xxl mx-auto bg-light rounded pr-4 pl-4 mb-5">
+<div class="container-fluid mx-auto bg-light rounded pr-4 pl-4 mb-5">
     <div class="container-xl mt-3 ml-4 rounded">
         <a href="{% url 'form_medico' %}" class="btn btn-success">
             <span class="fas fa-user-plus"></span>
