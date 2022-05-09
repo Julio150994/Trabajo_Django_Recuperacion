@@ -18,7 +18,7 @@
 
 
 <div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4">
-    <div class="container-xl mt-3 ml-4 rounded">
+    <div class="container-fluid mt-3 ml-4 p-1 rounded">
         <a href="{% url 'form_medico' %}" class="btn btn-success">
             <span class="fas fa-user-plus"></span>
             <span>Añadir médico</span>
@@ -66,10 +66,10 @@
                             </a>
                         </td>
                         <td>
-                            <button class="btn btn-danger" onclick="eliminar({{ medico.id }})">
+                            <a href="{% url 'eliminar_medico' medico.id %}" class="btn btn-danger">
                                 <span class="fas fa-trash"></span>
                                 <span>Eliminar</span>
-                            </button>
+                            </a>
                         </td>
                     </tr>
                     {% endfor %}

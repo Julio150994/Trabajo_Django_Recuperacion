@@ -181,18 +181,15 @@ class MedicoUpdate(LoginRequiredMixin, UpdateView):
 class MedicoDelete(LoginRequiredMixin, DeleteView):
     model = Medico
     queryset = Medico.objects.all()
+    success_url = reverse_lazy('medicos')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
-    def get_success_url(self):
-        return reverse_lazy('medicos')
-    
-    def post(self, request, *args, **kwargs):
-        if request.method == "POST":
-            medico = Medico.objects.filter(pk=self.kwargs.get("id"))
-            medico.delete()
+    def get_context_data(self, **kwargs):
+        medico = self.get_object()
+        medico.delete()
             
-            usuario = User.objects.get(username=medico.username)
-            usuario.delete()
-            messages.add_message(request,level=messages.ERROR, message="Médico eliminado correctamente")
+        usuario = User.objects.get(username=medico.username)
+        usuario.delete()
+        messages.add_message(self.request,level=messages.SUCCESS, message="Médico "+str(medico.username)+" eliminado correctamente")
