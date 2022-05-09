@@ -6,6 +6,9 @@ from django.contrib import messages
 from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.views import LoginView
+#Evitamos que cualquier usuario, sin estar logueado, acceda al sistema
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -71,7 +74,7 @@ class LoginSegPrivadoView(LoginView):
             return HttpResponseRedirect('login')
 
 @method_decorator(login_required, name='dispatch')      
-class LogoutView(RedirectView):
+class LogoutView(LoginRequiredMixin, RedirectView):
     pattern_name = 'login'
     
     def dispatch(self, request, *args, **kwargs):
@@ -80,7 +83,7 @@ class LogoutView(RedirectView):
         return super().dispatch(request, *args, **kwargs)
 
 @method_decorator(login_required, name='dispatch')
-class EditarPerfilView(UpdateView):
+class EditarPerfilView(LoginRequiredMixin, UpdateView):
     model = Paciente
     form_class = PacienteForm
     template_name = "seguroprivado/perfil_paciente.html"
@@ -94,12 +97,12 @@ class EditarPerfilView(UpdateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class PacienteList(ListView):
+class PacienteList(LoginRequiredMixin, ListView):
     model = Paciente
     template_name = "seguroprivado/pacientes.html"
 
 @method_decorator(login_required, name='dispatch')
-class PacienteActived(UpdateView):
+class PacienteActived(LoginRequiredMixin, UpdateView):
     model = Paciente
     fields = ['activo']
     queryset = Paciente.objects.all()
@@ -120,19 +123,19 @@ class PacienteActived(UpdateView):
         
   
 @method_decorator(login_required, name='dispatch')
-class MedicoList(ListView):
+class MedicoList(LoginRequiredMixin, ListView):
     model = Medico
     template_name = "seguroprivado/medicos.html"
 
 
 @method_decorator(login_required, name='dispatch')
-class MedicoDetail(DetailView):
+class MedicoDetail(LoginRequiredMixin, DetailView):
     model = Medico
     template_name = "seguroprivado/datos_medico.html"
 
     
 @method_decorator(login_required, name='dispatch')
-class MedicoCreate(CreateView):
+class MedicoCreate(LoginRequiredMixin, CreateView):
     model = Medico
     form_class = MedicoForm
     template_name = "login/form_medico.html"
@@ -178,14 +181,14 @@ class MedicoCreate(CreateView):
                 
 
 @method_decorator(login_required, name='dispatch')
-class MedicoUpdate(UpdateView):
+class MedicoUpdate(LoginRequiredMixin, UpdateView):
     model = Medico
     form_class = MedicoForm
     template_name = "login/form_medico.html"
     success_url = reverse_lazy('medicos')
 
 @method_decorator(login_required, name='dispatch')
-class MedicoDelete(DeleteView):
+class MedicoDelete(LoginRequiredMixin, DeleteView):
     model = Medico
     queryset = Medico.objects.all()
     
