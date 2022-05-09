@@ -176,7 +176,45 @@ class MedicoUpdate(LoginRequiredMixin, UpdateView):
     form_class = MedicoForm
     template_name = "login/form_medico.html"
     success_url = reverse_lazy('medicos')
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        get_medico = self.get_object()# nos ayuda a obtener el id del médico a editar
+        datos_medico = Medico.objects.get(pk=get_medico.id)
+        medico = MedicoForm(request.POST, instance=datos_medico)
+        
+        if medico.is_valid():
+            nombre = request.POST.get('nombre')
+            apellidos = request.POST.get('apellidos')
+            edad = request.POST.get('edad')
+            fechaalta = request.POST.get('fechaalta')
+            especialidad = request.POST.get('especialidad')
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+
+            # Validación de la fecha de alta
+            fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
+            fecha_alta = datetime.strptime(fechaalta, '%Y-%m-%d')
+            
+            if fecha_alta <= fecha_actual:
+                medico = Medico(nombre=nombre, apellidos=apellidos, edad=edad, fechaalta=fechaalta, especialidad=especialidad, username=username, password=password)
+                medico.password = make_password(medico.password)# para encriptar nuestra contraseña
+                medico.save()
+
+                # Editamos el usuario autogenerado
+                usuario = User.objects.get(username=username)
+                usuario.set_username(username)
+                usuario.set_password(medico.password)
+                usuario.save()
+                
+                messages.add_message(request,level=messages.INFO, message="Médico "+str(get_medico.username)+" editado correctamente.")
+            else:
+                messages.add_message(request,level=messages.WARNING, message="La fecha de alta es errónea.")
+                return redirect('editar_medico/'+str(get_medico.id)+'/')
+        
+    
 @method_decorator(login_required, name='dispatch')
 class MedicoDelete(LoginRequiredMixin, DeleteView):
     model = Medico

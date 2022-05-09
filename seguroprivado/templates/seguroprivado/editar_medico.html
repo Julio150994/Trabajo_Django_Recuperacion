@@ -1,14 +1,14 @@
 {# Extendido de registro.html #}
 {% extends 'seguroprivado/registro.html' %}
 
-{% block title %} Formulario de Médicos {% endblock  %}
+{% block title %} Formulario de Médicos {% endblock %}
 
-{% block form_medico %}
+{% block editar_medico %}
 <div class="rounded bg-light col-3 row m-0 justify-content-center align-items-center" id="formulario">
   
-  <span class="navbar-brand text-primary m-3">Añadir Médico</span>
+  <span class="navbar-brand text-info m-3">Editar Médico</span>
   
-  <form action="{% url 'form_medico' medico.id %}" method="POST" id="data_medico">
+  <form action="{% url 'editar_medico' medico.id %}" method="POST" id="data_medico">
     {% csrf_token %}
 
     <span class="text-primary" id="dato">Nombre</span>
