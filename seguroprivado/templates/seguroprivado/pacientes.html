@@ -5,7 +5,7 @@
 
 {% block lista_pacientes %}
 
-{# Mostrar mensajes de que se ha activado o desactivado a pacientes #}
+{# Mensajes para indicar que el paciente se ha activado o desactivado #}
 {% if messages %}
     {% for paciente in messages %}
     {% if paciente.tags %}
@@ -16,54 +16,54 @@
     {% endfor %}
 {% endif %}
 
-<div class="container-xl mx-auto mt-5 mb-5 bg-light rounded pr-4 pl-4">
+<div class="container-xxl mx-auto bg-light rounded pr-5 pl-5 mb-md-2">
     {% if not paciente_list %}
     <div class="alert alert-warning text-center">No se han encontrado pacientes</div>
     {% else %}
     <h1 class="text-center text-primary mb-4 p-md-3">Lista de Pacientes</h1>
 
-    <table class="table table-bordered text-center">
-        <thead class="table table-dark text-white">
-            <tr>
-                <th>Nombre</th>
-                <th>Apellidos</th>
-                <th>Edad</th>
-                <th>Dirección</th>
-                <th>Foto</th>
-                <th>Nombre de usuario</th>
-                <th>Operaciones</th>
-            </tr>
-        </thead>
-        <tbody class="table table-light">
-            <div class="overflow-auto">
-            {% for paciente in paciente_list %}
+    <div class="container-fluid" style="max-height: 250px; overflow: auto; display: inline-block;">
+        <table class="table table-bordered text-center">
+            <thead class="table table-dark text-white">
                 <tr>
-                    <td>{{ paciente.nombre }}</td>
-                    <td>{{ paciente.apellidos }}</td>
-                    <td>{{ paciente.edad }}</td>
-                    <td>{{ paciente.direccion }}</td>
-                    <td><img src="{{ paciente.foto.url }}" class="img-circle" width="80" height="80"></td>
-                    <td>{{ paciente.username }}</td>
-                    <td>
-                        {% if paciente.activo == False %}
-                        <a href="{% url 'pacientes' paciente.id %}" class="btn btn-primary text-white">
-                            <span class="fas fa-toggle-off"></span>
-                            <span>Activar</span>
-                        </a>
-                        {% else %}
-                        <a href="{% url 'pacientes' paciente.id %}" class="btn btn-warning text-white">
-                            <span class="fas fa-toggle-on"></span>
-                            <span>Desactivar</span>
-                        </a>
-                        {% endif %}
-                    </td>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Edad</th>
+                    <th>Dirección</th>
+                    <th>Foto</th>
+                    <th>Nombre de usuario</th>
+                    <th>Operaciones</th>
                 </tr>
-            {% endfor %}
-            </div>
-        </tbody>
-    </table>
+            </thead>
+            <tbody class="table table-light">
+                {% for paciente in paciente_list %}
+                    <tr>
+                        <td>{{ paciente.nombre }}</td>
+                        <td>{{ paciente.apellidos }}</td>
+                        <td>{{ paciente.edad }}</td>
+                        <td>{{ paciente.direccion }}</td>
+                        <td><img src="{{ paciente.foto.url }}" class="img-circle" width="80" height="80"></td>
+                        <td>{{ paciente.username }}</td>
+                        <td>
+                            {% if paciente.activo == False %}
+                            <a href="{% url 'pacientes' paciente.id %}" class="btn btn-primary text-white">
+                                <span class="fas fa-toggle-off"></span>
+                                <span>Activar</span>
+                            </a>
+                            {% else %}
+                            <a href="{% url 'pacientes' paciente.id %}" class="btn btn-warning text-white">
+                                <span class="fas fa-toggle-on"></span>
+                                <span>Desactivar</span>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% endif %}
-    <a href="{% url 'inicio' %}" class="btn btn-dark mt-2 mb-3">
+    <a href="{% url 'inicio' %}" class="btn btn-dark mt-3 mb-4 mr-5 m-3">
         <span class="fas fa-arrow-left"></span>
         <span>Volver al menú</span>
     </a>
