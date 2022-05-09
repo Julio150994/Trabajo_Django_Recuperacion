@@ -1,19 +1,17 @@
-function eliminar() {
+function eliminar(id) {
     Swal.fire({
         title: 'Mensaje de Salesin',
         text: "¿Desea eliminar este médico?",
-        icon: 'warning',
+        icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#076BCA',
-        cancelButtonColor: '#C62D00',
+        confirmButtonColor: '#178ABC',
+        cancelButtonColor: '#B91308',
         confirmButtonText: 'Sí',
         cancelButtonText: 'No',
     }).then((medico) => {
         if (medico.isConfirmed) {
-            // Al confimar la eliminación del médico
             window.location = '/eliminar_medico/' + id;
         } else {
-            // Al cancelar dicha eliminación
             window.location = '/medicos/';
         }
     });
