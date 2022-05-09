@@ -6,7 +6,6 @@ from django.contrib import messages
 from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.views import LoginView
-#Evitamos que cualquier usuario, sin estar logueado, acceda al sistema
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.contrib.auth import logout
