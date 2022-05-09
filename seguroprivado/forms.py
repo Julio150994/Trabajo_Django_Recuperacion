@@ -7,6 +7,7 @@ class PacienteForm(forms.ModelForm):
     class Meta:
         model = Paciente
         fields = '__all__'
+        exclude = ['activo']
         
         help_texts = {
             'nombre': 'Debe escribir un nombre y que tenga un máximo de 30 caracteres.',
@@ -76,12 +77,18 @@ class MedicoForm(forms.ModelForm):
             'password': 'Debe escribir una contraseña y que tenga un mínimo de 8 caracteres y un máximo de 30 caracteres.'
         }
         
+        FA = 'familia'
+        DI = 'digestivo'
+        NE = 'neurólogo'
+        DE = 'dermatólogo'
+        TR = 'traumatólogo'
+        
         especialidades = (
-            (1,'familia'),
-            (2,'digestivo'),
-            (3,'neurólogo'),
-            (4,'dermatólogo'),
-            (5,'traumatólogo')
+            (FA,'familia'),
+            (DI,'digestivo'),
+            (NE,'neurólogo'),
+            (DE,'dermatólogo'),
+            (TR,'traumatólogo')
         )
         
         widgets = {
