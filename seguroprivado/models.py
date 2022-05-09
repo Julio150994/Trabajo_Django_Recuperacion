@@ -9,14 +9,20 @@ class Medico(models.Model):
     edad = models.IntegerField(null=False, blank=False, verbose_name="Edad")
     fechaalta = models.DateField(null=False, blank=False, verbose_name="Fecha de alta")
     
+    FA = 'familia'
+    DI = 'digestivo'
+    NE = 'neurólogo'
+    DE = 'dermatólogo'
+    TR = 'traumatólogo'
+    
     especialidades = (
-        (1,'familia'),
-        (2,'digestivo'),
-        (3,'neurólogo'),
-        (4,'dermatólogo'),
-        (5,'traumatólogo'),
+        (FA,'familia'),
+        (DI,'digestivo'),
+        (NE,'neurólogo'),
+        (DE,'dermatólogo'),
+        (TR,'traumatólogo')
     )    
-    especialidad = models.CharField(max_length=40, null=False, blank=False, choices=especialidades, verbose_name="Especialidad")
+    especialidad = models.CharField(max_length=40, null=False, blank=False, choices=especialidades, default=FA, verbose_name="Especialidad")
     username = models.CharField(max_length=30, unique=True, null=False, blank=False, verbose_name="Nombre de usuario")
     password = models.CharField(max_length=30, null=False, blank=False, verbose_name="Contraseña")
 
@@ -33,12 +39,14 @@ class Medicamento(models.Model):
     nombre = models.CharField(max_length=50, null=False, blank=False, verbose_name="Nombre")
     descripcion = models.CharField(max_length=100, null=False, blank=False, verbose_name="Descripción")
     
-    recetas = (
-        (1,'s'),
-        (2,'n'),
-    )
+    CON = 's'
+    SIN = 'n'
     
-    receta = models.CharField(max_length=1, null=False, blank=False, choices=recetas, verbose_name="Receta")
+    recetas = (
+        (CON,'Con receta'),
+        (SIN,'Sin receta'),
+    )
+    receta = models.CharField(null=False, blank=False, choices=recetas, default=CON, verbose_name="Receta")
     precio = models.FloatField(null=False, blank=False, verbose_name="Precio")
     stock = models.IntegerField(null=False, blank=False, verbose_name="Stock")
     
