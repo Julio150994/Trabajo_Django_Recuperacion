@@ -18,7 +18,7 @@
 
 
 <div class="container-xxl mx-auto bg-light rounded pr-4 pl-4 mb-5">
-    <div class="container-xl mt-3 rounded">
+    <div class="container-xl mt-3 ml-4 rounded">
         <a href="{% url 'form_medico' %}" class="btn btn-success">
             <span class="fas fa-user-plus"></span>
             <span>Añadir médico</span>
@@ -30,21 +30,21 @@
         <div class="alert alert-warning text-center">No se han encontrado médicos</div>
         {% else %}
         <h1 class="text-primary text-center mb-4 p-md-3">Lista de Médicos</h1>
-    
-        <table class="table table-bordered text-center">
-            <thead class="table table-dark text-white">
-                <tr>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Edad</th>
-                    <th>Fecha de alta</th>
-                    <th>Especialidad</th>
-                    <th>Nombre de usuario</th>
-                    <th colspan="3">Operaciones</th>
-                </tr>
-            </thead>
-            <tbody class="table table-light">
-                <div class="overflow-auto">
+        {# Contenedor para poner un scroll a la tabla #}
+        <div class="container-fluid" style="max-height: 130px; overflow: auto; display: inline-block;">
+            <table class="table table-bordered text-center">
+                <thead class="table table-dark text-white">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Edad</th>
+                        <th>Fecha de alta</th>
+                        <th>Especialidad</th>
+                        <th>Nombre de usuario</th>
+                        <th colspan="3">Operaciones</th>
+                    </tr>
+                </thead>
+                <tbody class="table table-light">
                     {% for medico in medico_list %}
                     <tr>
                         <td>{{ medico.nombre }}</td>
@@ -54,7 +54,7 @@
                         <td>{{ medico.especialidad }}</td>
                         <td>{{ medico.username }}</td>
                         <td>
-                            <a href="{% url 'datos_medico' medico.id %}" class="btn btn-light text-dark">
+                            <a href="{% url 'datos_medico' medico.id %}" class="btn btn-primary">
                                 <span class="fas fa-list"></span>
                                 <span>Datos</span>
                             </a>
@@ -73,11 +73,11 @@
                         </td>
                     </tr>
                     {% endfor %}
-                </div>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
         {% endif %}
-        <a href="{% url 'inicio' %}" class="btn btn-dark mt-2 mb-3">
+        <a href="{% url 'inicio' %}" class="btn btn-dark mt-5 mb-3 ml-3">
             <span class="fas fa-arrow-left"></span>
             <span>Volver al menú</span>
         </a>
