@@ -215,10 +215,13 @@ class MedicoDelete(LoginRequiredMixin, DeleteView):
     queryset = Medico.objects.all()
     success_url = reverse_lazy('medicos')
     
+    def dispatch(self, request, *args, **kwargs):        
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_context_data(self, **kwargs):
-        medico = self.get_object() # eliminamos el médico correspondiente
+        medico = self.get_object()# obtenemos los datos del médico a eliminar
         medico.delete()
-            
+        
         usuario = User.objects.get(username=medico.username)
         usuario.delete()
         messages.add_message(self.request,level=messages.WARNING, message="Médico "+str(medico.username)+" eliminado correctamente")
