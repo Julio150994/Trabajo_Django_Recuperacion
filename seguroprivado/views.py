@@ -169,14 +169,13 @@ class MedicoCreate(LoginRequiredMixin, CreateView):
             else:
                 messages.add_message(request,level=messages.WARNING, message="La fecha de alta es errónea.")
                 return redirect('form_medico')
-                
+
 
 @method_decorator(login_required, name='dispatch')
 class MedicoUpdate(LoginRequiredMixin, UpdateView):
     model = Medico
     form_class = MedicoForm
     template_name = "login/editar_medico.html"
-    success_url = reverse_lazy('medicos')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -190,23 +189,24 @@ class MedicoUpdate(LoginRequiredMixin, UpdateView):
             fechaalta = request.POST.get('fechaalta')
             username = request.POST.get('username')
             password = request.POST.get('password')
-
+            
             # Validación de la fecha de alta
             fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
             fecha_alta = datetime.strptime(fechaalta, '%Y-%m-%d')
             
             if fecha_alta <= fecha_actual:
-                make_password(password)# para encriptar nuestra contraseña
+                medico.password = make_password(password)
                 medico.save()
-
-                # Editamos el usuario autogenerado
-                usuario = User.objects.get(username=username)
-                usuario.save()
+                
+                # Editamos nuestro usuario #
+                usuario = User.objects.get(username=get_medico.username)
+                usuario.delete()
+                User.objects.create(username=username, password=password)
                 messages.add_message(request,level=messages.INFO, message="Médico "+str(username)+" editado correctamente.")
                 return redirect('medicos')
             else:
                 messages.add_message(request,level=messages.WARNING, message="La fecha de alta es errónea.")
-                return redirect('editar_medico/'+str(get_medico.id)+'/')      
+                return redirect('editar_medico/'+str(get_medico.id)+'/')    
     
     
 @method_decorator(login_required, name='dispatch')
