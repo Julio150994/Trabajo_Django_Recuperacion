@@ -72,13 +72,14 @@ class LoginSegPrivadoView(LoginView):
         else:
             return HttpResponseRedirect('login')
 
-@method_decorator(login_required, name='dispatch')      
-class LogoutView(LoginRequiredMixin, RedirectView):
-    pattern_name = 'login'
+@method_decorator(login_required, name='dispatch')
+class LogoutView(RedirectView):
+    pattern_name = 'sign_in'
     
     def dispatch(self, request, *args, **kwargs):
+        username = request.user.username
         logout(request)
-        messages.success(request,"Ha cerrado sesión.")
+        messages.success(request, str(username)+" ha cerrado sesión.")
         return super().dispatch(request, *args, **kwargs)
 
 @method_decorator(login_required, name='dispatch')
