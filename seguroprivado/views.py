@@ -138,7 +138,7 @@ class MedicoDetail(LoginRequiredMixin, DetailView):
 class MedicoCreate(LoginRequiredMixin, CreateView):
     model = Medico
     form_class = MedicoForm
-    template_name = "login/form_medico.html"
+    template_name = "seguroprivado/form_medico.html"
     success_url = reverse_lazy('medicos')
     
     def dispatch(self, request, *args, **kwargs):
@@ -175,7 +175,7 @@ class MedicoCreate(LoginRequiredMixin, CreateView):
 class MedicoUpdate(LoginRequiredMixin, UpdateView):
     model = Medico
     form_class = MedicoForm
-    template_name = "login/editar_medico.html"
+    template_name = "seguroprivado/editar_medico.html"
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
