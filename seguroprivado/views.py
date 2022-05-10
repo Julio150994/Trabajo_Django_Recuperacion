@@ -11,8 +11,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from seguroprivado.decorators import RolAdmin, RolPaciente, RolMedico
 from seguroprivado.models import Paciente, Medico
 from seguroprivado.forms import MedicoForm, PacienteForm
 
@@ -73,6 +74,9 @@ class LoginSegPrivadoView(LoginView):
             return HttpResponseRedirect('login')
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(RolAdmin, name='dispatch')
+@method_decorator(RolMedico, name='dispatch')
+@method_decorator(RolPaciente, name='dispatch')
 class LogoutView(RedirectView):
     pattern_name = 'sign_in'
     
@@ -83,6 +87,7 @@ class LogoutView(RedirectView):
         return super().dispatch(request, *args, **kwargs)
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(RolPaciente, name='dispatch')
 class EditarPerfilView(LoginRequiredMixin, UpdateView):
     model = Paciente
     form_class = PacienteForm
@@ -95,13 +100,14 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('inicio')+'?updated'
 
-
 @method_decorator(login_required, name='dispatch')
+@method_decorator(RolAdmin, name='dispatch')
 class PacienteList(LoginRequiredMixin, ListView):
     model = Paciente
     template_name = "seguroprivado/pacientes.html"
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(RolAdmin, name='dispatch')
 class PacienteActived(LoginRequiredMixin, UpdateView):
     model = Paciente
     fields = ['activo']
@@ -120,21 +126,22 @@ class PacienteActived(LoginRequiredMixin, UpdateView):
             paciente.activo = False
             messages.add_message(self.request,level=messages.WARNING, message="Paciente "+str(paciente.username)+" desactivado correctamente")
         paciente.save()
-        
   
 @method_decorator(login_required, name='dispatch')
+@method_decorator(RolAdmin, name='dispatch')
 class MedicoList(LoginRequiredMixin, ListView):
     model = Medico
     template_name = "seguroprivado/medicos.html"
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(RolAdmin, name='dispatch')
 class MedicoDetail(LoginRequiredMixin, DetailView):
     model = Medico
     template_name = "seguroprivado/datos_medico.html"
 
-    
 @method_decorator(login_required, name='dispatch')
+@method_decorator(RolAdmin, name='dispatch')
 class MedicoCreate(LoginRequiredMixin, CreateView):
     model = Medico
     form_class = MedicoForm
@@ -172,6 +179,7 @@ class MedicoCreate(LoginRequiredMixin, CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(RolAdmin, name='dispatch')
 class MedicoUpdate(LoginRequiredMixin, UpdateView):
     model = Medico
     form_class = MedicoForm
@@ -210,6 +218,7 @@ class MedicoUpdate(LoginRequiredMixin, UpdateView):
     
     
 @method_decorator(login_required, name='dispatch')
+@method_decorator(RolAdmin, name='dispatch')
 class MedicoDelete(LoginRequiredMixin, DeleteView):
     model = Medico
     queryset = Medico.objects.all()
