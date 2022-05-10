@@ -66,10 +66,10 @@
                             </a>
                         </td>
                         <td>
-                            <a href="{% url 'eliminar_medico' medico.id %}" class="btn btn-danger">
+                            <button class="btn btn-danger" onclick="eliminar({{medico.id}})">
                                 <span class="fas fa-trash"></span>
                                 <span>Eliminar</span>
-                            </a>
+                            </button>
                         </td>
                     </tr>
                     {% endfor %}
