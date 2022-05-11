@@ -62,8 +62,14 @@
                   <span>Editar perfil</span>
                 </a>
 
+                {% comment %} Para usuarios logueados como médicos {% endcomment %}
+                {% elif request.user.is_staff %}
+                <a href="#" class="btn btn-primary text-white ml-lg-5">
+                  <span class="fas fa-user"></span>
+                  <span>Botón de médico</span>
+                </a>
+
                 {% else %}
-                
                 {% comment %} Enlaces del administrador {% endcomment %}
                 <a href="{% url 'pacientes' %}" class="btn btn-primary text-white ml-lg-3">
                   <span class="fas fa-users"></span>
@@ -75,6 +81,7 @@
                 </a>
                 {% endif %}
                 
+                {% comment %} Enlace para todos los usuarios {% endcomment %}
                 <a href="{% url 'logout' %}" class="btn btn-info text-white ml-lg-5">
                   <span class="fas fa-sign-out-alt"></span>
                   <span>Logout</span>
