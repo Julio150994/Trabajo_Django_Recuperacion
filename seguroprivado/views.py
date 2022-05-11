@@ -145,7 +145,6 @@ class MedicoCreate(LoginRequiredMixin, CreateView):
     model = Medico
     form_class = MedicoForm
     template_name = "seguroprivado/form_medico.html"
-    success_url = reverse_lazy('medicos')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -175,6 +174,7 @@ class MedicoCreate(LoginRequiredMixin, CreateView):
                 set_medico.save()
                 
                 messages.add_message(request,level=messages.SUCCESS, message="Médico "+str(username)+" añadido correctamente")
+                return redirect('medicos')
             else:
                 messages.add_message(request,level=messages.WARNING, message="La fecha de alta es errónea.")
                 return redirect('form_medico')
