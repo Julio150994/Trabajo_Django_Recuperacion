@@ -112,10 +112,8 @@ class PacienteActived(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('pacientes')
        
     def get_context_data(self, **kwargs):
-        # Recogemos el objeto de paciente #
-        paciente = self.object
+        paciente = self.get_object()# recogemos el objeto de paciente
         
-        # Activamos o desactivamos paciente #
         if paciente.activo == False:
             paciente.activo = True
             messages.add_message(self.request,level=messages.INFO, message="Paciente "+str(paciente.username)+" activado correctamente")
@@ -123,6 +121,14 @@ class PacienteActived(LoginRequiredMixin, UpdateView):
             paciente.activo = False
             messages.add_message(self.request,level=messages.WARNING, message="Paciente "+str(paciente.username)+" desactivado correctamente")
         paciente.save()
+
+    def render_to_response(self, context, **response_kwargs):
+        # Método para redireccionar a la misma página
+        paciente = self.get_object()
+        
+        if paciente is not None:
+            return redirect('pacientes')
+  
   
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
