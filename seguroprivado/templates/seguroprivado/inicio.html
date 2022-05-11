@@ -103,6 +103,16 @@
       Usuario {{ request.user }} logueado correctamente.
     </div>
     {% endif %}
+
+    {% if messages %}
+      {% for login in messages %}
+          {% if login.tags %}
+          <div class="container-fluid alert alert-{{ login.tags }} mx-auto mt-auto text-center">
+              {{ medico }}
+          </div>
+          {% endif %}
+      {% endfor %}
+    {% endif %}
     
     <div class="hero-section">
       <div class="container text-center wow zoomIn">

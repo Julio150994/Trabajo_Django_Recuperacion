@@ -72,17 +72,11 @@
 
         {% comment %} Mensaje de logout del sistema y de credenciales erróneas {% endcomment %}
         {% if messages %}
-          {% for logout in messages %}
-          <div class="input-group input-navbar alert alert-info justify-content-center align-items-center" id="mensaje">
-              {{ logout }}
+          {% for log_message in messages %}
+          <div class="input-group input-navbar alert alert-{{ log_message.tags }} justify-content-center align-items-center" id="mensaje">
+              {{ log_message }}
           </div>
           {% endfor %}
-        {% endif %}
-
-        {% if form.non_field.errors %}
-        <div class="input-group input-navbar alert alert-danger justify-content-center align-items-center" id="mensaje">
-          Credenciales erróneas
-        </div>
         {% endif %}
   
         <a href="{% url 'inicio' %}" class="btn btn-danger btn-block">

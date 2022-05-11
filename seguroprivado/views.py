@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
@@ -53,7 +53,7 @@ class RegistroPacientesView(CreateView):
                 return redirect('registro')
         else:
             return redirect('registro')
-    
+
 class LoginSegPrivadoView(LoginView):
     template_name = "seguroprivado/login.html"
 
@@ -72,6 +72,7 @@ class LoginSegPrivadoView(LoginView):
         else:
             return HttpResponseRedirect('login')
 
+
 # Decoradores para dar permiso a los usuarios
 @method_decorator(login_required, name='dispatch')
 class LogoutView(RedirectView):
@@ -80,7 +81,7 @@ class LogoutView(RedirectView):
     def dispatch(self, request, *args, **kwargs):
         username = request.user.username
         logout(request)
-        messages.success(request, str(username)+" ha cerrado sesión.")
+        messages.info(request, str(username)+" ha cerrado sesión.")
         return super().dispatch(request, *args, **kwargs)
 
 @method_decorator(login_required, name='dispatch')
