@@ -244,3 +244,10 @@ class MedicoDelete(LoginRequiredMixin, DeleteView):
         usuario = User.objects.get(username=medico.username)
         usuario.delete()
         messages.add_message(self.request,level=messages.WARNING, message="Médico "+str(medico.username)+" eliminado correctamente")
+    
+    def render_to_response(self, context, **response_kwargs):
+        # Método para redireccionar a la misma página
+        medico = self.get_object()
+        
+        if medico is not None:
+            return redirect('medicos')
