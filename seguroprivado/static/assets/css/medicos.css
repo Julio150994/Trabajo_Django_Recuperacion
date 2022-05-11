@@ -1,0 +1,22 @@
+/* Formulario de médico (para añadir y editar) */
+
+#data_medico {
+    margin-left: 2.6em;
+    padding-left: -18em;
+}
+
+#formulario {
+    margin-left: 1em;
+    padding-top: 1%;
+    padding-bottom: 2%;
+    padding-left: 3.6%;
+    padding-right: 3.6%;
+}
+
+#dato {
+    margin-left: -2.6em;
+}
+
+#medico {
+    margin-left: -1.8em;
+}
