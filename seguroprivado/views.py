@@ -40,17 +40,15 @@ class RegistroPacientesView(CreateView):
         password = request.POST.get('password')
         
         if request.method == "POST":
-            if nombre is not None or apellidos is not None or edad is not None or direccion is not None or foto is not None or username is not None or password is not None:
-                # Activamos el usuario con el usuario administrador automáticamente
-                set_paciente = Paciente(nombre=nombre, apellidos=apellidos, edad=edad, direccion=direccion, foto=foto, activo=True, username=username, password=password)
-                set_paciente.password = make_password(set_paciente.password)
-                set_paciente.save()
-                
-                User.objects.create(username=username, password=set_paciente.password)
-                return redirect(reverse('login')+"?registered")
-            else:
-                return redirect('registro')
+            # Activamos el usuario con el usuario administrador automáticamente
+            set_paciente = Paciente(nombre=nombre, apellidos=apellidos, edad=edad, direccion=direccion, foto=foto, activo=True, username=username, password=password)
+            set_paciente.password = make_password(set_paciente.password)
+            set_paciente.save()
+            
+            User.objects.create(username=username, password=set_paciente.password)
+            return redirect(reverse('login')+"?registered")
         else:
+            messages.add_message(self.request,)
             return redirect('registro')
 
 class LoginSegPrivadoView(LoginView):
