@@ -75,7 +75,7 @@ class LoginSegPrivadoView(LoginView):
 # Decoradores para dar permiso a los usuarios
 @method_decorator(login_required, name='dispatch')
 class LogoutView(RedirectView):
-    pattern_name = 'sign_in'
+    pattern_name = 'login'
     
     def dispatch(self, request, *args, **kwargs):
         username = request.user.username
