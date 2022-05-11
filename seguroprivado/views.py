@@ -101,8 +101,8 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('inicio')+'?updated'
     
     def post(self, request, *args, **kwargs):
-        get_paciente = self.get_object()# nos ayuda a obtener el id del médico a editar
-        datos_paciente = Paciente.objects.get(pk=get_paciente.id)
+        obj_paciente = self.get_object()# nos ayuda a obtener el id del médico a editar
+        datos_paciente = Paciente.objects.get(pk=obj_paciente.id)
         paciente = PacienteForm(request.POST, instance=datos_paciente)
         
         if paciente.is_valid():
@@ -110,10 +110,10 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
             set_paciente.password = make_password(set_paciente.password)
             set_paciente.save()
             
-            usuario = User.objects.get(username=get_paciente.username)
+            usuario = User.objects.get(username=obj_paciente.username)
             usuario.delete()
             
-            set_paciente = User.objects.create(username=get_paciente.username, password=get_paciente.password)
+            set_paciente = User.objects.create(username=obj_paciente.username, password=set_paciente.password)
             set_paciente.save()
         
         return super().post(request, *args, **kwargs)
