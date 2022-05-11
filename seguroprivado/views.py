@@ -169,8 +169,11 @@ class MedicoCreate(LoginRequiredMixin, CreateView):
                 set_medico.password = make_password(set_medico.password)
                 set_medico.save()
             
-                # Creamos un usuario médico para iniciar sesión posteriormente
-                User.objects.create(username=username, password=set_medico.password)
+                # Autogeneramos un usuario médico para iniciar sesión posteriormente
+                set_medico = User.objects.create(username=username, password=password)
+                set_medico.is_staff = True
+                set_medico.save()
+                
                 messages.add_message(request,level=messages.SUCCESS, message="Médico "+str(username)+" añadido correctamente")
             else:
                 messages.add_message(request,level=messages.WARNING, message="La fecha de alta es errónea.")
@@ -208,7 +211,11 @@ class MedicoUpdate(LoginRequiredMixin, UpdateView):
                 # Editamos nuestro usuario #
                 usuario = User.objects.get(username=get_medico.username)
                 usuario.delete()
-                User.objects.create(username=username, password=password)
+                
+                set_medico = User.objects.create(username=username, password=password)
+                set_medico.is_staff = True
+                set_medico.save()
+                
                 messages.add_message(request,level=messages.INFO, message="Médico "+str(username)+" editado correctamente.")
                 return redirect('medicos')
             else:
