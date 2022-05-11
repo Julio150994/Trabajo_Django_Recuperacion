@@ -2,3 +2,5 @@
     admin           123456          ROL_ADMIN
     sandralo93      12345678@       ROL_PACIENTE
     alfredo67       12345678@       ROL_PACIENTE
+    julio1994       12345678@       ROL_MEDICO
+    laurala91       12345678@       ROL_MEDICO
