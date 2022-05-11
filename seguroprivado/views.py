@@ -11,9 +11,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
-from seguroprivado.decorators import RolAdmin, RolPaciente, RolMedico
 from seguroprivado.models import Paciente, Medico
 from seguroprivado.forms import MedicoForm, PacienteForm
 
@@ -73,10 +72,11 @@ class LoginSegPrivadoView(LoginView):
         else:
             return HttpResponseRedirect('login')
 
+# Decoradores para dar permiso a los usuarios
 @method_decorator(login_required, name='dispatch')
-@method_decorator(RolAdmin, name='dispatch')
-@method_decorator(RolMedico, name='dispatch')
-@method_decorator(RolPaciente, name='dispatch')
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
 class LogoutView(RedirectView):
     pattern_name = 'sign_in'
     
@@ -87,7 +87,7 @@ class LogoutView(RedirectView):
         return super().dispatch(request, *args, **kwargs)
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(RolPaciente, name='dispatch')
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
 class EditarPerfilView(LoginRequiredMixin, UpdateView):
     model = Paciente
     form_class = PacienteForm
@@ -101,13 +101,13 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('inicio')+'?updated'
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(RolAdmin, name='dispatch')
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class PacienteList(LoginRequiredMixin, ListView):
     model = Paciente
     template_name = "seguroprivado/pacientes.html"
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(RolAdmin, name='dispatch')
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class PacienteActived(LoginRequiredMixin, UpdateView):
     model = Paciente
     fields = ['activo']
@@ -128,20 +128,20 @@ class PacienteActived(LoginRequiredMixin, UpdateView):
         paciente.save()
   
 @method_decorator(login_required, name='dispatch')
-@method_decorator(RolAdmin, name='dispatch')
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class MedicoList(LoginRequiredMixin, ListView):
     model = Medico
     template_name = "seguroprivado/medicos.html"
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(RolAdmin, name='dispatch')
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class MedicoDetail(LoginRequiredMixin, DetailView):
     model = Medico
     template_name = "seguroprivado/datos_medico.html"
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(RolAdmin, name='dispatch')
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class MedicoCreate(LoginRequiredMixin, CreateView):
     model = Medico
     form_class = MedicoForm
@@ -179,7 +179,7 @@ class MedicoCreate(LoginRequiredMixin, CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
-@method_decorator(RolAdmin, name='dispatch')
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class MedicoUpdate(LoginRequiredMixin, UpdateView):
     model = Medico
     form_class = MedicoForm
@@ -218,7 +218,7 @@ class MedicoUpdate(LoginRequiredMixin, UpdateView):
     
     
 @method_decorator(login_required, name='dispatch')
-@method_decorator(RolAdmin, name='dispatch')
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class MedicoDelete(LoginRequiredMixin, DeleteView):
     model = Medico
     queryset = Medico.objects.all()
