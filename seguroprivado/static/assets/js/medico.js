@@ -10,7 +10,8 @@ function eliminar(id) {
         cancelButtonText: 'No',
     }).then((medico) => {
         if (medico.isConfirmed) {
-            window.location = '/eliminar_medico/' + id + '/';
+            //window.location = '/eliminar_medico/' + id + '/';
+            window.location = '/medicos/';
         } else {
             window.location = '/medicos/';
         }
