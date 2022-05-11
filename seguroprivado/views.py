@@ -239,16 +239,18 @@ class MedicoDelete(LoginRequiredMixin, DeleteView):
         return super().dispatch(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs):
-        medico = self.get_object()# obtenemos los datos del médico a eliminar
-        medico.delete()
-        
-        usuario = User.objects.get(username=medico.username)
-        usuario.delete()
-        messages.add_message(self.request,level=messages.WARNING, message="Médico "+str(medico.username)+" eliminado correctamente")
+        return super().get_context_data(**kwargs)
     
     def render_to_response(self, context, **response_kwargs):
         # Método para redireccionar a la misma página
-        medico = self.get_object()
+        obj_medico = self.get_object()
         
-        if medico is not None:
+        if obj_medico is not None:
+            medico = Medico.objects.filter(id=obj_medico.id)
+            medico.delete()
+            
+            usuario = User.objects.get(username=obj_medico.username)
+            usuario.delete()
+            
+            messages.add_message(self.request,level=messages.WARNING, message="Médico "+str(obj_medico.username)+" eliminado correctamente")
             return redirect('medicos')
