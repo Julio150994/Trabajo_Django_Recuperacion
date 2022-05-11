@@ -104,6 +104,12 @@
     </div>
     {% endif %}
 
+    {% if 'updated' in request.GET %}
+    <div class="alert alert-primary text-center">
+      Paciente {{ request.user }} editado correctamente.
+    </div>
+    {% endif %}
+
     {% if messages %}
       {% for login in messages %}
           {% if login.tags %}

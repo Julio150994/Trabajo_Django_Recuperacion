@@ -1,10 +1,9 @@
 from datetime import datetime
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView, DeleteView
-from django.views.generic.detail import DetailView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -97,6 +96,24 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
     
     def get_success_url(self):
         return reverse_lazy('inicio')+'?updated'
+    
+    def post(self, request, *args, **kwargs):
+        get_paciente = self.get_object()# nos ayuda a obtener el id del médico a editar
+        datos_paciente = Paciente.objects.get(pk=get_paciente.id)
+        paciente = PacienteForm(request.POST, instance=datos_paciente)
+        
+        if paciente.is_valid():
+            set_paciente = paciente.save(commit=False)
+            set_paciente.password = make_password(set_paciente.password)
+            set_paciente.save()
+            
+            usuario = User.objects.get(username=get_paciente.username)
+            usuario.delete()
+            
+            set_paciente = User.objects.create(username=get_paciente.username, password=get_paciente.password)
+            set_paciente.save()
+        
+        return super().post(request, *args, **kwargs)
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
