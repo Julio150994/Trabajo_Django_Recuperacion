@@ -140,12 +140,6 @@ class MedicoList(LoginRequiredMixin, ListView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
-class MedicoDetail(LoginRequiredMixin, DetailView):
-    model = Medico
-    template_name = "seguroprivado/datos_medico.html"
-
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class MedicoCreate(LoginRequiredMixin, CreateView):
     model = Medico
     form_class = MedicoForm
