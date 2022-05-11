@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import login, logout
+from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -73,7 +73,6 @@ class LoginSegPrivadoView(LoginView):
                     return super().dispatch(request, *args, **kwargs)
         else:
             return HttpResponseRedirect('login')
-
 
 # Decoradores para dar permiso a los usuarios
 @method_decorator(login_required, name='dispatch')
