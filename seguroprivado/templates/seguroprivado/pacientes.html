@@ -46,12 +46,12 @@
                         <td>{{ paciente.username }}</td>
                         <td>
                             {% if paciente.activo == False %}
-                            <a href="{% url 'pacientes' paciente.id %}" class="btn btn-primary text-white">
+                            <a href="{% url 'pacientes' paciente.id %}" class="btn btn-primary btn-sm text-white">
                                 <span class="fas fa-toggle-off"></span>
                                 <span>Activar</span>
                             </a>
                             {% else %}
-                            <a href="{% url 'pacientes' paciente.id %}" class="btn btn-warning text-white">
+                            <a href="{% url 'pacientes' paciente.id %}" class="btn btn-warning btn-sm text-white">
                                 <span class="fas fa-toggle-on"></span>
                                 <span>Desactivar</span>
                             </a>

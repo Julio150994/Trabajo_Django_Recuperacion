@@ -54,19 +54,19 @@
                         <td>{{ medico.especialidad }}</td>
                         <td>{{ medico.username }}</td>
                         <td>
-                            <a href="{% url 'datos_medico' medico.id %}" class="btn btn-primary">
+                            <a href="{% url 'datos_medico' medico.id %}" class="btn btn-primary btn-sm">
                                 <span class="fas fa-list"></span>
                                 <span>Datos</span>
                             </a>
                         </td>
                         <td>
-                            <a href="{% url 'editar_medico' medico.id %}" class="btn btn-info">
+                            <a href="{% url 'editar_medico' medico.id %}" class="btn btn-info btn-sm">
                                 <span class="fas fa-edit"></span>
                                 <span>Editar</span>
                             </a>
                         </td>
                         <td>
-                            <button class="btn btn-danger" onclick="eliminar({{ medico.id }})">
+                            <button class="btn btn-danger btn-sm" onclick="eliminar({{ medico.id }})">
                                 <span class="fas fa-trash"></span>
                                 <span>Eliminar</span>
                             </button>
