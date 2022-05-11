@@ -74,9 +74,6 @@ class LoginSegPrivadoView(LoginView):
 
 # Decoradores para dar permiso a los usuarios
 @method_decorator(login_required, name='dispatch')
-@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
-@method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
-@method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
 class LogoutView(RedirectView):
     pattern_name = 'sign_in'
     
