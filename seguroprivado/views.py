@@ -99,7 +99,7 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('inicio')+'?updated'
     
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):        
         obj_paciente = self.get_object()# nos ayuda a obtener el id del médico a editar
         datos_paciente = Paciente.objects.get(pk=obj_paciente.id)
         paciente = PacienteForm(request.POST, instance=datos_paciente)
@@ -116,7 +116,10 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
             set_paciente.save()
         
         return super().post(request, *args, **kwargs)
-
+    
+    def render_to_response(self, context, **response_kwargs):
+        return super().render_to_response(context, **response_kwargs)
+    
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class PacienteList(LoginRequiredMixin, ListView):
