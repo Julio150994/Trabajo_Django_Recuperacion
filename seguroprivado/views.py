@@ -6,12 +6,13 @@ from django.contrib import messages
 from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-from django.contrib.auth import logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
 from seguroprivado.models import Paciente, Medico
 from seguroprivado.forms import MedicoForm, PacienteForm
 
@@ -48,8 +49,9 @@ class RegistroPacientesView(CreateView):
             User.objects.create(username=username, password=set_paciente.password)
             return redirect(reverse('login')+"?registered")
         else:
-            messages.add_message(self.request,)
+            messages.add_message(self.request, level=messages.WARNING, message="Error al registrar paciente")
             return redirect('registro')
+
 
 class LoginSegPrivadoView(LoginView):
     template_name = "seguroprivado/login.html"
@@ -57,6 +59,9 @@ class LoginSegPrivadoView(LoginView):
     def get_success_url(self):
         return reverse_lazy('inicio')+'?logged'
 
+    # Validamos la conexión de los usuarios
+    @method_decorator(csrf_protect)
+    @method_decorator(never_cache)
     def dispatch(self, request, *args, **kwargs):
         if request.user is not None:
             if request.user.is_active:
