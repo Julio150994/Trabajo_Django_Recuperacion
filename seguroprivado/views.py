@@ -78,8 +78,9 @@ class LogoutView(RedirectView):
     pattern_name = 'sign_in'
     
     def dispatch(self, request, *args, **kwargs):
+        username = request.user.username
         logout(request)
-        messages.success(request, str(request.user.username)+" ha cerrado sesión.")
+        messages.success(request, str(username)+" ha cerrado sesión.")
         return super().dispatch(request, *args, **kwargs)
 
 @method_decorator(login_required, name='dispatch')
