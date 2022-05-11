@@ -188,7 +188,7 @@ class MedicoCreate(LoginRequiredMixin, CreateView):
                 set_medico.save()
             
                 # Autogeneramos un usuario médico para iniciar sesión posteriormente
-                set_medico = User.objects.create(username=username, password=password)
+                set_medico = User.objects.create(username=username, password=set_medico.password)
                 set_medico.is_staff = True
                 set_medico.save()
                 
@@ -232,7 +232,7 @@ class MedicoUpdate(LoginRequiredMixin, UpdateView):
                 usuario = User.objects.get(username=get_medico.username)
                 usuario.delete()
                 
-                set_medico = User.objects.create(username=username, password=password)
+                set_medico = User.objects.create(username=username, password=set_medico.password)
                 set_medico.is_staff = True
                 set_medico.save()
                 
