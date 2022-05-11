@@ -210,10 +210,11 @@ class MedicoUpdate(LoginRequiredMixin, UpdateView):
             fecha_alta = datetime.strptime(fechaalta, '%Y-%m-%d')
             
             if fecha_alta <= fecha_actual:
-                medico.password = make_password(password)
-                medico.save()
-                
                 # Editamos nuestro usuario #
+                set_medico = medico.save(commit=False)
+                set_medico.password = make_password(password)
+                set_medico.save()
+                
                 usuario = User.objects.get(username=get_medico.username)
                 usuario.delete()
                 
