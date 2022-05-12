@@ -40,10 +40,10 @@
 
   <div class="page-hero bg-image overlay-dark row m-0 justify-content-center align-items-center" id="img_fondo">
     
-    <div class="rounded p-5 bg-light col-3 row m-2 justify-content-center align-items-center" id="formulario">
-      <span class="navbar-brand text-primary mb-3">Perfil de Paciente</span>
+    <div class="rounded p-5 bg-light col-3 row m-2 mr-5 justify-content-center align-items-center" id="formulario">
+      <span class="navbar-brand text-primary mb-1">Perfil de {{ paciente.username }}</span>
 
-      <form action="{% url 'perfil' user.username %}" method="POST" enctype="multipart/form-data">
+      <form action="{% url 'perfil' paciente.username %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
         <span class="text-primary" id="dato" style="margin-left: -1em;">Nombre</span>
@@ -117,15 +117,17 @@
         </div>
         {{ form.password.errors }}
 
-        <a href="{% url 'inicio' %}" class="row btn btn-danger">
-          <span class="fas fa-arrow-left"></span>
-          <span>Cancelar</span>
-        </a>
-  
-        <button class="row btn btn-info" id="editar" style="margin-left: 10%; padding-left: 4.5%;">
-          <span class="fas fa-solid fa-user-edit"></span>
-          <span>Editar Perfil</span>
-        </button>
+        <div class="ml-3">
+          <a href="{% url 'inicio' %}" class="row btn btn-danger btn-block">
+            <span class="fas fa-arrow-left"></span>
+            <span>Cancelar</span>
+          </a>
+    
+          <button class="row btn btn-info btn-block">
+            <span class="fas fa-solid fa-user-edit"></span>
+            <span>Editar Perfil</span>
+          </button>
+        </div>
       </form>
     </div>
   </div>

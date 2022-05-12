@@ -115,30 +115,31 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
     model = Paciente
     form_class = PacienteForm
     template_name = "seguroprivado/perfil_paciente.html"
-    slug_url_kwarg = "username"
-    slug_field = "username"
+    slug_field = "username" # nombre del campo de tabla pacientes
+    slug_url_kwarg = "username" # nombre del argumento que pasamos en urls.py
     success_url = reverse_lazy('inicio')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-    
 
     def post(self, request, *args, **kwargs):        
-        obj_paciente = self.get_object()# nos ayuda a obtener el id del médico a editar
-        datos_paciente = Paciente.objects.get(pk=obj_paciente.id)
-        paciente = PacienteForm(request.POST, instance=datos_paciente)
+        get_paciente = self.get_object()
+        paciente = PacienteForm(request.POST)
         
         if paciente.is_valid():
+            username = request.POST.get('username')
+            
             set_paciente = paciente.save(commit=False)
             set_paciente.password = make_password(set_paciente.password)
             set_paciente.save()
             
-            usuario = User.objects.get(username=obj_paciente.username)
+            usuario = User.objects.get(username=username)
             usuario.delete()
             
-            set_paciente = User.objects.create(username=obj_paciente.username, password=set_paciente.password)
-            set_paciente.save()
+            set_paciente = User.objects.create(username=username, password=set_paciente.password)
+            set_paciente.save()   
         
+        messages.add_message(request,level=messages.INFO, message="Perfil de paciente "+str(get_paciente.username)+" editado correctamente")
         return super().post(request, *args, **kwargs)  
     
 

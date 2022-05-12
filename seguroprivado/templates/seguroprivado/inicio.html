@@ -97,7 +97,7 @@
   </header>
 
   <div class="page-hero bg-image overlay-dark" style="background-image: url({% static 'assets/img/bg_image_1.jpg' %});">
-    {% comment %} Mostrado después de iniciar sesión y de editar perfil {% endcomment %}
+    {# Mostrado después de iniciar sesión #}
     {% if messages %}
       {% for mensaje in messages %}
           {% if mensaje.tags %}
@@ -106,6 +106,19 @@
           </div>
           {% endif %}
       {% endfor %}
+    {% endif %}
+
+    {# Mostrado después de editar perfil #}
+    {% if not request.user.is_staff %}
+      {% if mensaje_perfil %}
+        {% for mensaje_perfil in messages %}
+            {% if mensaje_perfil.tags %}
+            <div class="container-fluid alert alert-{{ mensaje_perfil.tags }} mx-auto mt-auto text-center">
+                {{ mensaje_perfil }}
+            </div>
+            {% endif %}
+        {% endfor %}
+      {% endif %}
     {% endif %}
     
     <div class="hero-section">
