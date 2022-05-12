@@ -86,7 +86,7 @@ class LoginSegPrivadoView(LoginView):
                             # Validamos de que el paciente esté activado
                             if usuario_paciente.activo == True:
                                 login(request,usuario)
-                                messages.add_message(request, level=messages.INFO, message="Paciente "+str(username)+" logueado correctamente")
+                                messages.add_message(request, level=messages.INFO, message="Paciente "+str(username)+" logueado correctamente")                                
                                 return redirect('inicio')
                             else:
                                 messages.add_message(request, level=messages.WARNING, message="El paciente "+str(username)+" no está activado")
@@ -115,13 +115,10 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
     model = Paciente
     form_class = PacienteForm
     template_name = "seguroprivado/perfil_paciente.html"
+    success_url = reverse_lazy('inicio')
     
     def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
         return super().dispatch(request, *args, **kwargs)
-    
-    def get_success_url(self):
-        return reverse_lazy('inicio')+'?updated'
     
 
     def post(self, request, *args, **kwargs):        
