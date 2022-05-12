@@ -89,7 +89,7 @@ class LoginSegPrivadoView(LoginView):
                                 messages.add_message(request, level=messages.INFO, message="Paciente "+str(username)+" logueado correctamente")
                                 return redirect('inicio')
                             else:
-                                messages.add_message(request, level=messages.WARNING, message="El paciente "+str(username)+" debe estar activado")
+                                messages.add_message(request, level=messages.WARNING, message="El paciente "+str(username)+" no está activado")
                                 return redirect('login')
             else:
                 messages.add_message(request, level=messages.WARNING, message="Credenciales de "+str(username)+" erróneas.")
