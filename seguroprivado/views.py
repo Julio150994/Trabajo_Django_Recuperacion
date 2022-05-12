@@ -11,8 +11,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
 from seguroprivado.models import Paciente, Medico
 from seguroprivado.forms import MedicoForm, PacienteForm
 
