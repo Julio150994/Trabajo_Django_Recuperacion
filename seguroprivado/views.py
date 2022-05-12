@@ -60,8 +60,6 @@ class LoginSegPrivadoView(LoginView):
         return reverse_lazy('inicio')+'?logged'
 
     # Validamos la conexión de los usuarios
-    @method_decorator(csrf_protect)
-    @method_decorator(never_cache)
     def dispatch(self, request, *args, **kwargs):
         if request.user is not None:
             if request.user.is_active:
