@@ -115,6 +115,8 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
     model = Paciente
     form_class = PacienteForm
     template_name = "seguroprivado/perfil_paciente.html"
+    slug_url_kwarg = "username"
+    slug_field = "username"
     success_url = reverse_lazy('inicio')
     
     def dispatch(self, request, *args, **kwargs):
