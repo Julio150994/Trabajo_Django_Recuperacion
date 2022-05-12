@@ -24,7 +24,7 @@ urlpatterns = [
     path('registro/',views.RegistroPacientesView.as_view(),name="registro"),
     path('login/',views.LoginSegPrivadoView.as_view(redirect_authenticated_user=True), name="login"),
     path('logout/',views.LogoutView.as_view(), name="logout"),
-    path('perfil_paciente/<int:pk>/', views.EditarPerfilView.as_view(), name="perfil"),
+    path('perfil_paciente/<slug:username>/', views.EditarPerfilView.as_view(), name="perfil"),
     
     path('pacientes/',views.PacienteList.as_view(), name="pacientes"),
     path('actived/<int:pk>/',views.PacienteActived.as_view(), name="pacientes"),
