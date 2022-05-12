@@ -54,12 +54,8 @@ class RegistroPacientesView(CreateView):
 
 class LoginSegPrivadoView(LoginView):
     template_name = "seguroprivado/login.html"
+    success_url = reverse_lazy('inicio')
 
-    def get_success_url(self):
-        #'?logged'#
-        return reverse_lazy('inicio')
-
-    # Validamos la conexión de los usuarios
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -67,14 +63,34 @@ class LoginSegPrivadoView(LoginView):
         username = request.POST['username']
         password = request.POST['password']
         usuario = authenticate(username=username, password=password)
-
+        
         if usuario is not None:
+            # Validamos que el usuario está autenticado
             if usuario.is_authenticated:
-                login(request,usuario)
-                messages.add_message(request, level=messages.INFO, message="Usuario "+str(request.user)+" logueado correctamente")
-                return redirect('inicio')
+                # Validamos que el usuario sea el administrador
+                if usuario.username == User.objects.get(username="admin").username:
+                    login(request,usuario)
+                    messages.add_message(request, level=messages.INFO, message=str(username)+" logueado correctamente")
+                    return redirect('inicio')
+                else:
+                    # Validamos que el usuario es un médico
+                    if not Paciente.objects.filter(username=username).exists() and usuario.username == Medico.objects.get(username=username).username:
+                        login(request,usuario)
+                        messages.add_message(request, level=messages.INFO, message="Médico "+str(username)+" logueado correctamente")
+                        return redirect('inicio')
+                    # Validamos que el usuario es un paciente
+                    else:
+                        usuario_paciente = Paciente.objects.get(username=username)
+                        # Validamos de que el paciente esté activado
+                        if usuario_paciente.activo == True:
+                            login(request,usuario)
+                            messages.add_message(request, level=messages.INFO, message="Paciente "+str(username)+" logueado correctamente")
+                            return redirect('inicio')
+                        else:
+                            messages.add_message(request, level=messages.WARNING, message="El paciente "+str(username)+" debe estar activado")
+                            return redirect('login')
         else:
-            messages.add_message(request, level=messages.WARNING, message="Error en las credenciales")
+            messages.add_message(request, level=messages.WARNING, message="Credenciales de "+str(username)+" erróneas.")
             return redirect('login')
 
 # Decoradores para dar permiso a los usuarios

@@ -4,12 +4,6 @@
     height: 700px;
 }
 
-#titulo {
-    margin-top: 1.6%;
-    margin-bottom: 3.2%;
-    margin-left: 2.6em;
-}
-
 #formulario {
     max-width: 500px !important;
     max-height: 400px !important;
