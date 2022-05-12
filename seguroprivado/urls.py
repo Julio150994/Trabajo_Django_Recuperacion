@@ -22,7 +22,7 @@ urlpatterns = [
     path('', views.RedirectToInicioView.as_view(), name="inicio"),
     path('inicio/',views.TemplateInicioView.as_view(), name="inicio"),
     path('registro/',views.RegistroPacientesView.as_view(),name="registro"),
-    path('login/',views.LoginSegPrivadoView.as_view(), name="login"),
+    path('login/',views.LoginSegPrivadoView.as_view(redirect_authenticated_user=True), name="login"),
     path('logout/',views.LogoutView.as_view(), name="logout"),
     path('perfil_paciente/<int:pk>/', views.EditarPerfilView.as_view(), name="perfil"),
     
