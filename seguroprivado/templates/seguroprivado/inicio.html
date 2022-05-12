@@ -97,24 +97,12 @@
   </header>
 
   <div class="page-hero bg-image overlay-dark" style="background-image: url({% static 'assets/img/bg_image_1.jpg' %});">
-    {% comment %} Mensaje mostrado después de iniciar sesión {% endcomment %}
-    {% if 'logged' in request.GET %}
-    <div class="alert alert-primary text-center">
-      Usuario {{ request.user }} logueado correctamente.
-    </div>
-    {% endif %}
-
-    {% if 'updated' in request.GET %}
-    <div class="alert alert-primary text-center">
-      Paciente {{ request.user }} editado correctamente.
-    </div>
-    {% endif %}
-
+    {% comment %} Mostrado después de iniciar sesión {% endcomment %}
     {% if messages %}
       {% for login in messages %}
           {% if login.tags %}
           <div class="container-fluid alert alert-{{ login.tags }} mx-auto mt-auto text-center">
-              {{ medico }}
+              {{ login }}
           </div>
           {% endif %}
       {% endfor %}

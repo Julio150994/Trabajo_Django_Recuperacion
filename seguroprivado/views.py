@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -55,20 +55,26 @@ class LoginSegPrivadoView(LoginView):
     template_name = "seguroprivado/login.html"
 
     def get_success_url(self):
-        return reverse_lazy('inicio')+'?logged'
+        #'?logged'#
+        return reverse_lazy('inicio')
 
     # Validamos la conexión de los usuarios
     def dispatch(self, request, *args, **kwargs):
-        if request.user is not None:
-            if request.user.is_active:
-                return HttpResponseRedirect('login')
-            else:
-                if request.user.is_authenticated:
-                    return HttpResponseRedirect('inicio')
-                else:
-                    return super().dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        username = request.POST['username']
+        password = request.POST['password']
+        usuario = authenticate(username=username, password=password)
+
+        if usuario is not None:
+            if usuario.is_authenticated:
+                login(request,usuario)
+                messages.add_message(request, level=messages.INFO, message="Usuario "+str(request.user)+" logueado correctamente")
+                return redirect('inicio')
         else:
-            return HttpResponseRedirect('login')
+            messages.add_message(request, level=messages.WARNING, message="Error en las credenciales")
+            return redirect('login')
 
 # Decoradores para dar permiso a los usuarios
 @method_decorator(login_required, name='dispatch')
@@ -95,7 +101,7 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('inicio')+'?updated'
     
-    
+
     def post(self, request, *args, **kwargs):        
         obj_paciente = self.get_object()# nos ayuda a obtener el id del médico a editar
         datos_paciente = Paciente.objects.get(pk=obj_paciente.id)
@@ -202,7 +208,7 @@ class MedicoUpdate(LoginRequiredMixin, UpdateView):
     model = Medico
     form_class = MedicoForm
     template_name = "seguroprivado/editar_medico.html"
-    
+
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
