@@ -128,9 +128,10 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
         
         if paciente.is_valid():
             username = request.POST.get('username')
+            password = request.POST.get('password')
             
             set_paciente = paciente.save(commit=False)
-            set_paciente.password = make_password(set_paciente.password)
+            set_paciente.password = make_password(password)
             set_paciente.save()
             
             usuario = User.objects.get(username=username)
