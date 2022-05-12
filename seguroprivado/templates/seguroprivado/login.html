@@ -40,13 +40,6 @@
   </header>
 
   <div class="page-hero bg-image overlay-dark row m-0 justify-content-center align-items-center" style="height: 700px;" id="img_fondo">
-    {% comment %} Mensaje mostrado después de registrar a un paciente {% endcomment %}
-    {% if 'registered' in request.GET %}
-    <div class="container-fluid alert alert-success text-center" role="alert">
-      <div>Paciente registrado correctamente</div>
-    </div>
-    {% endif %}
-
     <div class="rounded p-5 bg-light col-sm-3 row mx-auto mb-5 justify-content-center align-items-center">
       <span class="navbar-brand text-primary" id="titulo">Login de usuarios</span>
 
@@ -72,7 +65,7 @@
           <span>Registrar paciente</span>
         </a>
 
-        {% comment %} Mensaje de logout del sistema y de credenciales erróneas {% endcomment %}
+        {# Mensaje de logout del sistema, registrar paciente y/o de credenciales erróneas #}
         {% if messages %}
           {% for log_message in messages %}
           <div class="input-group input-navbar alert alert-{{ log_message.tags }} justify-content-center align-items-center" id="mensaje">

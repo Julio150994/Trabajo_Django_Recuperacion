@@ -45,9 +45,10 @@ class RegistroPacientesView(CreateView):
             set_paciente.save()
             
             User.objects.create(username=username, password=set_paciente.password)
-            return redirect(reverse('login')+"?registered")
+            messages.add_message(request, level=messages.SUCCESS, message="Paciente "+str(username)+" registrado correctamente.")
+            return redirect(reverse('login'))
         else:
-            messages.add_message(self.request, level=messages.WARNING, message="Error al registrar paciente")
+            messages.add_message(request, level=messages.WARNING, message="Error al registrar paciente")
             return redirect('registro')
 
 
