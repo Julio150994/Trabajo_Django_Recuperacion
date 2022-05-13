@@ -1,0 +1,70 @@
+{# Extendido de registro.html #}
+{% extends 'seguroprivado/registro.html' %}
+
+{% block title %} Listado de medicamentos {% endblock %}
+
+{% block lista_medicamentos %}
+<div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4">
+    <div class="container-fluid mt-3 ml-4 p-1 rounded">
+        <a href="#" class="btn btn-success">
+            <span class="fas fa-user-plus"></span>
+            <span>Añadir medicamento</span>
+        </a>
+    </div>
+    
+    <div class="container-fluid mx-auto bg-light rounded mt-2">
+        {% if not medicamento_list %}
+        <div class="alert alert-warning text-center">No se han encontrado medicamentos</div>
+        {% else %}
+        <h1 class="text-primary text-center mb-4 p-md-3">Lista de Medicamentos</h1>
+        
+        <div class="container-fluid" style="max-height: 200px; overflow: auto; display: inline-block;">
+            <table class="table table-bordered text-center">
+                <thead class="table table-dark text-white">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Receta</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th colspan="2">Operaciones</th>
+                    </tr>
+                </thead>
+                <tbody class="table table-light">
+                    {% for medicamento in medicamento_list %}
+                    <tr>
+                        <td>{{ medicamento.nombre }}</td>
+                        <td>{{ medicamento.descripcion }}</td>
+                        <td>{{ medicamento.receta }}</td>
+                        <td>{{ medicamento.precio|floatformat:2 }} €</td>
+                        <td>{{ medicamento.stock }}</td>
+                        <td>
+                            <a href="#" class="btn btn-info btn-sm">
+                                <span class="fas fa-edit"></span>
+                                <span>Editar</span>
+                            </a>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-sm">
+                                <span class="fas fa-trash"></span>
+                                <span>Eliminar</span>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+        <a href="{% url 'inicio' %}" class="btn btn-dark mt-2 mb-3 ml-3">
+            <span class="fas fa-arrow-left"></span>
+            <span>Volver al menú</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block copyright %}
+    {% comment %} Código del copyright {% endcomment %}
+    {% include "seguroprivado/footer.html" %}
+{% endblock  %}

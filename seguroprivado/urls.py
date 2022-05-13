@@ -33,5 +33,8 @@ urlpatterns = [
     path('aniadir_medico/',views.MedicoCreate.as_view(), name="form_medico"),
     path('editar_medico/<int:pk>/',views.MedicoUpdate.as_view(), name="editar_medico"),
     path('eliminar_medico/<int:pk>/',views.MedicoDelete.as_view(), name="medicos"),
+    
+    path('medicamentos',views.MedicamentoList.as_view(), name="medicamentos"),
+    
 ]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -54,16 +54,22 @@
               {% else %}
                 {% comment %} Mostramos el nombre del usuario conectado {% endcomment %}
                 <span class="text-left text-info">{{ request.user }}</span>
-
+              
                 {% comment %} Enlaces del administrador {% endcomment %}
                 {% if request.user.is_superuser %}
-                <a href="{% url 'pacientes' %}" class="btn btn-primary text-white ml-lg-3">
+                <a href="{% url 'pacientes' %}" class="btn btn-primary text-white ml-5">
                   <span class="fas fa-users"></span>
                   <span>Pacientes</span>
                 </a>
-                <a href="{% url 'medicos' %}" class="btn btn-primary text-white ml-lg-3">
+                
+                <a href="{% url 'medicos' %}" class="btn btn-primary text-white">
                   <span class="fas fa-users"></span>
                   <span>Médicos</span>
+                </a>
+                
+                <a href="{% url 'medicamentos' %}" class="btn btn-primary text-white">
+                  <span class="fas fa-solid fa-prescription-bottle"></span>
+                  <span>Medicamentos</span>
                 </a>
 
                 {% else %}
@@ -84,7 +90,7 @@
                 {% endif %}
                 
                 {% comment %} Enlace para todos los usuarios {% endcomment %}
-                <a href="{% url 'logout' %}" class="btn btn-info text-white ml-lg-5">
+                <a href="{% url 'logout' %}" class="btn btn-info text-white ml-lg-5 ">
                   <span class="fas fa-sign-out-alt"></span>
                   <span>Logout</span>
                 </a>

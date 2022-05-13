@@ -57,7 +57,10 @@
       {% block lista_medicos %}{% endblock %}
       {% block aniadir_medico %}{% endblock %}
       {% block editar_medico %}{% endblock %}
-      {% block datos_medico %}{% endblock %}
+      
+      {# Para el CRUD de medicamentos #}
+      {% block lista_medicamentos %}{% endblock %}
+
     {% else %}
 
     <div class="rounded p-5 bg-light col-3 row m-0 justify-content-center align-items-center" id="formulario">
