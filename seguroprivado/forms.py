@@ -132,3 +132,59 @@ class MedicoForm(forms.ModelForm):
     
     def clean_password(self):
         return self.cleaned_data['password']
+    
+
+class MedicamentoForm(forms.ModelForm):
+    class Meta:
+        fields = '__all__'
+        
+        labels = {
+            'nombre': ('Nombre'),
+            'descripcion': ('Descripción'),
+            'receta': ('Receta'),
+            'precio': ('Precio'),
+            'stock': ('Número de stock')
+        }
+        
+        help_texts = {
+            'nombre': 'Debe escribir un nombre y que tenga un máximo de 50 caracteres.',
+            'descripcion': 'Debe escribir unos apellidos y que formen un máximo de 50 caracteres.',
+            'receta':'Debe seleccionar si tiene o no receta.',
+            'precio':'Debe introducir un precio y que tenga dos decimales.',
+            'stock':'El stock no debe ser cero.'
+        }
+        
+        CON = 's'
+        SIN = 'n'
+    
+        recetas = (
+            (CON,'Con receta'),
+            (SIN,'Sin receta'),
+        )
+        
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba un nombre de receta'}),
+            'descripcion': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba una descripción'}),
+            'receta': forms.Select(choices=recetas ,attrs={'class':'form-control form-control-sm row mx-auto'}),
+            'precio': forms.NumberInput(attrs={'class':'form-control form-control-sm row mx-auto', 'type':'float'}),
+            'stock': forms.NumberInput(attrs={'class':'form-control form-control-sm row mx-auto', 'type':'int'})
+        }
+        
+        error_messages = {
+            'nombre': {'required': 'Debe escribir el nombre','max_length':'El nombre debe tener como máximo 50 caracteres.',},
+            'descripcion': {'required': 'Debe escribir unos apellidos', 'max_length':'La descripción no puede tener más de 100 caracteres.'},
+            'receta': {'required':'Debe seleccionar si tiene o no receta.'},
+            'precio': {'required': 'Debe escribir un precio'},
+            'stock': {'required': 'Debe poner un número de stock'}
+        }
+    
+    # Añadimos o editamos medicamentos #
+    def save(self, commit=True):
+        medicamento = super(MedicamentoForm, self).save()
+        medicamento.nombre = self.cleaned_data["nombre"]
+        medicamento.descripcion = self.cleaned_data["descripcion"]
+        medicamento.receta = self.cleaned_data["receta"]
+        medicamento.precio = self.cleaned_data["precio"]
+        medicamento.stock = self.cleaned_data["stock"]
+        medicamento.save()
+        return medicamento

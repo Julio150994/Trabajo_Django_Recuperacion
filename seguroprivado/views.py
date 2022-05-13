@@ -12,7 +12,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from seguroprivado.models import Medicamento, Paciente, Medico
-from seguroprivado.forms import MedicoForm, PacienteForm
+from seguroprivado.forms import MedicamentoForm, MedicoForm, PacienteForm
 
 # Create your views here.
 
@@ -304,3 +304,18 @@ class MedicoDelete(LoginRequiredMixin, DeleteView):
 class MedicamentoList(LoginRequiredMixin, ListView):
     model = Medicamento
     template_name = "seguroprivado/medicamentos.html"
+    
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
+class MedicamentoCreate(LoginRequiredMixin, CreateView):
+    model = Medicamento
+    form_class = MedicamentoForm
+    template_name = "seguroprivado/form_medicamento.html"
+    success_url = reverse_lazy('medicamentos')
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        self.object = self.get_object()
+        return super().get_context_data(**kwargs)
