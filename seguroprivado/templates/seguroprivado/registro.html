@@ -34,8 +34,15 @@
   <script src="sweetalert2.min.js"></script>
   <link rel="stylesheet" href="sweetalert2.min.css">
 
+  {% block eliminar_medico %}
   {# Mensaje de alerta para eliminar médico #}
   <script type="text/javascript" src="{% static 'assets/js/medico.js' %}"></script>
+  {% endblock %}
+  
+  {% block eliminar_medicamento %}
+  {# Mensaje de alerta para eliminar medicamento #}
+  <script type="text/javascript" src="{% static 'assets/js/medicamento.js' %}"></script>
+  {% endblock %}
 </head>
 
 <body>

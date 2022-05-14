@@ -304,7 +304,8 @@ class MedicoDelete(LoginRequiredMixin, DeleteView):
 class MedicamentoList(LoginRequiredMixin, ListView):
     model = Medicamento
     template_name = "seguroprivado/medicamentos.html"
-    
+
+
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class MedicamentoCreate(LoginRequiredMixin, CreateView):
@@ -320,3 +321,24 @@ class MedicamentoCreate(LoginRequiredMixin, CreateView):
         nombre = request.POST.get("nombre")
         messages.add_message(request,level=messages.SUCCESS, message="Medicamento "+str(nombre)+" añadido correctamente")
         return super().post(request, *args, **kwargs)
+
+    
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
+class MedicamentoDelete(LoginRequiredMixin, DeleteView):
+    model = Medicamento
+    queryset = Medicamento.objects.all()
+    success_url = reverse_lazy('medicamentos')
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def render_to_response(self, context, **response_kwargs):
+        obj_medicamento = self.get_object()
+        
+        if obj_medicamento is not None:            
+            medicamento = Medicamento.objects.filter(id=obj_medicamento.id)
+            medicamento.delete()
+            
+            messages.add_message(self.request,level=messages.WARNING, message="Medicamento "+str(obj_medicamento.nombre)+" eliminado correctamente")
+            return redirect('medicamentos')
