@@ -315,7 +315,3 @@ class MedicamentoCreate(LoginRequiredMixin, CreateView):
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-    
-    def get_context_data(self, **kwargs):
-        self.object = self.get_object()
-        return super().get_context_data(**kwargs)

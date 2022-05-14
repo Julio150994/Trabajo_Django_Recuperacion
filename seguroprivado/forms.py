@@ -1,5 +1,5 @@
 from django import forms
-from seguroprivado.models import Paciente, Medico
+from seguroprivado.models import Paciente, Medico, Medicamento
 
 # Create your forms here.
 
@@ -136,14 +136,15 @@ class MedicoForm(forms.ModelForm):
 
 class MedicamentoForm(forms.ModelForm):
     class Meta:
+        model = Medicamento
         fields = '__all__'
         
         labels = {
-            'nombre': ('Nombre'),
-            'descripcion': ('Descripción'),
-            'receta': ('Receta'),
-            'precio': ('Precio'),
-            'stock': ('Número de stock')
+            'nombre': 'Nombre',
+            'descripcion': 'Descripción',
+            'receta': 'Receta',
+            'precio': 'Precio',
+            'stock': 'Número de stock'
         }
         
         help_texts = {
@@ -159,15 +160,15 @@ class MedicamentoForm(forms.ModelForm):
     
         recetas = (
             (CON,'Con receta'),
-            (SIN,'Sin receta'),
+            (SIN,'Venta libre'),
         )
         
         widgets = {
-            'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba un nombre de receta'}),
-            'descripcion': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba una descripción'}),
+            'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba nombre de receta'}),
+            'descripcion': forms.Textarea(attrs={'class':'form-control form-control-sm row mx-auto', 'rows':20, 'placeholder':'Escriba descripción de la receta'}),
             'receta': forms.Select(choices=recetas ,attrs={'class':'form-control form-control-sm row mx-auto'}),
             'precio': forms.NumberInput(attrs={'class':'form-control form-control-sm row mx-auto', 'type':'float'}),
-            'stock': forms.NumberInput(attrs={'class':'form-control form-control-sm row mx-auto', 'type':'int'})
+            'stock': forms.NumberInput(attrs={'class':'form-control form-control-sm row mx-auto'})
         }
         
         error_messages = {
@@ -180,11 +181,15 @@ class MedicamentoForm(forms.ModelForm):
     
     # Añadimos o editamos medicamentos #
     def save(self, commit=True):
+        print("Medicamento 1")
         medicamento = super(MedicamentoForm, self).save()
+        print("Medicamento 2")
         medicamento.nombre = self.cleaned_data["nombre"]
         medicamento.descripcion = self.cleaned_data["descripcion"]
         medicamento.receta = self.cleaned_data["receta"]
         medicamento.precio = self.cleaned_data["precio"]
         medicamento.stock = self.cleaned_data["stock"]
+        print("Medicamento 3")
         medicamento.save()
+        print("Medicamento 4")
         return medicamento
