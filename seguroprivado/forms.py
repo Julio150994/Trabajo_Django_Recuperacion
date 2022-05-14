@@ -181,15 +181,11 @@ class MedicamentoForm(forms.ModelForm):
     
     # Añadimos o editamos medicamentos #
     def save(self, commit=True):
-        print("Medicamento 1")
         medicamento = super(MedicamentoForm, self).save()
-        print("Medicamento 2")
         medicamento.nombre = self.cleaned_data["nombre"]
         medicamento.descripcion = self.cleaned_data["descripcion"]
         medicamento.receta = self.cleaned_data["receta"]
         medicamento.precio = self.cleaned_data["precio"]
         medicamento.stock = self.cleaned_data["stock"]
-        print("Medicamento 3")
         medicamento.save()
-        print("Medicamento 4")
         return medicamento

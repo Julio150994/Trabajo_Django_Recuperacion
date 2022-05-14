@@ -315,3 +315,8 @@ class MedicamentoCreate(LoginRequiredMixin, CreateView):
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        nombre = request.POST.get("nombre")
+        messages.add_message(request,level=messages.SUCCESS, message="Medicamento "+str(nombre)+" añadido correctamente")
+        return super().post(request, *args, **kwargs)
