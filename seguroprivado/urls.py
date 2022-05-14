@@ -36,6 +36,7 @@ urlpatterns = [
     
     path('medicamentos/',views.MedicamentoList.as_view(), name="medicamentos"),
     path('aniadir_medicamento/',views.MedicamentoCreate.as_view(), name="form_medicamento"),
+    path('editar_medicamento/<int:pk>/',views.MedicamentoUpdate.as_view(),name="editar_medicamento"),
     path('eliminar_medicamento/<int:pk>/',views.MedicamentoDelete.as_view(), name="medicamentos"),
     
 ]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

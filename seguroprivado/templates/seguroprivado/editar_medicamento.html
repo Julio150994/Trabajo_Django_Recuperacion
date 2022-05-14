@@ -1,0 +1,90 @@
+{# Extendido de registro.html #}
+{% extends 'seguroprivado/registro.html' %}
+
+{% block title %} Formulario de Medicamentos {% endblock %}
+
+{% block aniadir_medicamento %}
+<div class="rounded bg-light col-3 row mb-5 pt-2 justify-content-center align-items-center">
+  
+  <span class="navbar-brand text-info m-3">Editar Medicamento</span>
+  
+  <form action="{% url 'editar_medicamento' medicamento.id %}" method="POST">
+    {% csrf_token %}
+
+    <label for="nombre" class="text-primary" style="margin-left: -0.9em;">{{ form.nombre.label }}</label>
+    
+    <div class="input-group input-navbar mb-2">
+      <div class="input-group-prepend row">
+        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-prescription-bottle"></span></span>
+      </div>
+      {{ form.nombre }}
+    </div>
+    {{ form.nombre.of_field_errors }}
+
+
+    <label for="descripcion" class="text-primary" style="margin-left: -0.9em;">{{ form.descripcion.label }}</label>
+    
+    <div class="input-group input-navbar mb-2">
+      <div class="input-group-prepend row">
+        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-file-medical"></span></span>
+      </div>
+      {{ form.descripcion }}
+    </div>
+    {{ form.descripcion.of_field_errors }}
+
+
+    <label for="receta" class="text-primary" style="margin-left: -0.9em;">{{ form.receta.label }}</label>
+    
+    <div class="input-group input-navbar mb-2">
+      <div class="input-group-prepend row">
+        <span class="input-group-text" id="icon-addon1"><span class="fas fa-list"></span></span>
+      </div>
+      {{ form.receta }}
+    </div>
+    {{ form.receta.of_field_errors }}
+    
+
+    <label for="precio" class="text-primary" style="margin-left: -0.9em;">{{ form.precio.label }}</label>
+    
+    <div class="input-group input-navbar mb-2">
+      <div class="input-group-prepend row">
+        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-euro-sign"></span></span>
+      </div>
+      {{ form.precio }}
+    </div>
+    {{ form.precio.of_field_errors }}
+
+
+    <label for="stock" class="text-primary" style="margin-left: -0.9em;">{{ form.stock.label }}</label>
+
+    <div class="input-group input-navbar mb-4">
+      <div class="input-group-prepend row">
+        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-plus"></span></span>
+      </div>
+      {{ form.stock }}
+    </div>
+    {{ form.stock.of_field_errors }}
+
+    {# Mensajes de errores de validación en el formulario #}
+    {% if messages %}
+    {% for error in messages %}
+        {% if error.tags %}
+        <div class="alert alert-{{ error.tags }} row mx-auto text-center">
+            {{ error }}
+        </div>
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+
+    <a href="{% url 'medicamentos' %}" class="row btn btn-danger mr-4 mt-2 mb-4">
+      <span class="fas fa-arrow-left"></span>
+      <span>Cancelar</span>
+    </a>
+    
+    <button class="row btn btn-info text-center pr-4 pl-4 ml-3 mt-2 mb-4">
+      <span class="fas fa-user-plus"></span>
+      <span>Editar</span>
+    </button>
+  </form>
+</div>
+{% endblock %}

@@ -59,7 +59,7 @@
                         <td>{{ medicamento.precio|floatformat:2 }} €</td>
                         <td>{{ medicamento.stock }}</td>
                         <td>
-                            <a href="#" class="btn btn-info btn-sm">
+                            <a href="{% url 'editar_medicamento' medicamento.id %}" class="btn btn-info btn-sm">
                                 <span class="fas fa-edit"></span>
                                 <span>Editar</span>
                             </a>

@@ -322,6 +322,21 @@ class MedicamentoCreate(LoginRequiredMixin, CreateView):
         messages.add_message(request,level=messages.SUCCESS, message="Medicamento "+str(nombre)+" añadido correctamente")
         return super().post(request, *args, **kwargs)
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
+class MedicamentoUpdate(LoginRequiredMixin, UpdateView):
+    model = Medicamento
+    form_class = MedicamentoForm
+    template_name = "seguroprivado/editar_medicamento.html"
+    success_url = reverse_lazy('medicamentos')
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        nombre = request.POST.get("nombre")
+        messages.add_message(request,level=messages.INFO, message="Medicamento "+str(nombre)+" editado correctamente")
+        return super().post(request, *args, **kwargs)
     
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
