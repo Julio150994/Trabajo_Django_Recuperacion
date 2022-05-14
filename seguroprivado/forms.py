@@ -144,7 +144,7 @@ class MedicamentoForm(forms.ModelForm):
             'descripcion': 'Descripción',
             'receta': 'Receta',
             'precio': 'Precio',
-            'stock': 'Número de stock'
+            'stock': 'Stock'
         }
         
         help_texts = {
@@ -164,11 +164,11 @@ class MedicamentoForm(forms.ModelForm):
         )
         
         widgets = {
-            'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Escriba nombre de receta'}),
-            'descripcion': forms.Textarea(attrs={'class':'form-control form-control-sm row mx-auto', 'rows':20, 'placeholder':'Escriba descripción de la receta'}),
-            'receta': forms.Select(choices=recetas ,attrs={'class':'form-control form-control-sm row mx-auto'}),
-            'precio': forms.NumberInput(attrs={'class':'form-control form-control-sm row mx-auto', 'type':'float'}),
-            'stock': forms.NumberInput(attrs={'class':'form-control form-control-sm row mx-auto'})
+            'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'placeholder':'Escriba nombre de medicamento'}),
+            'descripcion': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'rows':20, 'cols':30, 'placeholder':'Escriba una descripción'}),
+            'receta': forms.Select(choices=recetas ,attrs={'class':'form-control form-control-sm mx-auto'}),
+            'precio': forms.NumberInput(attrs={'class':'form-control form-control-sm mx-auto','placeholder':'Escriba precio de medicamento', 'type':'float'}),
+            'stock': forms.NumberInput(attrs={'class':'form-control form-control-sm mx-auto'})
         }
         
         error_messages = {
