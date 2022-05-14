@@ -44,7 +44,7 @@ class Medicamento(models.Model):
     
     recetas = (
         (CON,'Con receta'),
-        (SIN,'Sin receta'),
+        (SIN,'Venta libre'),
     )
     receta = models.CharField(max_length=1, null=False, blank=False, choices=recetas, default=CON, verbose_name="Receta")
     precio = models.FloatField(null=False, blank=False, verbose_name="Precio")
