@@ -201,6 +201,41 @@
 </div>
 </div>
 
+{# Parte de las consultas médicas #}
+<div class="page-section">
+  <div class="container">
+    <h1 class="text-center mb-5 wow fadeInUp">Consulta de médicos</h1>
+
+    {% comment %}owl-carousel wow fadeInUp{% endcomment %}
+    {% comment %}id="doctorSlideshow"{% endcomment %}
+    <div class="container-fluid justify-content-center">
+      <table class="table table-bordered text-center">
+        <thead class="bg-primary text-white">
+          <tr>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Edad</th>
+            <th>Fecha de alta</th>
+            <th>Especialidad</th>
+            <th>Nombre de usuario</th>
+          </tr>
+        </thead>
+        <tbody class="table table-light">
+          {% for medico in medico_list %}
+          <tr>
+              <td>{{ medico.nombre }}</td>
+              <td>{{ medico.apellidos }}</td>
+              <td>{{ medico.edad }}</td>
+              <td>{{ medico.fechaalta|date:"d/m/Y" }}</td>
+              <td>{{ medico.especialidad }}</td>
+              <td>{{ medico.username }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 {# Parte del copyright de la información de la web #}
 <footer class="page-footer">
