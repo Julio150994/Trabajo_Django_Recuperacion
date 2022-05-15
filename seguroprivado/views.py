@@ -23,7 +23,11 @@ class RedirectToInicioView(TemplateView):
 
 class TemplateInicioView(TemplateView):
     template_name = "seguroprivado/inicio.html"
-
+    
+    def get_context_data(self, **kwargs):
+        contexto = super().get_context_data()
+        contexto['medicos'] = Medico.objects.all()
+        return contexto
 
 class RegistroPacientesView(CreateView):
     model = Paciente

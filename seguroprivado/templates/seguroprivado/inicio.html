@@ -204,11 +204,22 @@
 {# Parte de las consultas médicas #}
 <div class="page-section">
   <div class="container">
-    <h1 class="text-center mb-5 wow fadeInUp">Consulta de médicos</h1>
+    <h1 class="text-center mb-5 wow fadeInUp">Nuestros médicos</h1>
 
-    {% comment %}owl-carousel wow fadeInUp{% endcomment %}
-    {% comment %}id="doctorSlideshow"{% endcomment %}
+    {# Búsqueda de médicos por especialidad #}
+    <div class="container mt-3 mb-3 pr-5">
+      <form class="d-flex" action="#" method="POST">
+        <input class="form-control form-control-md mr-1" type="search" placeholder="Buscar por especialidad" aria-label="Buscar por especialidad"/>
+        <button class="btn btn-secondary" type="submit">
+          <span class="fas fa-solid fa-search"></span>
+        </button>
+      </form>
+    </div>
+
     <div class="container-fluid justify-content-center">
+      {% if not medicos %}
+      <div class="container-fluid alert alert-warning text-center">No se han encontrado médicos</div>
+      {% else %}
       <table class="table table-bordered text-center">
         <thead class="bg-primary text-white">
           <tr>
@@ -221,7 +232,7 @@
           </tr>
         </thead>
         <tbody class="table table-light">
-          {% for medico in medico_list %}
+          {% for medico in medicos %}
           <tr>
               <td>{{ medico.nombre }}</td>
               <td>{{ medico.apellidos }}</td>
@@ -233,6 +244,7 @@
           {% endfor %}
         </tbody>
       </table>
+      {% endif %}
     </div>
   </div>
 </div>
