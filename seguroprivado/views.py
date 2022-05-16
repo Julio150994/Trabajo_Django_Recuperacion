@@ -39,9 +39,6 @@ class TemplateInicioView(TemplateView):
             # __icontains: es para buscar por especialidad, sin errores por Case Sensitive
             set_medicos = Medico.objects.filter(Q(especialidad__icontains = busqueda)).distinct()
             contexto = {'medicos':set_medicos}
-        
-            if not set_medicos.exists():
-                contexto = {'set_medicos':set_medicos}
         return contexto
     
 class RegistroPacientesView(CreateView):
