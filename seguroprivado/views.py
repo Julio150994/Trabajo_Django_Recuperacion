@@ -13,10 +13,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from seguroprivado.models import Medicamento, Paciente, Medico
 from seguroprivado.forms import MedicamentoForm, MedicoForm, PacienteForm
+from django.db.models import Q
 
 # Create your views here.
 
-#------------------Entrega1 Django--------------------------#
 class RedirectToInicioView(TemplateView):    
     def get(self, request):
         return HttpResponseRedirect('inicio/')
@@ -24,11 +24,26 @@ class RedirectToInicioView(TemplateView):
 class TemplateInicioView(TemplateView):
     template_name = "seguroprivado/inicio.html"
     
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
     def get_context_data(self, **kwargs):
         contexto = super().get_context_data()
         contexto['medicos'] = Medico.objects.all()
+        
+        # Para realizar la búsqueda de médicos por especialidad
+        busqueda = self.request.GET.get("especialidad")
+        
+        if busqueda is not None:
+            # Q: revisa todos los campos de un modelo especificado
+            # __icontains: es para buscar por especialidad, sin errores por Case Sensitive
+            set_medicos = Medico.objects.filter(Q(especialidad__icontains = busqueda)).distinct()
+            contexto = {'medicos':set_medicos}
+        
+            if not set_medicos.exists():
+                contexto = {'set_medicos':set_medicos}
         return contexto
-
+    
 class RegistroPacientesView(CreateView):
     model = Paciente
     form_class = PacienteForm
@@ -301,8 +316,7 @@ class MedicoDelete(LoginRequiredMixin, DeleteView):
             messages.add_message(self.request,level=messages.WARNING, message="Médico "+str(obj_medico.username)+" eliminado correctamente")
             return redirect('medicos')
 
-
-#------------------Entrega2 Django---------------------------#        
+      
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class MedicamentoList(LoginRequiredMixin, ListView):
