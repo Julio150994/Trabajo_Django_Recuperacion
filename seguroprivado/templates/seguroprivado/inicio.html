@@ -207,7 +207,7 @@
     <h1 class="text-center mb-5 wow fadeInUp">Nuestros médicos</h1>
 
     {# Búsqueda de médicos por especialidad #}
-    <nav class="navbar navbar-white bg-white mb-4 mr-3 ml-3 mb-5">
+    <nav class="navbar navbar-white bg-white mb-4 mr-3 ml-3 mb-5 wow fadeInUp">
       <div class="container-fluid">
         <span class="navbar-brand">Salesin</span>
 
@@ -220,37 +220,37 @@
       </div>
     </nav>
 
-    <div class="container-fluid justify-content-center">
+    <div class="container-fluid justify-content-center wow fadeInUp">
       {% if not medicos %}
-      <div class="container-fluid alert alert-warning text-center">Médicos no encontrados en el sistema</div>
+      <div class="container-fluid alert alert-warning text-center">Médicos no encontrados con esta especialidad</div>
       {% else %}
-      <table class="table table-bordered text-center">
-        <thead class="bg-primary text-white">
-          <tr>
-            <th>Nombre</th>
-            <th>Apellidos</th>
-            <th>Edad</th>
-            <th>Fecha de alta</th>
-            <th>Especialidad</th>
-            <th>Nombre de usuario</th>
-          </tr>
-        </thead>
-        <tbody class="table table-light">
-          {% for medico in medicos %}
-          <tr>
-            <td>{{ medico.nombre }}</td>
-            <td>{{ medico.apellidos }}</td>
-            <td>{{ medico.edad }}</td>
-            <td>{{ medico.fechaalta|date:"d/m/Y" }}</td>
-            <td>{{ medico.especialidad }}</td>
-            <td>{{ medico.username }}</td>
-          </tr>
-          {% empty %}
-          <div class="container-fluid alert alert-warning text-center">No se han encontrado médicos con esta especialidad.</div>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% endif %}
+      <div class="container-fluid" style="max-height: 320px; overflow: auto; display: inline-block;">
+        <table class="table table-bordered text-center">
+          <thead class="bg-primary text-white">
+            <tr>
+              <th>Nombre</th>
+              <th>Apellidos</th>
+              <th>Edad</th>
+              <th>Fecha de alta</th>
+              <th>Especialidad</th>
+              <th>Nombre de usuario</th>
+            </tr>
+          </thead>
+          <tbody class="table table-light">
+            {% for medico in medicos %}
+            <tr>
+              <td>{{ medico.nombre }}</td>
+              <td>{{ medico.apellidos }}</td>
+              <td>{{ medico.edad }}</td>
+              <td>{{ medico.fechaalta|date:"d/m/Y" }}</td>
+              <td>{{ medico.especialidad }}</td>
+              <td>{{ medico.username }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+      </div>
     </div>
   </div>
 </div>
