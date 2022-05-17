@@ -1,5 +1,6 @@
 from django import forms
 from seguroprivado.models import Paciente, Medico, Medicamento
+from django.contrib import messages
 
 # Create your forms here.
 
@@ -152,7 +153,7 @@ class MedicamentoForm(forms.ModelForm):
             'descripcion': 'Debe escribir unos apellidos y que formen un máximo de 50 caracteres.',
             'receta':'Debe seleccionar si tiene o no receta.',
             'precio':'Debe introducir un precio y que tenga dos decimales.',
-            'stock':'El stock no debe ser cero.'
+            'stock':'Debe introducir un nº de stock.'
         }
         
         CON = 's'
@@ -178,14 +179,3 @@ class MedicamentoForm(forms.ModelForm):
             'precio': {'required': 'Debe escribir un precio'},
             'stock': {'required': 'Debe poner un número de stock'}
         }
-    
-    # Añadimos o editamos medicamentos #
-    def save(self, commit=True):
-        medicamento = super(MedicamentoForm, self).save()
-        medicamento.nombre = self.cleaned_data["nombre"]
-        medicamento.descripcion = self.cleaned_data["descripcion"]
-        medicamento.receta = self.cleaned_data["receta"]
-        medicamento.precio = self.cleaned_data["precio"]
-        medicamento.stock = self.cleaned_data["stock"]
-        medicamento.save()
-        return medicamento

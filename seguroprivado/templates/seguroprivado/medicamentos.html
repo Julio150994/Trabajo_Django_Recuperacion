@@ -18,7 +18,7 @@
     {% endfor %}
 {% endif %}
 
-<div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4">
+<div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-5">
     <div class="container-fluid mt-3 ml-4 p-1 rounded">
         <a href="{% url 'form_medicamento' %}" class="btn btn-success">
             <span class="fas fa-plus"></span>
@@ -57,7 +57,13 @@
                             <td class="text-danger"><span class="fas fa-solid fa-prescription-bottle"></span></td>
                         {% endif %}
                         <td>{{ medicamento.precio|floatformat:2 }} €</td>
-                        <td>{{ medicamento.stock }}</td>
+                        <td>
+                            {% if medicamento.stock == 0 %}
+                            <span class="rounded bg-warning p-2 text-white">{{ medicamento.stock }}</span>
+                            {% else %}
+                            <span class="rounded bg-primary p-2 text-white">{{ medicamento.stock }}</span>
+                            {% endif %}
+                        </td>
                         <td>
                             <a href="{% url 'editar_medicamento' medicamento.id %}" class="btn btn-info btn-sm">
                                 <span class="fas fa-edit"></span>
