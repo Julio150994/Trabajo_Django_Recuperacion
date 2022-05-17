@@ -212,7 +212,7 @@
         <span class="navbar-brand">Salesin</span>
 
         <form class="d-flex" action="" method="GET">
-          <input class="form-control form-control-sm me-5" name="especialidad" type="search" placeholder="Buscar por especialidad" aria-label="Buscar por especialidad">
+          <input class="form-control form-control-sm me-5" name="especialidad" type="search" placeholder="Buscar por especialidad" aria-label="Buscar por especialidad"/>
           <button class="btn btn-secondary ml-2" type="submit">
             <span class="fas fa-solid fa-search"></span>
           </button>
@@ -222,7 +222,7 @@
 
     <div class="container-fluid justify-content-center wow fadeInUp">
       {% if not medicos %}
-      <div class="container-fluid alert alert-warning text-center">Médicos no encontrados con esta especialidad</div>
+      <div class="container-fluid alert alert-warning text-center">Médicos no encontrados por esta especialidad.</div>
       {% else %}
       <div class="container-fluid" style="max-height: 320px; overflow: auto; display: inline-block;">
         <table class="table table-bordered text-center">
@@ -246,6 +246,10 @@
               <td>{{ medico.especialidad }}</td>
               <td>{{ medico.username }}</td>
             </tr>
+            {% empty %}
+              {% if not medicos %}
+              <div class="container-fluid alert alert-warning text-center">Médicos no encontrados en el sistema</div>
+              {% endif %}
             {% endfor %}
           </tbody>
         </table>

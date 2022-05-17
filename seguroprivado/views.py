@@ -37,8 +37,7 @@ class TemplateInicioView(TemplateView):
         if busqueda is not None:
             # Q: revisa todos los campos de un modelo especificado
             # __icontains: es para buscar por especialidad, sin errores por Case Sensitive
-            set_medicos = Medico.objects.filter(Q(especialidad__icontains = busqueda)).distinct()
-            contexto = {'medicos':set_medicos}
+            contexto['medicos'] = Medico.objects.filter(Q(especialidad__icontains = busqueda)).distinct()
         return contexto
     
 class RegistroPacientesView(CreateView):
