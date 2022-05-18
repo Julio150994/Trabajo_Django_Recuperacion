@@ -203,7 +203,7 @@
 
 {# Parte de las consultas médicas #}
 <div class="page-section">
-  <div class="container">
+  <div class="container-fluid">
     <h1 class="text-center mb-5 wow fadeInUp">Nuestros médicos</h1>
 
     {# Búsqueda de médicos por especialidad #}
@@ -224,7 +224,8 @@
       {% if not medicos %}
       <div class="container-fluid alert alert-warning text-center">Médicos no encontrados por esta especialidad.</div>
       {% else %}
-      <div class="container-fluid" style="max-height: 320px; overflow: auto; display: inline-block;">
+      {# Contenedor para generar el scroll vertical #}
+      <div class="container-fluid" style="max-height: 260px; overflow: auto; display: inline-block;">
         <table class="table table-bordered text-center">
           <thead class="bg-primary text-white">
             <tr>
@@ -260,7 +261,7 @@
 </div>
 
 {# Parte del copyright de la información de la web #}
-<footer class="page-footer">
+<footer class="page-footer mt-4">
   <div class="container">
     <div class="row px-md-3">
       <div class="col-sm-6 col-lg-3 py-3">
