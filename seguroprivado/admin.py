@@ -10,7 +10,7 @@ class PacienteAdmin(admin.ModelAdmin):
     ordering = ["-id"]
     
 class MedicamentoAdmin(admin.ModelAdmin):
-    list_display = ["nombre","descripcion","receta","precio","stock"]
+    list_display = ["nombre","descripcion","precio","stock"]
     ordering = ["-id"]
 
 # Register your models here.
