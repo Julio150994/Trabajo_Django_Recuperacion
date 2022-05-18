@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.shortcuts import redirect
-from django.urls import reverse, reverse_lazy
-from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
@@ -354,26 +354,25 @@ class MedicamentoUpdate(LoginRequiredMixin, UpdateView):
         medicamento_anterior = self.get_object()# recibimos el medicamento anterior
         medicamento = MedicamentoForm(request.POST)
         
-        if medicamento.is_valid():                        
-            nombre = request.POST.get("nombre")
-            descripcion = request.POST.get("descripcion")
-            receta = request.POST.get("receta")
-            precio = request.POST.get("precio")
-            stock = request.POST.get("stock")
-            
-            medicamento_actual = Medicamento.objects.get(id=medicamento_anterior.id)
-            medicamento_actual.nombre = nombre
-            medicamento_actual.descripcion = descripcion
-            medicamento_actual.receta = receta
-            medicamento_actual.precio = float(precio)
-            medicamento_actual.stock += int(stock)
-            
-            #get_medicamento = Medicamento.objects.filter(id=medicamento_anterior.id)
-            #get_medicamento.delete()
+        nombre = request.POST.get("nombre")
+        descripcion = request.POST.get("descripcion")
+        receta = request.POST.get("receta")
+        precio = request.POST.get("precio")
+        stock = request.POST.get("stock")
+        
+        medicamento_actual = Medicamento.objects.get(id=medicamento_anterior.id)
+        medicamento_actual.nombre = nombre
+        medicamento_actual.descripcion = descripcion
+        medicamento_actual.receta = receta
+        medicamento_actual.precio = float(precio)
+        medicamento_actual.stock += int(stock)
+        
+        if medicamento_actual.nombre == medicamento_anterior.nombre:
+            messages.add_message(request,level=messages.WARNING, message="Debe cambiar el nombre del medicamento "+str(medicamento_anterior.nombre))
+        else:                        
             medicamento_actual.save()
-            
             messages.add_message(request,level=messages.INFO, message="Medicamento "+str(nombre)+" editado correctamente")
-            return redirect(self.success_url)
+        return redirect(self.success_url)
         
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
