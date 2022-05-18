@@ -58,11 +58,15 @@
                         {% endif %}
                         <td>{{ medicamento.precio|floatformat:2 }} €</td>
                         <td>
-                            {% if medicamento.stock == 0 %}
-                            <span class="rounded bg-warning p-2 text-white">{{ medicamento.stock }}</span>
-                            {% else %}
-                            <span class="rounded bg-primary p-2 text-white">{{ medicamento.stock }}</span>
-                            {% endif %}
+                            <form action="{% url 'editar_medicamento' medicamento.id %}" method="POST">
+                                {% csrf_token %}
+
+                                {% if medicamento.stock == 0 %}
+                                <input type="number" class="form-control rounded bg-warning text-white text-center" value="{{ medicamento.stock }}">
+                                {% else %}
+                                <input type="number" class="form-control rounded bg-primary text-white text-center" value="{{ medicamento.stock }}">
+                                {% endif %}
+                            </form>
                         </td>
                         <td>
                             <a href="{% url 'editar_medicamento' medicamento.id %}" class="btn btn-info btn-sm">
@@ -82,6 +86,7 @@
             </table>
         </div>
         {% endif %}
+
         <a href="{% url 'inicio' %}" class="btn btn-dark ml-3 mb-2">
             <span class="fas fa-arrow-left"></span>
             <span>Volver al menú</span>
