@@ -36,14 +36,18 @@ class Medico(models.Model):
 
 class Medicamento(models.Model):
     id = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=50, null=False, blank=False, verbose_name="Nombre")
+    nombre = models.CharField(max_length=50, unique=True, null=False, blank=False, verbose_name="Nombre")
     descripcion = models.CharField(max_length=100, null=False, blank=False, verbose_name="Descripción")
     
+    CON = 's'
+    SIN = 'n'
+    
     recetas = (
-        ('Con receta','s'),
-        ('Venta libre','n'),
+        (CON,'Con receta'),
+        (SIN,'Venta libre'),     
     )
-    receta = models.CharField(max_length=11, null=False, blank=False, choices=recetas, default='s', verbose_name="Receta")
+    
+    receta = models.CharField(max_length=1, null=False, blank=False, choices=recetas, default=CON, verbose_name="Receta")
     precio = models.FloatField(null=False, blank=False, verbose_name="Precio")
     stock = models.IntegerField(null=False, blank=False, verbose_name="Stock")
     
