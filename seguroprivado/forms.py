@@ -1,5 +1,4 @@
 from django import forms
-from django.shortcuts import redirect
 from seguroprivado.models import Paciente, Medico, Medicamento
 
 # Create your forms here.
@@ -166,10 +165,10 @@ class MedicamentoForm(forms.ModelForm):
         
         widgets = {
             'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'placeholder':'Escriba nombre de medicamento', 'required':'required'}),
-            'descripcion': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'rows':20, 'cols':30, 'placeholder':'Escriba una descripción', 'required':'required'}),
+            'descripcion': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'style': 'height: 100px', 'placeholder':'Escriba una descripción', 'required':'required'}),
             'receta': forms.Select(choices=recetas ,attrs={'class':'form-control form-control-sm mx-auto', 'required':'required'}),
             'precio': forms.NumberInput(attrs={'class':'form-control form-control-sm mx-auto','placeholder':'Escriba precio de medicamento', 'type':'float', 'required':'required'}),
-            'stock': forms.NumberInput(attrs={'class':'form-control form-control-sm mx-auto', 'required':'required'})
+            'stock': forms.NumberInput(attrs={'class':'form-control form-control-sm mx-auto', 'value':0, 'required':'required'})
         }
         
         error_messages = {
@@ -180,7 +179,7 @@ class MedicamentoForm(forms.ModelForm):
             'stock': {'required': 'Debe poner un número de stock'}
         }
     
-    """Para visualizar la validación del nombre"""
+    # Para visualizar la validación del nombre
     def clean_nombre_medicamento(self):
         nombre = self.cleaned_data['nombre']
         
@@ -191,7 +190,7 @@ class MedicamentoForm(forms.ModelForm):
                 raise forms.ValidationError('El nombre debe tener como máximo 50 caracteres.')
         return nombre
     
-    """Para visualizar la validación de la descripción"""
+    # Para visualizar la validación de la descripción
     def clean_descripcion_medicamento(self):
         descripcion = self.cleaned_data['descripcion']
         
@@ -202,7 +201,7 @@ class MedicamentoForm(forms.ModelForm):
                 raise forms.ValidationError('La descripción debe tener como máximo 100 caracteres.')
         return descripcion
     
-    """Para visualizar la validación del precio"""
+    # Para visualizar la validación del precio
     def clean_precio_medicamento(self):
         precio = self.cleaned_data['precio']
         
@@ -225,6 +224,7 @@ class MedicamentoForm(forms.ModelForm):
                     raise forms.ValidationError("Error en el precio. Debe introducir dos decimales.")    
             return precio
     
+    # Para visualizar la validación del stock
     def clean_stock_medicamento(self):
         stock = self.cleaned_data['stock']
         

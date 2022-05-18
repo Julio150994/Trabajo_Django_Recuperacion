@@ -32,7 +32,7 @@
         {% else %}
         <h1 class="text-primary text-center mb-5 p-md-3">Lista de Medicamentos</h1>
         
-        <div class="container-fluid mt-3 mb-5" style="max-height: 258px; overflow: auto; display: inline-block;">
+        <div class="container-fluid mt-3 mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
             <table class="table table-bordered text-center">
                 <thead class="table table-dark text-white">
                     <tr>
@@ -60,12 +60,15 @@
                         <td class="col-sm-1">
                             <form action="{% url 'editar_medicamento' medicamento.id %}" method="POST">
                                 {% csrf_token %}
-
+                                
                                 {% if medicamento.stock == 0 %}
                                 <input type="number" class="form-control rounded bg-warning text-white text-center" value="{{ medicamento.stock }}">
                                 {% else %}
                                 <input type="number" class="form-control rounded bg-primary text-white text-center" value="{{ medicamento.stock }}">
                                 {% endif %}
+                                <button type="submit" class="border-0 btn btn-secondary text-white">
+                                    <span class="fas fa-plus"></span>
+                                </button>
                             </form>
                         </td>
                         <td>

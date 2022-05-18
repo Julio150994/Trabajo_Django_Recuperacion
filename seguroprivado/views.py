@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
@@ -356,17 +356,22 @@ class MedicamentoUpdate(LoginRequiredMixin, UpdateView):
         
         if medicamento.is_valid():
             nombre = request.POST.get("nombre")
+            descripcion = request.POST.get("descripcion")
+            receta = request.POST.get("receta")
+            precio = request.POST.get("precio")
             stock = request.POST.get("stock")
-            # Aumentamos el stock del medicamento mediante el nº seleccionado
-            #contador_stock = int(get_medicamento.stock)
             
             set_medicamento = Medicamento.objects.get(id=get_medicamento.id)
+            set_medicamento.nombre = nombre
+            set_medicamento.descripcion = descripcion
+            set_medicamento.receta = receta
+            set_medicamento.precio = float(precio)
             set_medicamento.stock += int(stock)
             set_medicamento.save()
-                        
+            
             messages.add_message(request,level=messages.INFO, message="Medicamento "+str(nombre)+" editado correctamente")
-            return redirect(reverse('medicamentos'))
-    
+            return redirect(self.success_url)
+        
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class MedicamentoDelete(LoginRequiredMixin, DeleteView):
