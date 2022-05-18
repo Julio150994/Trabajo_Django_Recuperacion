@@ -356,15 +356,15 @@ class MedicamentoUpdate(LoginRequiredMixin, UpdateView):
         
         if medicamento.is_valid():
             nombre = request.POST.get("nombre")
-            
+            stock = request.POST.get("stock")
             # Aumentamos el stock del medicamento mediante el nº seleccionado
-            contador_stock = int(get_medicamento.stock)
-            set_medicamento = medicamento.save(commit=False)
-            set_medicamento.stock += contador_stock
+            #contador_stock = int(get_medicamento.stock)
+            
+            set_medicamento = Medicamento.objects.get(id=get_medicamento.id)
+            set_medicamento.stock += int(stock)
             set_medicamento.save()
                         
             messages.add_message(request,level=messages.INFO, message="Medicamento "+str(nombre)+" editado correctamente")
-            #return super().post(request, *args, **kwargs)
             return redirect(reverse('medicamentos'))
     
 @method_decorator(login_required, name='dispatch')
