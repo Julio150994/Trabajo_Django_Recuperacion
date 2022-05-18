@@ -43,7 +43,7 @@ class Medicamento(models.Model):
         ('s','Con receta'),
         ('n','Venta libre'),
     )
-    receta = models.CharField(max_length=1, null=False, blank=False, choices=recetas, default=CON, verbose_name="Receta")
+    receta = models.CharField(max_length=1, null=False, blank=False, choices=recetas, default='s', verbose_name="Receta")
     precio = models.FloatField(null=False, blank=False, verbose_name="Precio")
     stock = models.IntegerField(null=False, blank=False, verbose_name="Stock")
     
