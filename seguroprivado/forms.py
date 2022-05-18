@@ -1,6 +1,6 @@
 from django import forms
+from django.shortcuts import redirect
 from seguroprivado.models import Paciente, Medico, Medicamento
-from django.contrib import messages
 
 # Create your forms here.
 
@@ -165,11 +165,11 @@ class MedicamentoForm(forms.ModelForm):
         )
         
         widgets = {
-            'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'placeholder':'Escriba nombre de medicamento'}),
-            'descripcion': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'rows':20, 'cols':30, 'placeholder':'Escriba una descripción'}),
-            'receta': forms.Select(choices=recetas ,attrs={'class':'form-control form-control-sm mx-auto'}),
-            'precio': forms.NumberInput(attrs={'class':'form-control form-control-sm mx-auto','placeholder':'Escriba precio de medicamento', 'type':'float'}),
-            'stock': forms.NumberInput(attrs={'class':'form-control form-control-sm mx-auto'})
+            'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'placeholder':'Escriba nombre de medicamento', 'required':'required'}),
+            'descripcion': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'rows':20, 'cols':30, 'placeholder':'Escriba una descripción', 'required':'required'}),
+            'receta': forms.Select(choices=recetas ,attrs={'class':'form-control form-control-sm mx-auto', 'required':'required'}),
+            'precio': forms.NumberInput(attrs={'class':'form-control form-control-sm mx-auto','placeholder':'Escriba precio de medicamento', 'type':'float', 'required':'required'}),
+            'stock': forms.NumberInput(attrs={'class':'form-control form-control-sm mx-auto', 'required':'required'})
         }
         
         error_messages = {
@@ -179,3 +179,55 @@ class MedicamentoForm(forms.ModelForm):
             'precio': {'required': 'Debe escribir un precio'},
             'stock': {'required': 'Debe poner un número de stock'}
         }
+    
+    """Para visualizar la validación del nombre"""
+    def clean_nombre_medicamento(self):
+        nombre = self.cleaned_data['nombre']
+        
+        if Medicamento.objects.filter(nombre=nombre) is None:
+            raise forms.ValidationError('Debe escribir un nombre.')
+        else:
+            if len(Medicamento.objects.filter(nombre=nombre)) <= 50:
+                raise forms.ValidationError('El nombre debe tener como máximo 50 caracteres.')
+        return nombre
+    
+    """Para visualizar la validación de la descripción"""
+    def clean_descripcion_medicamento(self):
+        descripcion = self.cleaned_data['descripcion']
+        
+        if Medicamento.objects.filter(descripcion=descripcion) is None:
+            raise forms.ValidationError('Debe escribir una descripción.')
+        else:
+            if len(Medicamento.objects.filter(descripcion=descripcion)) <= 100:
+                raise forms.ValidationError('La descripción debe tener como máximo 100 caracteres.')
+        return descripcion
+    
+    """Para visualizar la validación del precio"""
+    def clean_precio_medicamento(self):
+        precio = self.cleaned_data['precio']
+        
+        if Medicamento.objects.filter(precio=precio) is None:
+            raise forms.ValidationError('Debe introducir un precio.')
+        else:
+            numero = str(Medicamento.objects.filter(precio=precio))
+            set_punto_decimal = numero
+            indice = set_punto_decimal.find(".")
+            
+            if indice == -1:
+                raise forms.ValidationError("Error en el formato decimal. Debe escribir un punto.")
+            else:
+                indice is numero.rfind(".")
+                
+                # Validamos si se han introducido exactamente dos decimales
+                decimales = str(numero)[str(numero).find(".")+1:]
+                
+                if len(decimales) != 2:
+                    raise forms.ValidationError("Error en el precio. Debe introducir dos decimales.")    
+            return precio
+    
+    def clean_stock_medicamento(self):
+        stock = self.cleaned_data['stock']
+        
+        if Medicamento.objects.filter(stock=stock) is None:
+            raise forms.ValidationError('Debe introducir un número de stock.')
+        return stock
