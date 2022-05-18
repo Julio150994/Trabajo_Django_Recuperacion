@@ -351,23 +351,26 @@ class MedicamentoUpdate(LoginRequiredMixin, UpdateView):
         return super().dispatch(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
-        get_medicamento = self.get_object()# recibimos el medicamento anterior
+        medicamento_anterior = self.get_object()# recibimos el medicamento anterior
         medicamento = MedicamentoForm(request.POST)
         
-        if medicamento.is_valid():
+        if medicamento.is_valid():                        
             nombre = request.POST.get("nombre")
             descripcion = request.POST.get("descripcion")
             receta = request.POST.get("receta")
             precio = request.POST.get("precio")
             stock = request.POST.get("stock")
             
-            set_medicamento = Medicamento.objects.get(id=get_medicamento.id)
-            set_medicamento.nombre = nombre
-            set_medicamento.descripcion = descripcion
-            set_medicamento.receta = receta
-            set_medicamento.precio = float(precio)
-            set_medicamento.stock += int(stock)
-            set_medicamento.save()
+            medicamento_actual = Medicamento.objects.get(id=medicamento_anterior.id)
+            medicamento_actual.nombre = nombre
+            medicamento_actual.descripcion = descripcion
+            medicamento_actual.receta = receta
+            medicamento_actual.precio = float(precio)
+            medicamento_actual.stock += int(stock)
+            
+            #get_medicamento = Medicamento.objects.filter(id=medicamento_anterior.id)
+            #get_medicamento.delete()
+            medicamento_actual.save()
             
             messages.add_message(request,level=messages.INFO, message="Medicamento "+str(nombre)+" editado correctamente")
             return redirect(self.success_url)
