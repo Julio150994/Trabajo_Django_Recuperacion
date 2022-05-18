@@ -159,8 +159,8 @@ class MedicamentoForm(forms.ModelForm):
         SIN = 'n'
     
         recetas = (
-            (CON,'Con receta'),
-            (SIN,'Venta libre'),
+            (CON,'s'),# con receta
+            (SIN,'n'),# venta libre
         )
         
         widgets = {
