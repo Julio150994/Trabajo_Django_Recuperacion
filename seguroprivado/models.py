@@ -40,10 +40,10 @@ class Medicamento(models.Model):
     descripcion = models.CharField(max_length=100, null=False, blank=False, verbose_name="Descripción")
     
     recetas = (
-        ('s','s'),
-        ('n','n'),
+        ('Con receta','s'),
+        ('Venta libre','n'),
     )
-    receta = models.CharField(max_length=1, null=False, blank=False, choices=recetas, default='s', verbose_name="Receta")
+    receta = models.CharField(max_length=11, null=False, blank=False, choices=recetas, default='s', verbose_name="Receta")
     precio = models.FloatField(null=False, blank=False, verbose_name="Precio")
     stock = models.IntegerField(null=False, blank=False, verbose_name="Stock")
     
