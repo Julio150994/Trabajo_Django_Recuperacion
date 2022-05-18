@@ -57,7 +57,7 @@
                             <td class="text-danger"><span class="fas fa-solid fa-prescription-bottle"></span></td>
                         {% endif %}
                         <td>{{ medicamento.precio|floatformat:2 }} €</td>
-                        <td>
+                        <td class="col-sm-1">
                             <form action="{% url 'editar_medicamento' medicamento.id %}" method="POST">
                                 {% csrf_token %}
 
