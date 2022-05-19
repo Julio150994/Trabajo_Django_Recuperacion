@@ -6,38 +6,56 @@
 {% block pedir_cita %}
 <div class="rounded bg-light col-3 row m-0 justify-content-center align-items-center" id="formulario">
   
-  <span class="navbar-brand text-primary m-3">Pedir Cita</span>
+  <span class="navbar-brand text-primary m-3">Formulario de Cita</span>
   
   <form action="{% url 'form_cita' request.user.id %}" method="POST" id="data_medico">
     {% csrf_token %}
     
     {# El propio paciente es quien debe pedir la cita (es decir, que se añade 'el mísmo') #}
 
-    <span class="text-primary" id="dato">Médico</span>
+    <label for="idPaciente" class="text-primary mt-1" style="margin-left: -0.9em;">{{ form.idPaciente.label }}</label>
+    
+    <div class="input-group input-navbar mb-2">
+      <div class="input-group-prepend row">
+        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-user-injured"></span></span>
+      </div>
+      {{ form.idPaciente }}
+    </div>
+    {{ form.idPaciente.of_field_errors }}
+
+
+    <label for="idMedico" class="text-primary mt-2" style="margin-left: -0.9em;">{{ form.idMedico.label }}</label>
+    
+    <div class="input-group input-navbar mb-2">
+      <div class="input-group-prepend row">
+        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-user-md"></span></span>
+      </div>
+      {{ form.idMedico }}
+    </div>
+    {{ form.idMedico.of_field_errors }}
+
+
+    <label for="fecha" class="text-primary mt-2" style="margin-left: -0.9em;">{{ form.fecha.label }}</label>
+
     <div class="input-group input-navbar mb-2">
       <div class="input-group-prepend row">
         <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-calendar-day"></span></span>
       </div>
-      
+      {{ form.fecha }}
     </div>
-
-    <span class="text-primary" id="dato">Fecha de cita</span>
-    <div class="input-group input-navbar mb-2">
-      <div class="input-group-prepend row">
-        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-calendar-day"></span></span>
-      </div>
-      
-    </div>
+    {{ form.fecha.of_field_errors }}
 
 
-    <span class="text-primary" id="dato">Observaciones</span>
+    <label for="observaciones" class="text-primary mt-2" style="margin-left: -0.9em;">{{ form.observaciones.label }}</label>
 
     <div class="input-group input-navbar mb-2">
       <div class="input-group-prepend row">
-        <span class="input-group-text" id="icon-addon1"><span class="fas fa-list"></span></span>
+        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-notes-medical"></span></span>
       </div>
-      
+      {{ form.observaciones }}
     </div>
+    {{ form.observaciones.of_field_errors }}
+
 
     {# Mensajes de errores de validación en el formulario #}
     {% if messages %}
@@ -50,14 +68,14 @@
     {% endfor %}
     {% endif %}
 
-    <a href="{% url 'citas_paciente' %}" class="row btn btn-danger btn-block">
+    <a href="{% url 'citas_paciente' %}" class="row btn btn-danger btn-block mt-4">
       <span class="fas fa-arrow-left"></span>
       <span>Cancelar</span>
     </a>
     
     <button class="row btn btn-primary btn-block text-center">
       <span class="fas fa-plus"></span>
-      <span class="navbar-toggler-icon">Añadir</span>
+      <span>Pedir Cita</span>
     </button>
   </form>
 </div>

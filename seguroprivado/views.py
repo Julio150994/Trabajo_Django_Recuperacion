@@ -409,3 +409,7 @@ class CitaCreate(LoginRequiredMixin, CreateView):
     form_class = CitaForm
     template_name = "seguroprivado/form_cita.html"
     success_url = reverse_lazy('citas_paciente')
+    
+    def get_form_kwargs(self):
+        citas = super().get_form_kwargs()
+        return citas

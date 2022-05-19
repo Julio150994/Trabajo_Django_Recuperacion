@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 from seguroprivado.models import Cita, Paciente, Medico, Medicamento
 
 # Create your forms here.
@@ -233,7 +234,7 @@ class MedicamentoForm(forms.ModelForm):
         return stock
     
 class CitaForm(forms.ModelForm):
-   class Meta:
+    class Meta:
         model = Cita
         fields = '__all__'
         
@@ -249,15 +250,16 @@ class CitaForm(forms.ModelForm):
             'observaciones':'Debe escribir las observaciones del paciente'
         }
         
-        widgets = {
-            'idMedico':'',
-            'fecha':'',
-            'observaciones':''
+        widgets = {            
+            'idPaciente': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'value':'', 'disabled':'disabled'}),
+            'idMedico': forms.Select(attrs={'class':'form-control form-control-sm mx-auto', 'required':'required'}),
+            'fecha': forms.DateInput(format = ('%d/%m/%Y'), attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Fecha de cita', 'type':'date', 'required':'required'}),
+            'observaciones': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'style': 'height: 100px', 'placeholder':'Escriba las observaciones', 'required':'required'})
         }
             
         error_messages = {
             'idMedico': {'required': 'Debe seleccionar un médico para su cita'},
             'fecha': {'required': 'Debe introducir una fecha de cita'},
-            'observaciones': {'required':'Debe escribir las observaciones para el paciente', 'max_length':'Las observaciones deben 100 caracteres como máximo'},
+            'observaciones': {'required':'Debe escribir las observaciones para el paciente', 'max_length':'Las observaciones deben formar 100 caracteres como máximo'},
         }
         
