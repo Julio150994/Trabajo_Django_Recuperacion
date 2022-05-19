@@ -39,7 +39,7 @@ urlpatterns = [
     path('editar_medicamento/<int:pk>/',views.MedicamentoUpdate.as_view(),name="editar_medicamento"),
     path('eliminar_medicamento/<int:pk>/',views.MedicamentoDelete.as_view(), name="medicamentos"),
     
-    path('citas/<int:pk>/',views.CitaList.as_view(),name="citas_paciente"),
+    path('citas/',views.CitaList.as_view(),name="citas_paciente"),
     
 ]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
