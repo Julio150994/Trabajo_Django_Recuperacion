@@ -3,10 +3,6 @@
 
 {% block title %} Listado de citas de {{ request.user }} {% endblock %}
 
-{% if not request.user.is_staff %}
-
-{% endif %}
-
 {% block citas_paciente %}
 
 {# Mensajes para las citas #}
@@ -22,7 +18,7 @@
 
 <div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4">
     <div class="container-fluid mt-3 ml-4 p-1 rounded">
-        <a href="#" class="btn btn-success">
+        <a href="#" class="btn btn-primary">
             <span class="fas fa-user-plus"></span>
             <span>Pedir cita</span>
         </a>
