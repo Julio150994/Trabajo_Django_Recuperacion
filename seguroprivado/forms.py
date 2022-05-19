@@ -1,5 +1,5 @@
 from django import forms
-from seguroprivado.models import Paciente, Medico, Medicamento
+from seguroprivado.models import Cita, Paciente, Medico, Medicamento
 
 # Create your forms here.
 
@@ -231,3 +231,33 @@ class MedicamentoForm(forms.ModelForm):
         if Medicamento.objects.filter(stock=stock) is None:
             raise forms.ValidationError('Debe introducir un número de stock.')
         return stock
+    
+class CitaForm(forms.ModelForm):
+   class Meta:
+        model = Cita
+        fields = '__all__'
+        
+        labels = {
+            'idMedico': 'Médico',
+            'fecha': 'Fecha de cita',
+            'observaciones': 'Observaciones',
+        }
+            
+        help_texts = {
+            'idMedico': 'Debe seleccionar un médico',
+            'fecha':'Debe seleccionar una fecha de cita',
+            'observaciones':'Debe escribir las observaciones del paciente'
+        }
+        
+        widgets = {
+            'idMedico':'',
+            'fecha':'',
+            'observaciones':''
+        }
+            
+        error_messages = {
+            'idMedico': {'required': 'Debe seleccionar un médico para su cita'},
+            'fecha': {'required': 'Debe introducir una fecha de cita'},
+            'observaciones': {'required':'Debe escribir las observaciones para el paciente', 'max_length':'Las observaciones deben 100 caracteres como máximo'},
+        }
+        

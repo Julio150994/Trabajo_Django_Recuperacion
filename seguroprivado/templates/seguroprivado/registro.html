@@ -71,8 +71,10 @@
       {% block editar_medicamento %}{% endblock %}
 
     {% elif request.user.is_authenticated and not request.user.is_staff %}
-      {# Para que el paciente pida sus citas #}
+      {# Bloques donde el paciente puede pedir sus citas #}
       {% block citas_paciente %}{% endblock %}
+      {% block pedir_cita %}{% endblock %}
+
     {% else %}
     <div class="rounded p-5 bg-light col-3 row m-0 justify-content-center align-items-center" id="formulario">
       <span class="navbar-brand text-primary mb-3">Registro de pacientes</span>

@@ -12,7 +12,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from seguroprivado.models import Cita, Medicamento, Paciente, Medico
-from seguroprivado.forms import MedicamentoForm, MedicoForm, PacienteForm
+from seguroprivado.forms import CitaForm, MedicamentoForm, MedicoForm, PacienteForm
 from django.db.models import Q
 
 # Create your views here.
@@ -400,3 +400,12 @@ class MedicamentoDelete(LoginRequiredMixin, DeleteView):
 class CitaList(LoginRequiredMixin, ListView):
     model = Cita
     template_name = "seguroprivado/citas_paciente.html"
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
+class CitaCreate(LoginRequiredMixin, CreateView):
+    model = Cita
+    form_class = CitaForm
+    template_name = "seguroprivado/form_cita.html"
+    success_url = reverse_lazy('citas_paciente')
