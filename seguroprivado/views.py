@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
-from seguroprivado.models import Medicamento, Paciente, Medico
+from seguroprivado.models import Cita, Medicamento, Paciente, Medico
 from seguroprivado.forms import MedicamentoForm, MedicoForm, PacienteForm
 from django.db.models import Q
 
@@ -393,3 +393,10 @@ class MedicamentoDelete(LoginRequiredMixin, DeleteView):
             
             messages.add_message(self.request,level=messages.WARNING, message="Medicamento "+str(obj_medicamento.nombre)+" eliminado correctamente")
             return redirect('medicamentos')
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
+class CitaList(LoginRequiredMixin, ListView):
+    model = Cita
+    template_name = "seguroprivado/citas_paciente.html"
