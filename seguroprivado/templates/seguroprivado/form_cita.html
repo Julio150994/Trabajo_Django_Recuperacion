@@ -8,7 +8,7 @@
   
   <span class="navbar-brand text-primary m-3">Formulario de Cita</span>
   
-  <form action="{% url 'form_cita' request.user.id %}" method="POST" id="data_medico">
+  <form action="{% url 'form_cita' %}" method="POST" id="data_medico">
     {% csrf_token %}
     
     {# El propio paciente es quien debe pedir la cita (es decir, que se añade 'el mísmo') #}

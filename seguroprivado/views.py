@@ -410,21 +410,13 @@ class CitaCreate(LoginRequiredMixin, CreateView):
     template_name = "seguroprivado/form_cita.html"
     success_url = reverse_lazy('citas_paciente')
     
-    def get_form(self, form_class=None):
-        paciente = Paciente.objects.get(username=self.request.user.username)
-        print("Id de paciente logueado: "+str(paciente.id))
-        print("Username de paciente logueado: "+str(paciente.username))
-        
-        #print("Id de paciente actual: "+str(self.request.user.id))
-        #print("Nombre de paciente actual: "+str(self.request.user.username))
-        
-        if form_class is None:
-            form_class = self.get_form_class()
-            print(form_class)
-        return form_class(**self.get_form_kwargs())  
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
     
-    """def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        print("Traza: "+str(kwargs))
+    def post(self, request, *args, **kwargs):
+        cita = CitaForm(request.POST, request.user)
         
-        return kwargs"""
+        if cita.is_valid():
+            username = request.user.username
+            messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
+        return super().post(request, *args, **kwargs)

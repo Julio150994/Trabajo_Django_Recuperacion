@@ -1,6 +1,6 @@
 from django import forms
-from django.contrib.auth.models import User
 from seguroprivado.models import Cita, Paciente, Medico, Medicamento
+from datetime import datetime
 
 # Create your forms here.
 
@@ -235,6 +235,14 @@ class MedicamentoForm(forms.ModelForm):
     
 class CitaForm(forms.ModelForm):        
     class Meta:
+        def __init__(self, username, *args, **kwargs):
+            print("Usuario actual: "+str(username))
+            self.paciente_actual = str(username)
+    
+        def get_paciente(self):
+            print("Paciente actual: "+str(self.paciente_actual))
+            return self.paciente_actual
+        
         model = Cita
         fields = '__all__'
         
@@ -251,14 +259,34 @@ class CitaForm(forms.ModelForm):
         }
         
         widgets = {            
-            'idPaciente': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'value':'', 'disabled':'disabled'}),
+            'idPaciente': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'value':get_paciente, 'disabled':'disabled'}),
             'idMedico': forms.Select(attrs={'class':'form-control form-control-sm mx-auto', 'required':'required'}),
             'fecha': forms.DateInput(format = ('%d/%m/%Y'), attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Fecha de cita', 'type':'date', 'required':'required'}),
             'observaciones': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'style': 'height: 100px', 'placeholder':'Escriba las observaciones', 'required':'required'})
         }
             
         error_messages = {
-            'idMedico.username': {'required': 'Debe seleccionar un médico para su cita'},
+            'idMedico': {'required': 'Debe seleccionar un médico para su cita'},
             'fecha': {'required': 'Debe introducir una fecha de cita'},
-            'observaciones': {'required':'Debe escribir las observaciones para el paciente', 'max_length':'Las observaciones deben formar 100 caracteres como máximo'},
+            'observaciones': {'required':'Debe escribir las observaciones para el paciente', 'max_length':'Las observaciones deben contener 100 caracteres como máximo'},
         }
+    
+    # Comprobamos que se hayan introducido correctamente los datos
+    def clean_fecha(self):
+        fecha_cita = self.cleaned_data['fecha']
+        
+        set_fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
+        set_fecha_cita = datetime.strptime(str(fecha_cita),'%Y-%m-%d')
+        
+        if set_fecha_cita <= set_fecha_actual:
+            raise forms.ValidationError('La fecha de la cita no debe ser menor o igual que la fecha actual')
+        else:
+            return fecha_cita
+        
+    def clean_observaciones(self):
+        observaciones = self.cleaned_data['observaciones']
+        
+        if len(observaciones) > 100:
+            raise forms.ValidationError('Las observaciones deben contener 100 caracteres como máximo')
+        else:
+            return observaciones
