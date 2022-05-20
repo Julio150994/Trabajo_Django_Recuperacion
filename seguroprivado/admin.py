@@ -1,7 +1,10 @@
 from django.contrib import admin
 from django import forms
 from seguroprivado.models import Paciente, Medico, Medicamento, Cita, Compra, CompraMedicamento
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 from datetime import datetime
+import re
 
 # Clases para establecer las validaciones en el panel de admin
 class MedicoAdminForm(forms.ModelForm):
@@ -42,6 +45,7 @@ class MedicoAdminForm(forms.ModelForm):
     
     def clean_username(self):
         username = self.cleaned_data['username']
+        password = self.cleaned_data['password']
         
         if Medico.objects.filter(username=username).exists():
             raise forms.ValidationError('El nombre de usuario médico '+str(username)+' ya existe')
@@ -49,6 +53,20 @@ class MedicoAdminForm(forms.ModelForm):
             if len(username) > 30:
                 raise forms.ValidationError('El nombre de usuario debe tener 30 caracteres como máximo')
             else:
+                if User.objects.filter(username=username).exists() or not User.objects.filter(username=username).exists():
+                    # Para editar un usuario médico
+                    get_medico = User.objects.get(username=username)
+                    get_medico.delete()
+                    
+                    usuario_medico = User.objects.create(username=username, password=make_password(password))
+                    usuario_medico.is_staff = True
+                    usuario_medico.save()
+                else:
+                    # Para añadir un usuario médico
+                    medico = User.objects.create(username=username, password=make_password(password))
+                    medico.is_staff = True
+                    medico.save()
+                    
                 return username
         
     def clean_password(self):
@@ -56,8 +74,13 @@ class MedicoAdminForm(forms.ModelForm):
         
         if len(password) > 30:
             raise forms.ValidationError('La contraseña del médico debe tener 30 caracteres como máximo')
-        else:
-            return password
+        else:   
+            re_medico = re.findall(r'^(0|[1-9]\d*)$', password)
+            
+            if not re_medico:
+                raise forms.ValidationError('La contraseña del paciente no puede ser completamente numérica')
+            else:
+                return password
 
 class MedicamentoAdminForm(forms.ModelForm):
     def clean_nombre(self):
@@ -133,20 +156,36 @@ class PacienteAdminForm(forms.ModelForm):
     
     def clean_username(self):
         username = self.cleaned_data['username']
+        password = self.cleaned_data['password']
         
-        if Paciente.objects.filter(username=username).exists():    
+        if Paciente.objects.filter(username=username).exists():              
             if len(username) > 30:
                 raise forms.ValidationError('El nombre de usuario debe tener 30 caracteres como máximo')
             else:
+                if User.objects.filter(username=username).exists() or not User.objects.filter(username=username).exists():
+                    # Para editar un usuario paciente
+                    get_medico = User.objects.get(username=username)
+                    get_medico.delete()
+                    
+                    usuario_medico = User.objects.create(username=username, password=make_password(password))
+                    usuario_medico.save()
+                else:
+                    # Para añadir un usuario paciente
+                    User.objects.create(username=username, password=make_password(password))
                 return username
         
-    def clean_password(self):
+    def clean_password(self):        
         password = self.cleaned_data['password']
         
-        if len(password) > 30:
-            raise forms.ValidationError('La contraseña del paciente debe tener 30 caracteres como máximo')
+        if len(password) < 8 and len(password) > 30:
+            raise forms.ValidationError('La contraseña del paciente debe tener entre 8 y 30 caracteres')
         else:
-            return password
+            re_paciente = re.findall(r'^(0|[1-9]\d*)$', password)
+            
+            if not re_paciente:
+                raise forms.ValidationError('La contraseña del paciente no puede ser completamente numérica')
+            else:
+                return password
 
 class CitaAdminForm(forms.ModelForm):
     def clean_idPaciente(self):
