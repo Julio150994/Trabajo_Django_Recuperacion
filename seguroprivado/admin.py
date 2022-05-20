@@ -11,7 +11,7 @@ class MedicoAdminForm(forms.ModelForm):
         if nombre is None:
             raise forms.ValidationError('Debe introducir un nombre para el médico')
         else:
-            if len(nombre) <= 30:
+            if len(nombre) > 30:
                 raise forms.ValidationError('El nombre del médico debe tener 30 caracteres como máximo')
             else:
                 return nombre
@@ -22,7 +22,7 @@ class MedicoAdminForm(forms.ModelForm):
         if apellidos is None:
             raise forms.ValidationError('Debe introducir los apellidos para el médico')
         else:
-            if len(apellidos) <= 50:
+            if len(apellidos) > 50:
                 raise forms.ValidationError('Los apellidos deben comprender 50 caracteres como máximo')
             else:
                 return apellidos
@@ -66,10 +66,13 @@ class MedicoAdminForm(forms.ModelForm):
         if username is None:
             raise forms.ValidationError('Debe introducir un nombre de usuario para el médico')
         else:
-            if len(username) <= 30:
-                raise forms.ValidationError('El nombre de usuario debe tener 30 caracteres como máximo')
+            if Medico.objects.filter(username=username).exists():
+                raise forms.ValidationError('El nombre de usuario médico '+str(username)+' ya existe')
             else:
-                return username
+                if len(username) > 30:
+                    raise forms.ValidationError('El nombre de usuario debe tener 30 caracteres como máximo')
+                else:
+                    return username
         
     def clean_password(self):
         password = self.cleaned_data['password']
@@ -77,7 +80,7 @@ class MedicoAdminForm(forms.ModelForm):
         if password is None:
             raise forms.ValidationError('Debe introducir una contraseña para el médico')
         else:
-            if len(password) <= 30:
+            if len(password) > 30:
                 raise forms.ValidationError('La contraseña del médico debe tener 30 caracteres como máximo')
             else:
                 return password
@@ -89,10 +92,13 @@ class MedicamentoAdminForm(forms.ModelForm):
         if nombre is None:
             raise forms.ValidationError('Debe introducir un nombre para el medicamento')
         else:
-            if len(nombre) <= 50:
-                raise forms.ValidationError('El nombre '+str(nombre)+' debe tener 50 caracteres como máximo')
+            if Medicamento.objects.filter(nombre=nombre).exists():
+                raise forms.ValidationError('El nombre de medicamento '+str(nombre)+' ya existe.')
             else:
-                return nombre
+                if len(nombre) > 50:
+                    raise forms.ValidationError('El nombre '+str(nombre)+' debe tener 50 caracteres como máximo')
+                else:
+                    return nombre
         
     def clean_descripcion(self):
         descripcion = self.cleaned_data['descripcion']
@@ -100,8 +106,8 @@ class MedicamentoAdminForm(forms.ModelForm):
         if descripcion is None:
             raise forms.ValidationError('Debe introducir una descripción para el medicamento')
         else:
-            if len(descripcion) <= 100:
-                raise forms.ValidationError('La descripción debe tener 100 ó más caracteres')
+            if len(descripcion) > 100:
+                raise forms.ValidationError('La descripción debe tener 100 caracteres como máximo')
             else:
                 return descripcion
         
@@ -119,25 +125,21 @@ class MedicamentoAdminForm(forms.ModelForm):
         if precio is None:
             raise forms.ValidationError('Debe introducir un precio')
         else:
-            is_decimal = str(precio).find(".")
-            
-            if is_decimal == -1:
-                raise forms.ValidationError('Debe introducir el decimal del precio con un punto')
+            get_decimales = str(precio)[str(precio).find(".")+1:]
+        
+            if len(get_decimales) != 2:
+                raise forms.ValidationError('El número de precio debe contener dos decimales')
             else:
-                get_decimales = str(precio)[str(precio).find(".")+1:]
-            
-                if len(get_decimales) == 2:
-                    return forms.ValidationError('El número de precio debe contener dos decimales')
-                else:
-                    return precio
+                return precio
+
 
 class PacienteAdminForm(forms.ModelForm):
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
         if nombre is None:
             raise forms.ValidationError('Debe introducir un nombre para el paciente')
-        else:
-            if len(nombre) <= 30:
+        else:            
+            if len(nombre) > 30:
                 raise forms.ValidationError('El nombre del médico debe tener 30 caracteres como máximo')
             else:
                 return nombre
@@ -147,7 +149,7 @@ class PacienteAdminForm(forms.ModelForm):
         if apellidos is None:
             raise forms.ValidationError('Debe introducir los apellidos para el paciente')
         else:
-            if len(apellidos) <= 50:
+            if len(apellidos) > 50:
                 raise forms.ValidationError('Los apellidos deben comprender 50 caracteres como máximo')
             else:
                 return apellidos
@@ -167,7 +169,7 @@ class PacienteAdminForm(forms.ModelForm):
         if direccion is None:
             raise forms.ValidationError('Debe escribir una dirección para el paciente')
         else:
-            if len(direccion) <= 100:
+            if len(direccion) > 100:
                 raise forms.ValidationError('La dirección debe tener 100 caracteres como máximo')
             else:
                 return direccion
@@ -184,10 +186,11 @@ class PacienteAdminForm(forms.ModelForm):
         if username is None:
             raise forms.ValidationError('Debe introducir un nombre de usuario para el paciente')
         else:
-            if len(username) <= 30:
-                raise forms.ValidationError('El nombre de usuario debe tener 30 caracteres como máximo')
-            else:
-                return username
+            if Paciente.objects.filter(username=username).exists():    
+                if len(username) > 30:
+                    raise forms.ValidationError('El nombre de usuario debe tener 30 caracteres como máximo')
+                else:
+                    return username
         
     def clean_password(self):
         password = self.cleaned_data['password']
@@ -235,7 +238,10 @@ class CitaAdminForm(forms.ModelForm):
         if observaciones is None:
             raise forms.ValidationError('Debe introducir un nombre de usuario para el médico')
         else:
-            return observaciones
+            if len(observaciones) > 100:
+                raise forms.ValidationError('Las observaciones debe contener 100 caracteres como máximo')
+            else:
+                return observaciones
 
 class CompraAdminForm(forms.ModelForm):
     def clean_fecha(self):
@@ -258,17 +264,12 @@ class CompraAdminForm(forms.ModelForm):
         if precio is None:
             raise forms.ValidationError('Debe introducir un precio de compra')
         else:
-            is_decimal = str(precio).find(".")
-            
-            if is_decimal == -1:
-                raise forms.ValidationError('Debe introducir el decimal del precio con un punto')
+            get_decimales = str(precio)[str(precio).find(".")+1:]
+        
+            if len(get_decimales) != 2:
+                return forms.ValidationError('El precio de la compra debe contener dos decimales')
             else:
-                get_decimales = str(precio)[str(precio).find(".")+1:]
-            
-                if len(get_decimales) == 2:
-                    return forms.ValidationError('El precio de la compra debe contener dos decimales')
-                else:
-                    return precio
+                return precio
     
     def clean_idPaciente(self):
         id_paciente = self.cleaned_data['idPaciente']

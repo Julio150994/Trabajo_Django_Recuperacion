@@ -233,7 +233,7 @@ class MedicamentoForm(forms.ModelForm):
             raise forms.ValidationError('Debe introducir un número de stock.')
         return stock
     
-class CitaForm(forms.ModelForm):
+class CitaForm(forms.ModelForm):        
     class Meta:
         model = Cita
         fields = '__all__'
@@ -263,3 +263,11 @@ class CitaForm(forms.ModelForm):
             'observaciones': {'required':'Debe escribir las observaciones para el paciente', 'max_length':'Las observaciones deben formar 100 caracteres como máximo'},
         }
         
+"""class CitaPacienteForm(PacienteForm):
+    class Meta(PacienteForm.Meta):
+        fields = '__all__'
+        exclude = ('nombre','apellidos','edad','direccion','foto','activo','password')
+        
+        widgets = {
+            'username': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'disabled':'disabled', 'required':'required'})
+        }"""
