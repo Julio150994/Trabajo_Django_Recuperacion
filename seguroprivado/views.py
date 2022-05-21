@@ -416,7 +416,22 @@ class CitaCreate(LoginRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         form = CitaForm(request.POST, request.user)
         
-        if form.is_valid():  
-            username = request.user.username
-            messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
+        citas = Cita.objects.all()
+        print("Todas las citas de los pacientes: "+str(citas))
+        
+        fecha = request.POST.get('fecha')
+        fechas_cita = Cita.objects.get(fecha=fecha)
+        print("Fechas de las citas: "+str(fechas_cita))
+        lista_fechas = list()
+        
+        for f in lista_fechas:
+            lista_fechas.append(f)
+            
+        if len(lista_fechas) == 3:
+            messages.add_message(request, level=messages.WARNING, message="Advertencia. Este médico ya no puede atender más de 3 citas en esta fecha")
+            return redirect('form_cita')
+        else:
+            if form.is_valid():
+                username = request.user.username  
+                messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
         return super().post(request, *args, **kwargs)
