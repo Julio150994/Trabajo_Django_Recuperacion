@@ -5,8 +5,16 @@
 
 {% block citas_paciente %}
 
-{# Mensajes para las citas #}
-{% if messages %}
+<div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4 pb-5 pt-5">
+    <div class="container-fluid mt-3 ml-4 p-1 rounded">
+        <a href="{% url 'form_cita' %}" class="btn btn-primary">
+            <span class="fas fa-user-plus"></span>
+            <span>Pedir cita</span>
+        </a>
+    </div>
+
+    {# Mensajes para las citas #}
+    {% if messages %}
     {% for cita_paciente in messages %}
         {% if cita_paciente.tags %}
         <div class="container-fluid alert alert-{{ cita_paciente.tags }} mx-auto mt-auto text-center">
@@ -14,23 +22,15 @@
         </div>
         {% endif %}
     {% endfor %}
-{% endif %}
-
-<div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4">
-    <div class="container-fluid mt-3 ml-4 p-1 rounded">
-        <a href="{% url 'form_cita' %}" class="btn btn-primary">
-            <span class="fas fa-user-plus"></span>
-            <span>Pedir cita</span>
-        </a>
-    </div>
+    {% endif %}
     
     <div class="container-fluid mx-auto bg-light rounded mt-2">
         {% if not cita_list %}
         <div class="alert alert-warning text-center">No se han encontrado citas para {{ request.user }}</div>
         {% else %}
-        <h1 class="text-primary text-center mb-4 p-md-3">Citas de {{ request.user }}</h1>
+        <h1 class="text-primary text-center mb-5 p-md-3">Citas de {{ request.user }}</h1>
         {# Contenedor para poner un scroll a la tabla #}
-        <div class="container-fluid" style="max-height: 260px; overflow: auto; display: inline-block;">
+        <div class="container-fluid mt-3 mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
             <table class="table table-bordered text-center">
                 <thead class="table table-dark text-white">
                     <tr>
@@ -57,7 +57,7 @@
             </table>
         </div>
         {% endif %}
-        <a href="{% url 'inicio' %}" class="btn btn-dark mt-2 mb-3 ml-3">
+        <a href="{% url 'inicio' %}" class="btn btn-dark ml-3 mb-5">
             <span class="fas fa-arrow-left"></span>
             <span>Volver al menú</span>
         </a>

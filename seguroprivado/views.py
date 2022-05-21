@@ -416,7 +416,7 @@ class CitaCreate(LoginRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         form = CitaForm(request.POST, request.user)
         
-        if form.is_valid():
+        if form.is_valid():  
             username = request.user.username
             messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
         return super().post(request, *args, **kwargs)
