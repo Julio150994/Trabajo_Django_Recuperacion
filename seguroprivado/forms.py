@@ -234,11 +234,16 @@ class MedicamentoForm(forms.ModelForm):
             raise forms.ValidationError('Debe introducir un número de stock.')
         return stock
     
-class CitaForm(forms.ModelForm):    
-    """def __init__(self, *args, **kwargs):
+class CitaForm(forms.ModelForm):  
+    """
+    'value':Paciente.objects.get(username="sandralo93").username,
+    'disabled':'disabled'
+    
+    def __init__(self, *args, **kwargs):
         super(CitaForm, self).__init__(*args, **kwargs)
         user = self.instance.user
-        self.fields['user'].queryset = User.objects.filter(pk = self.user.id)"""
+        self.fields['user'].queryset = User.objects.filter(pk = self.user.id)
+    """
     
     class Meta:        
         model = Cita
@@ -258,10 +263,10 @@ class CitaForm(forms.ModelForm):
         }
         
         widgets = {            
-            'idPaciente': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'required':'true', 'value':Paciente.objects.get(username="sandralo93").username, 'disabled':'disabled'}),
+            'idPaciente': forms.Select(attrs={'class':'form-control form-control-sm mx-auto', 'required':'true'}),
             'idMedico': forms.Select(attrs={'class':'form-control form-control-sm mx-auto', 'required':'true'}),
-            'fecha': forms.DateInput(format = ('%d/%m/%Y'), attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Fecha de cita', 'type':'date', 'required':'required'}),
-            'observaciones': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'style': 'height: 100px', 'placeholder':'Escriba las observaciones', 'required':'required'})
+            'fecha': forms.DateInput(format = ('%d/%m/%Y'), attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Fecha de cita', 'type':'date', 'required':'true'}),
+            'observaciones': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'style': 'height: 100px', 'placeholder':'Escriba las observaciones', 'required':'true'})
         }
             
         error_messages = {
