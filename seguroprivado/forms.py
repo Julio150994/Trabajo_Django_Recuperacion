@@ -1,5 +1,6 @@
 from django import forms
 from seguroprivado.models import Cita, Paciente, Medico, Medicamento
+from django.contrib.auth.models import User
 from datetime import datetime
 
 # Create your forms here.
@@ -233,18 +234,16 @@ class MedicamentoForm(forms.ModelForm):
             raise forms.ValidationError('Debe introducir un número de stock.')
         return stock
     
-class CitaForm(forms.ModelForm):        
-    class Meta:
-        def __init__(self, username, *args, **kwargs):
-            print("Usuario actual: "+str(username))
-            self.paciente_actual = str(username)
+class CitaForm(forms.ModelForm):    
+    """def __init__(self, *args, **kwargs):
+        super(CitaForm, self).__init__(*args, **kwargs)
+        user = self.instance.user
+        self.fields['user'].queryset = User.objects.filter(pk = self.user.id)"""
     
-        def get_paciente(self):
-            print("Paciente actual: "+str(self.paciente_actual))
-            return self.paciente_actual
-        
+    class Meta:        
         model = Cita
         fields = '__all__'
+        
         
         labels = {
             'idMedico': 'Médico',
@@ -259,8 +258,8 @@ class CitaForm(forms.ModelForm):
         }
         
         widgets = {            
-            'idPaciente': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'value':str(get_paciente), 'disabled':'disabled'}),
-            'idMedico': forms.Select(attrs={'class':'form-control form-control-sm mx-auto', 'required':'required'}),
+            'idPaciente': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'required':'true', 'value':Paciente.objects.get(username="sandralo93").username, 'disabled':'disabled'}),
+            'idMedico': forms.Select(attrs={'class':'form-control form-control-sm mx-auto', 'required':'true'}),
             'fecha': forms.DateInput(format = ('%d/%m/%Y'), attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Fecha de cita', 'type':'date', 'required':'required'}),
             'observaciones': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'style': 'height: 100px', 'placeholder':'Escriba las observaciones', 'required':'required'})
         }
