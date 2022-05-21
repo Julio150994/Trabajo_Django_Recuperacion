@@ -273,7 +273,7 @@ class CompraMedicamentoAdminForm(forms.ModelForm):
 # Para establecer relaciones entre los modelos
 class MedicoInline(admin.StackedInline):
     model = Medico
-
+    
 class MedicamentoInline(admin.StackedInline):
     model = Medicamento
     
@@ -321,6 +321,7 @@ class CitaAdmin(admin.ModelAdmin):
     list_filter = ["idPaciente","idMedico",]
     ordering = ["-id",]
     list_per_page = 3
+    #inlines = [PacienteInline, MedicoInline,]
 
 class CompraAdmin(admin.ModelAdmin):
     form = CompraAdminForm
@@ -329,6 +330,7 @@ class CompraAdmin(admin.ModelAdmin):
     list_filter = ["idPaciente",]
     ordering = ["-id",]
     list_per_page = 3
+    #inlines = [PacienteInline,]
 
 class CompraMedicamentoAdmin(admin.ModelAdmin):
     form = CompraMedicamentoAdminForm
@@ -337,6 +339,7 @@ class CompraMedicamentoAdmin(admin.ModelAdmin):
     list_filter = ["idMedicamento",]
     ordering = ["-id",]
     list_per_page = 3
+    #inlines = [MedicamentoInline, CompraInline,]
 
 # Register your models here.
 
