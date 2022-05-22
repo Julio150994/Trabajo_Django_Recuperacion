@@ -37,8 +37,6 @@
                 <table class="table table-bordered text-center">
                     <thead class="table table-dark text-white">
                         <tr>
-                            <th>Nombre y apellidos del paciente</th>
-                            <th>Nombre de usuario del paciente</th>
                             <th>Nombre y apellidos del médico</th>
                             <th>Edad del médico</th>
                             <th>Nombre de usuario del médico</th>
@@ -50,8 +48,6 @@
                         {% for cita in cita_list %}
                         {% if cita.idPaciente.username == request.user.username %}
                         <tr>
-                            <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
-                            <td>{{ cita.idPaciente.username }}</td>
                             <td>{{ cita.idMedico.nombre }} {{ cita.idMedico.apellidos }}</td>
                             <td>{{ cita.idMedico.edad }}</td>
                             <td>{{ cita.idMedico.username }}</td>
