@@ -414,13 +414,10 @@ class CitaCreate(LoginRequiredMixin, CreateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
-    """def get_context_data(self, **kwargs):
-        form = CitaForm(self.request.POST)
-        username = self.request.user
-        
-        usuario_paciente = Paciente.objects.get(username=username)
-        form.instance.paciente = usuario_paciente
-        return super().get_context_data(**kwargs)"""
+    """def get_form_kwargs(self):
+        form = CitaForm(self.request.user)
+        #form.fields['user'].queryset = Paciente.objects.filter(username=self.request.user)
+        return form"""
     
     def post(self, request, *args, **kwargs):
         form = CitaForm(request.POST)

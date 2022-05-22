@@ -235,10 +235,14 @@ class MedicamentoForm(forms.ModelForm):
         return stock
     
 class CitaForm(forms.ModelForm):
+    """def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request")
+        super(CitaForm, self).__init__(*args, **kwargs)
+        self.queryset = Paciente.objects.filter(username=self.request.user)
+    
+    def get_paciente(self):
+        return self.queryset"""
     class Meta:
-        usuario_paciente = User.get_username
-        print("Usuario actual: "+str(usuario_paciente))
-        
         model = Cita
         fields = '__all__'
         
@@ -255,7 +259,7 @@ class CitaForm(forms.ModelForm):
         }
         
         widgets = {
-            'idPaciente': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'value':'', 'disabled':'true', 'required':'true'}),
+            'idPaciente': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'value':'sandralo93', 'disabled':'true', 'required':'true'}),
             'idMedico': forms.Select(attrs={'class':'form-control form-control-sm mx-auto', 'required':'true'}),
             'fecha': forms.DateInput(format = ('%d/%m/%Y'), attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Fecha de cita', 'type':'date', 'required':'true'}),
             'observaciones': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'style': 'height: 100px', 'placeholder':'Escriba las observaciones', 'required':'true'})
