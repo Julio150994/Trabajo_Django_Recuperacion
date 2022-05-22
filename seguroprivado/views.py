@@ -424,14 +424,14 @@ class CitaCreate(LoginRequiredMixin, CreateView):
             for fecha_cita in tupla:
                 lista_fechas.append(fecha_cita)
         
-        if len(lista_fechas) == 1:
-            # "Advertencia. Este médico ya no puede atender más de 3 citas en esta fecha"
-            messages.add_message(request, level=messages.WARNING, message="Mensaje de prueba de error")
+        if len(lista_fechas) == 3:
+            messages.add_message(request, level=messages.WARNING, message="Advertencia. Este médico ya no puede atender más de 3 citas en esta fecha")
             return redirect('form_cita')
         else:
-            username = request.user.username
-            messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
-            return redirect('citas_paciente')
+            if form.is_valid():
+                username = request.user.username
+                messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
+            return super().post(request, *args, **kwargs)
         
         """lista_fechas = list()
         
