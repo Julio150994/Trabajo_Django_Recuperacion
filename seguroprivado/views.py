@@ -1,4 +1,5 @@
 from datetime import datetime
+from django import forms
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
@@ -413,13 +414,22 @@ class CitaCreate(LoginRequiredMixin, CreateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
+    """def get_context_data(self, **kwargs):
+        form = CitaForm(self.request.POST)
+        username = self.request.user
+        
+        usuario_paciente = Paciente.objects.get(username=username)
+        form.instance.paciente = usuario_paciente
+        return super().get_context_data(**kwargs)"""
+    
     def post(self, request, *args, **kwargs):
-        form = CitaForm(request.POST, request.user)
+        form = CitaForm(request.POST)
         
         fechas_citas = Cita.objects.all().values_list('fecha')
         lista_fechas = list()
+        #datos_citas = list()
+        #dic_citas = dict()
         
-        print("Fechas de las citas:")
         for tupla in fechas_citas:
             for fecha_cita in tupla:
                 lista_fechas.append(fecha_cita)
@@ -432,11 +442,6 @@ class CitaCreate(LoginRequiredMixin, CreateView):
                 username = request.user.username
                 messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
             return super().post(request, *args, **kwargs)
-        
-        """lista_fechas = list()
-        
-        for f in lista_fechas:
-            lista_fechas.append(fechas_citas)"""
         
         #username = request.user.username
         #messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
