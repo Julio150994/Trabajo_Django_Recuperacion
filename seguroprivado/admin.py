@@ -36,7 +36,7 @@ class MedicoAdminForm(forms.ModelForm):
         fechaalta = self.cleaned_data['fechaalta']
         
         set_fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
-        set_fecha_alta = datetime.strptime(fechaalta,'%Y-%m-%d')
+        set_fecha_alta = datetime.strptime(str(fechaalta),'%Y-%m-%d')
         
         if set_fecha_alta <= set_fecha_actual:
             raise forms.ValidationError('La fecha de alta no debe ser menor o igual que la fecha actual')
@@ -208,7 +208,7 @@ class CitaAdminForm(forms.ModelForm):
         fecha = self.cleaned_data['fecha']
         
         set_fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
-        set_fecha_cita = datetime.strptime(fecha,'%Y-%m-%d')
+        set_fecha_cita = datetime.strptime(str(fecha),'%Y-%m-%d')
         
         if set_fecha_cita <= set_fecha_actual:
             raise forms.ValidationError('La fecha de la cita no debe ser menor o igual que la fecha actual')
@@ -225,15 +225,15 @@ class CitaAdminForm(forms.ModelForm):
 
 class CompraAdminForm(forms.ModelForm):
     def clean_fecha(self):
-        fecha_compra = self.cleaned_data['fecha']
+        fecha = self.cleaned_data['fecha']
 
         set_fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
-        set_fecha_compra = datetime.strptime(fecha_compra,'%Y-%m-%d')
+        set_fecha_compra = datetime.strptime(str(fecha),'%Y-%m-%d')
         
         if set_fecha_compra > set_fecha_actual:
             raise forms.ValidationError('La fecha de compra no debe ser mayor que la fecha actual')
         else:
-            return fecha_compra
+            return fecha
             
     def clean_precio(self):
         precio = self.cleaned_data['precio']
