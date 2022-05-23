@@ -415,11 +415,6 @@ class CitaCreate(LoginRequiredMixin, CreateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
-    """def get_form_kwargs(self):
-        form = CitaForm(self.request.user)
-        #form.fields['user'].queryset = Paciente.objects.filter(username=self.request.user)
-        return form"""
-    
     def post(self, request, *args, **kwargs):
         form = CitaForm(request.POST)
         
@@ -430,8 +425,7 @@ class CitaCreate(LoginRequiredMixin, CreateView):
         
         # Obtenemos el objeto del paciente
         idPaciente = request.POST.get('idPaciente')
-        paciente = Paciente.objects.get(id=idPaciente)
-        print("Usuario paciente añadido a la cita: "+str(paciente.username))
+        paciente = Paciente.objects.get(id=idPaciente).username
         
         # Obtenemos el objeto del médico
         idMedico = request.POST.get('idMedico')
@@ -447,37 +441,29 @@ class CitaCreate(LoginRequiredMixin, CreateView):
         else:
             for cita in Cita.objects.all().order_by('-id'):
                 dict_citas = {str(cita.idMedico.username): str(cita.fecha)}
-            lista_citas.append(dict_citas)
+                lista_citas.append(dict_citas)
         
-            print("\nListado de citas obtenida: "+str(lista_citas))
             nueva_cita.update({str(medico.username): str(fecha)})
             lista_citas.append(nueva_cita)
-            print("\nListado de citas actualizada: "+str(lista_citas))
             
             for item in lista_citas:
                 contador = lista_citas.count(item)
-                print(contador)
                 list_aux_medico.append(contador)
             
-            cantidad_repetidos = list(set(list_aux_medico))
-            print("Cantidad de elemento repetido: "+str(cantidad_repetidos))
             citas_repetidas = lista_citas.count({str(medico.username) : str(fecha)})
-            print("Nº de citas repetidas por el médico "+str(medico.username)+" a fecha de "+str(fecha)+": "+str(citas_repetidas)+"\n")
             
+            # Validamos que un médico solamente puede atender hasta 3 citas en un mismo día.
             if citas_repetidas == 3:
-                messages.add_message(request, level=messages.WARNING, message="El médico "+str(medico.username)+" no puede atender más de 3 citas al día, sentimos las molestias")
+                # Convertimos la fecha del formato yyyy-mm-dd al formato dd/mm/YYYY
+                anio = str(fecha)[0:str(fecha).find('-')]
+                aux = str(fecha)[str(fecha).find('-')+1:]
+                mes = aux[0:str(aux).find('-')]
+                dia = aux[str(aux).find('-')+1:]
+                
+                fecha_repetida = str(dia)+"/"+str(mes)+"/"+str(anio)
+                messages.add_message(request, level=messages.WARNING, message="El médico "+str(medico.username)+" no puede atender más citas para el "+str(fecha_repetida))
                 return redirect(self.error_url)
-            else:    
-                username = request.user.username
-                messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
-                #return redirect(self.success_url)
-                return super().post(request, *args, **kwargs)
-       
-        """if len(lista_fechas) == 3:
-            messages.add_message(request, level=messages.WARNING, message="Advertencia. Este médico ya no puede atender más de 3 citas en esta fecha")
-            return redirect('form_cita')
-        else:
-            if form.is_valid():
-                username = request.user.username
-                messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
-            return super().post(request, *args, **kwargs)"""
+            else:
+                if form.is_valid():       
+                    messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(paciente)+" añadida correctamente")
+                    return super().post(request, *args, **kwargs)
