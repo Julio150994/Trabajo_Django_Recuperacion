@@ -25,10 +25,9 @@
     {% endif %}
     
     <div class="container-fluid mx-auto bg-light rounded mt-2">
-        {% if not request.user.is_authenticated %}
-        {% else %}
-            {% for cita in cita_list %}
-            {% if not cita_list or cita.idPaciente.username != request.user.username %}
+        {% if request.user.is_authenticated %}
+            {# Lanzamos mensaje cuando no se han encontrado citas para un paciente determinado #}
+            {% if not request.user.username %}
             <div class="alert alert-warning text-center">No se han encontrado citas para {{ request.user }}</div>
             {% else %}
             <h1 class="text-primary text-center mb-5 p-md-3">Citas de {{ request.user }}</h1>
@@ -60,7 +59,6 @@
                 </table>
             </div>
             {% endif %}
-            {% endfor %}
         {% endif %}
         <a href="{% url 'inicio' %}" class="btn btn-dark ml-3 mb-5">
             <span class="fas fa-arrow-left"></span>
