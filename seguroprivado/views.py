@@ -410,6 +410,7 @@ class CitaCreate(LoginRequiredMixin, CreateView):
     form_class = CitaForm
     template_name = "seguroprivado/form_cita.html"
     success_url = reverse_lazy('citas_paciente')
+    error_url = reverse_lazy('form_cita')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -421,49 +422,58 @@ class CitaCreate(LoginRequiredMixin, CreateView):
     
     def post(self, request, *args, **kwargs):
         form = CitaForm(request.POST)
+        
         dict_citas = dict()
         nueva_cita = dict()
         lista_citas = list()
-        datos = list()
+        list_aux_medico = list()
         
         # Obtenemos el objeto del paciente
         idPaciente = request.POST.get('idPaciente')
         paciente = Paciente.objects.get(id=idPaciente)
-        print("P: "+str(paciente))
+        print("Usuario paciente añadido a la cita: "+str(paciente.username))
         
         # Obtenemos el objeto del médico
-        medico = request.POST.get('idMedico')
-        print("M: "+str(medico))
+        idMedico = request.POST.get('idMedico')
+        medico = Medico.objects.get(id=idMedico)
         
         fecha = request.POST.get('fecha')# fecha de cita enviada
         fecha_cita = datetime.strptime(fecha, '%Y-%m-%d')
         fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
         
-        for cita in Cita.objects.all().order_by('-id'):
-            dict_citas = {str(cita.idMedico.username): str(cita.fecha)}
-            lista_citas.append(dict_citas)
-        
-        print("Listado de citas obtenida: "+str(lista_citas))
-        
-        nueva_cita.update({str(medico): str(fecha)})
-        print("\nDatos de la nueva cita: "+str(nueva_cita))
-        lista_citas.append(nueva_cita)
-        print("\nCitas actualizadas: "+str(lista_citas))
-        
         if fecha_cita < fecha_actual:
             messages.add_message(request, level=messages.WARNING, message="La fecha de cita debe ser mayor o igual que la fecha actual")
-            return redirect('form_cita')
+            return redirect(self.error_url)
         else:
-            if form.is_valid():    
+            for cita in Cita.objects.all().order_by('-id'):
+                dict_citas = {str(cita.idMedico.username): str(cita.fecha)}
+            lista_citas.append(dict_citas)
+        
+            print("\nListado de citas obtenida: "+str(lista_citas))
+            nueva_cita.update({str(medico.username): str(fecha)})
+            lista_citas.append(nueva_cita)
+            print("\nListado de citas actualizada: "+str(lista_citas))
+            
+            for item in lista_citas:
+                contador = lista_citas.count(item)
+                print(contador)
+                list_aux_medico.append(contador)
+            
+            cantidad_repetidos = list(set(list_aux_medico))
+            print("Cantidad de elemento repetido: "+str(cantidad_repetidos))
+            citas_repetidas = lista_citas.count({str(medico.username) : str(fecha)})
+            print("Nº de citas repetidas por el médico "+str(medico.username)+" a fecha de "+str(fecha)+": "+str(citas_repetidas)+"\n")
+            
+            if citas_repetidas == 3:
+                messages.add_message(request, level=messages.WARNING, message="El médico "+str(medico.username)+" no puede atender más de 3 citas al día, sentimos las molestias")
+                return redirect(self.error_url)
+            else:    
                 username = request.user.username
                 messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
+                #return redirect(self.success_url)
                 return super().post(request, *args, **kwargs)
-        
-        """for tupla in fechas_citas:
-            for fecha_cita in tupla:
-                lista_fechas.append(fecha_cita)
-        
-        if len(lista_fechas) == 3:
+       
+        """if len(lista_fechas) == 3:
             messages.add_message(request, level=messages.WARNING, message="Advertencia. Este médico ya no puede atender más de 3 citas en esta fecha")
             return redirect('form_cita')
         else:
