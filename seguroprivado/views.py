@@ -63,7 +63,7 @@ class RegistroPacientesView(CreateView):
             
             User.objects.create(username=username, password=set_paciente.password)
             messages.add_message(request, level=messages.SUCCESS, message="Paciente "+str(username)+" registrado correctamente.")
-            return redirect(reverse('login'))
+            return redirect('login')
         else:
             messages.add_message(request, level=messages.WARNING, message="Error al registrar paciente")
             return redirect('registro')
@@ -421,13 +421,45 @@ class CitaCreate(LoginRequiredMixin, CreateView):
     
     def post(self, request, *args, **kwargs):
         form = CitaForm(request.POST)
+        dict_citas = dict()
+        nueva_cita = dict()
+        lista_citas = list()
+        datos = list()
         
-        fechas_citas = Cita.objects.all().values_list('fecha')
-        lista_fechas = list()
-        #datos_citas = list()
-        #dic_citas = dict()
+        # Obtenemos el objeto del paciente
+        idPaciente = request.POST.get('idPaciente')
+        paciente = Paciente.objects.get(id=idPaciente)
+        print("P: "+str(paciente))
         
-        for tupla in fechas_citas:
+        # Obtenemos el objeto del médico
+        medico = request.POST.get('idMedico')
+        print("M: "+str(medico))
+        
+        fecha = request.POST.get('fecha')# fecha de cita enviada
+        fecha_cita = datetime.strptime(fecha, '%Y-%m-%d')
+        fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
+        
+        for cita in Cita.objects.all().order_by('-id'):
+            dict_citas = {str(cita.idMedico.username): str(cita.fecha)}
+            lista_citas.append(dict_citas)
+        
+        print("Listado de citas obtenida: "+str(lista_citas))
+        
+        nueva_cita.update({str(medico): str(fecha)})
+        print("\nDatos de la nueva cita: "+str(nueva_cita))
+        lista_citas.append(nueva_cita)
+        print("\nCitas actualizadas: "+str(lista_citas))
+        
+        if fecha_cita < fecha_actual:
+            messages.add_message(request, level=messages.WARNING, message="La fecha de cita debe ser mayor o igual que la fecha actual")
+            return redirect('form_cita')
+        else:
+            if form.is_valid():    
+                username = request.user.username
+                messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
+                return super().post(request, *args, **kwargs)
+        
+        """for tupla in fechas_citas:
             for fecha_cita in tupla:
                 lista_fechas.append(fecha_cita)
         
@@ -438,17 +470,4 @@ class CitaCreate(LoginRequiredMixin, CreateView):
             if form.is_valid():
                 username = request.user.username
                 messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
-            return super().post(request, *args, **kwargs)
-        
-        #username = request.user.username
-        #messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
-        #return redirect('citas_paciente')
-            
-        """if len(lista_fechas) == 3:
-            messages.add_message(request, level=messages.WARNING, message="Advertencia. Este médico ya no puede atender más de 3 citas en esta fecha")
-            return redirect('form_cita')
-        else:
-            if form.is_valid():
-                username = request.user.username
-                messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(username)+" añadida correctamente")
-        return super().post(request, *args, **kwargs)"""
+            return super().post(request, *args, **kwargs)"""

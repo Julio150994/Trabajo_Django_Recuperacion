@@ -48,7 +48,7 @@
 
     <label for="observaciones" class="text-primary mt-2" style="margin-left: -0.9em;">{{ form.observaciones.label }}</label>
 
-    <div class="input-group input-navbar mb-2">
+    <div class="input-group input-navbar mb-3">
       <div class="input-group-prepend row">
         <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-notes-medical"></span></span>
       </div>
@@ -56,13 +56,14 @@
     </div>
     {{ form.observaciones.of_field_errors }}
 
-
     {# Mensajes de errores de validación en el formulario #}
     {% if messages %}
     {% for error in messages %}
         {% if error.tags %}
-        <div class="alert alert-{{ error.tags }} row mx-auto text-center">
-            {{ error }}
+        <div class="input-group input-navbar">
+          <div class="input-group-prepend row">
+            <div class="alert alert-{{ error.tags }} mx-auto text-center mb-2 mt-3">{{ error }}</div>
+          </div>
         </div>
         {% endif %}
     {% endfor %}
