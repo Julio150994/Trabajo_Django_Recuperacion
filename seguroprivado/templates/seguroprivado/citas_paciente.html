@@ -25,47 +25,52 @@
     {% endif %}
     
     <div class="container-fluid mx-auto bg-light rounded mt-2">
-        {% if request.user.is_authenticated %}
-            {% for cita in cita_list|slice:"1" %}
-                {# Lanzamos mensaje cuando no se han encontrado citas para un paciente determinado #}
-                {% if cita|length != 0 %}
+        {% if request.user.is_authenticated %}            
+            {# Lanzamos mensaje cuando no se han encontrado citas para un paciente determinado #}
+            {% if not citas_paciente %}
+            <div class="container-fluid">
+                <div class="alert alert-warning text-center">El paciente {{ request.user }} no tiene citas pedidas</div>
+            </div>
+            {% else %}
+                {% if citas_pendientes %}
+                <div class="container-fluid">
+                    <div class="alert alert-warning text-center">El paciente {{ request.user }} no tiene citas pendientes</div>
+                </div>
                 {% else %}
-                    {% if cita_list|length == 0 %}
-                    <div class="alert alert-warning text-center">No se han encontrado citas para {{ request.user }}</div>
-                    {% else %}
-                    <h1 class="text-primary text-center mb-5 p-md-3">Citas de {{ request.user }}</h1>
-                    {# Contenedor para poner un scroll a la tabla #}
-                    <div class="container-fluid mt-3 mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
-                        <table class="table table-bordered text-center">
-                            <thead class="table table-dark text-white">
-                                <tr>
-                                    <th>Nombre y apellidos del médico</th>
-                                    <th>Edad del médico</th>
-                                    <th>Nombre de usuario del médico</th>
-                                    <th>Fecha de cita</th>
-                                    <th>Observaciones</th>
-                                </tr>
-                            </thead>
-                            <tbody class="table table-light">
-                                {% for cita in cita_list %}
-                                {% if cita.idPaciente.username == request.user.username %}
-                                <tr>
-                                    <td>{{ cita.idMedico.nombre }} {{ cita.idMedico.apellidos }}</td>
-                                    <td>{{ cita.idMedico.edad }}</td>
-                                    <td>{{ cita.idMedico.username }}</td>
-                                    <td>{{ cita.fecha|date:"d/m/Y" }}</td>
-                                    <td>{{ cita.observaciones }}</td>
-                                </tr>
-                                {% endif %}
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    {% endif %}
+                <h1 class="text-primary text-center mb-5 p-md-3">Citas del paciente</h1>
+                {# Contenedor para poner un scroll a la tabla #}
+                <div class="container-fluid mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
+                    <table class="table table-bordered text-center">
+                        <thead class="table table-dark text-white">
+                            <tr>
+                                <th>Usuario paciente</th>
+                                <th>Nombre y apellidos del médico</th>
+                                <th>Edad del médico</th>
+                                <th>Nombre de usuario del médico</th>
+                                <th>Fecha de cita</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table table-light">
+                            {% for cita in cita_list %}
+                            {% if cita.idPaciente.username == request.user.username %}
+                            <tr>
+                                <td>{{ cita.idPaciente.username }}</td>
+                                <td>{{ cita.idMedico.nombre }} {{ cita.idMedico.apellidos }}</td>
+                                <td>{{ cita.idMedico.edad }}</td>
+                                <td>{{ cita.idMedico.username }}</td>
+                                <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                                <td>{{ cita.observaciones }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 {% endif %}
-            {% endfor %}
+            {% endif %}  
         {% endif %}
-        <a href="{% url 'inicio' %}" class="btn btn-dark ml-3 mb-5">
+        <a href="{% url 'inicio' %}" class="btn btn-dark ml-3 mt-5 mb-5">
             <span class="fas fa-arrow-left"></span>
             <span>Volver al menú</span>
         </a>
@@ -73,5 +78,5 @@
 </div>
 {% endblock %}
 
- {% comment %} Código del copyright {% endcomment %}
- {% include "seguroprivado/footer.html" %}
+{% comment %} Código del copyright {% endcomment %}
+{% include "seguroprivado/footer.html" %}

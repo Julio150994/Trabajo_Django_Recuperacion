@@ -401,6 +401,29 @@ class CitaList(LoginRequiredMixin, ListView):
     model = Cita
     template_name = "seguroprivado/citas_paciente.html"
 
+    def get_context_data(self, **kwargs):
+        context = super(CitaList, self).get_context_data(**kwargs)
+        
+        paciente = Paciente.objects.get(username=self.request.user)
+        # Buscamos si el paciente tiene o no citas pendientes
+        citas_paciente = Cita.objects.filter(idPaciente=paciente)
+        context['citas_paciente'] = citas_paciente
+        
+        fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day)) 
+        print("Fecha actual: "+str(fecha_actual))
+        aux_cita = ""
+        
+        fechas = Cita.objects.all().values_list('fecha')
+        for cita in fechas:
+            for item in cita:
+                fecha_cita = datetime.strptime(str(item),'%Y-%m-%d')
+                
+                if fecha_cita == fecha_actual:
+                    context['citas_pendientes'] = aux_cita
+        
+        context['citas_pendientes']
+        return context
+    
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
@@ -423,7 +446,6 @@ class CitaCreate(LoginRequiredMixin, CreateView):
         form = CitaForm(self.request.POST, initial=dict_pacientes)
         context['form'] = form
         return super().get_context_data()
-        
     
     def post(self, request, *args, **kwargs):
         form = CitaForm(request.POST)
