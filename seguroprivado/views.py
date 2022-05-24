@@ -365,13 +365,10 @@ class MedicamentoUpdate(LoginRequiredMixin, UpdateView):
         medicamento_actual.descripcion = descripcion
         medicamento_actual.receta = receta
         medicamento_actual.precio = float(precio)
-        medicamento_actual.stock += int(stock)
+        medicamento_actual.stock += int(stock)                        
         
-        if medicamento_actual.nombre == medicamento_anterior.nombre:
-            messages.add_message(request,level=messages.WARNING, message="Debe cambiar el nombre del medicamento "+str(medicamento_anterior.nombre))
-        else:                        
-            medicamento_actual.save()
-            messages.add_message(request,level=messages.INFO, message="Medicamento "+str(nombre)+" editado correctamente")
+        medicamento_actual.save()
+        messages.add_message(request,level=messages.INFO, message="Medicamento "+str(nombre)+" editado correctamente")
         return redirect(self.success_url)
         
 @method_decorator(login_required, name='dispatch')

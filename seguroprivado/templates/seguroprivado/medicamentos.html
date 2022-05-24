@@ -57,17 +57,7 @@
                             <td class="text-danger"><span class="fas fa-solid fa-prescription-bottle"></span></td>
                         {% endif %}
                         <td>{{ medicamento.precio|floatformat:2 }} €</td>
-                        <td class="col-sm-1">
-                            <form action="{% url 'editar_medicamento' medicamento.id %}" method="POST">
-                                {% csrf_token %}
-                                
-                                {% if medicamento.stock == 0 %}
-                                <input type="number" class="form-control rounded bg-warning text-white text-center" value="{{ medicamento.stock }}">
-                                {% else %}
-                                <input type="number" class="form-control rounded bg-primary text-white text-center" value="{{ medicamento.stock }}">
-                                {% endif %}
-                            </form>
-                        </td>
+                        <td>{{ medicamento.stock }}</td>
                         <td>
                             <a href="{% url 'editar_medicamento' medicamento.id %}" class="btn btn-info btn-sm">
                                 <span class="fas fa-edit"></span>
