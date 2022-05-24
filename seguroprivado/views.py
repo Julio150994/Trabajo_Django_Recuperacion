@@ -1,5 +1,4 @@
 from datetime import datetime
-from django import forms
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
@@ -414,6 +413,17 @@ class CitaCreate(LoginRequiredMixin, CreateView):
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        paciente = Paciente.objects.get(username=self.request.user)
+        
+        context = {}
+        dict_pacientes = {"idPaciente": paciente}
+        
+        form = CitaForm(self.request.POST, initial=dict_pacientes)
+        context['form'] = form
+        return super().get_context_data()
+        
     
     def post(self, request, *args, **kwargs):
         form = CitaForm(request.POST)
