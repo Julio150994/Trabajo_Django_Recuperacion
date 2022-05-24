@@ -36,7 +36,7 @@ class Medico(models.Model):
 
 class Medicamento(models.Model):
     id = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=50, unique=True, null=False, blank=False, verbose_name="Nombre")
+    nombre = models.CharField(max_length=50, null=False, blank=False, verbose_name="Nombre")
     descripcion = models.CharField(max_length=100, null=False, blank=False, verbose_name="Descripción")
     
     CON = 's'
