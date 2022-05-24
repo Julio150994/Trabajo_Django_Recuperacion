@@ -32,7 +32,7 @@ class Medico(models.Model):
         ordering = ["-id"]
     
     def __str__(self):
-        return self.nombre+" "+self.apellidos+" "+str(self.edad)+" "+str(self.fechaalta)+" "+self.especialidad+" "+self.username+" "+self.password
+        return self.username
 
 class Medicamento(models.Model):
     id = models.AutoField(primary_key=True)
