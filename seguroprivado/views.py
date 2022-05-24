@@ -404,13 +404,16 @@ class CitaList(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(CitaList, self).get_context_data(**kwargs)
         
+        # Pasamos los pacientes al template #
+        pacientes = Paciente.objects.all()
+        context['pacientes'] = pacientes
+        
         paciente = Paciente.objects.get(username=self.request.user)
         # Buscamos si el paciente tiene o no citas pendientes
         citas_paciente = Cita.objects.filter(idPaciente=paciente)
         context['citas_paciente'] = citas_paciente
         
         fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day)) 
-        print("Fecha actual: "+str(fecha_actual))
         aux_cita = ""
         
         fechas = Cita.objects.all().values_list('fecha')
@@ -438,14 +441,20 @@ class CitaCreate(LoginRequiredMixin, CreateView):
         return super().dispatch(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs):
-        paciente = Paciente.objects.get(username=self.request.user)
+        context = super(CitaCreate, self).get_context_data(**kwargs)
         
-        context = {}
-        dict_pacientes = {"idPaciente": paciente}
+        pacientes = Paciente.objects.all()
+        context['pacientes'] = pacientes
         
-        form = CitaForm(self.request.POST, initial=dict_pacientes)
-        context['form'] = form
-        return super().get_context_data()
+        #context['paciente'] = 
+        paciente_logueado = Paciente.objects.get(username=self.request.user)
+        self.kwargs['paciente'] = paciente_logueado
+        return context
+    
+    """def get_initial(self):
+        paciente_logueado = Paciente.objects.get(username=self.request.user)
+        self.initial['paciente'] = paciente_logueado
+        return self.initial.copy()"""
     
     def post(self, request, *args, **kwargs):
         form = CitaForm(request.POST)

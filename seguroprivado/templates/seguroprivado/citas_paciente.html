@@ -7,10 +7,14 @@
 
 <div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4 pb-5 pt-5">
     <div class="container-fluid mt-3 ml-4 p-1 rounded">
-        <a href="{% url 'form_cita' %}" class="btn btn-primary">
+        {% for paciente in pacientes %}
+        {% if paciente.username == request.user.username %}
+        <a href="{% url 'form_cita' paciente.id %}" class="btn btn-primary">
             <span class="fas fa-user-plus"></span>
             <span>Pedir cita</span>
         </a>
+        {% endif %}
+        {% endfor %}
     </div>
 
     {# Mensajes para las citas #}
@@ -43,7 +47,6 @@
                     <table class="table table-bordered text-center">
                         <thead class="table table-dark text-white">
                             <tr>
-                                <th>Usuario paciente</th>
                                 <th>Nombre y apellidos del médico</th>
                                 <th>Edad del médico</th>
                                 <th>Nombre de usuario del médico</th>
@@ -55,7 +58,6 @@
                             {% for cita in cita_list %}
                             {% if cita.idPaciente.username == request.user.username %}
                             <tr>
-                                <td>{{ cita.idPaciente.username }}</td>
                                 <td>{{ cita.idMedico.nombre }} {{ cita.idMedico.apellidos }}</td>
                                 <td>{{ cita.idMedico.edad }}</td>
                                 <td>{{ cita.idMedico.username }}</td>

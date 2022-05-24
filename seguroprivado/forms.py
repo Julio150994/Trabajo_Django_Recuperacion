@@ -233,14 +233,16 @@ class MedicamentoForm(forms.ModelForm):
         if Medicamento.objects.filter(stock=stock) is None:
             raise forms.ValidationError('Debe introducir un número de stock.')
         return stock
-    
+
+
 class CitaForm(forms.ModelForm):
     class Meta:
         model = Cita
         fields = '__all__'
+        #paciente = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'disabled':'true', 'required':'true'}))
         
         labels = {
-            'idMedico': 'Médico',
+            'idMedico': 'Seleccione un médico',
             'fecha': 'Fecha de cita',
             'observaciones': 'Observaciones',
         }
@@ -252,7 +254,8 @@ class CitaForm(forms.ModelForm):
         }
         
         widgets = {
-            'idPaciente': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'value':Paciente.objects.get(username="sandralo93"), 'disabled':'true', 'required':'true'}),
+            # 'value':Paciente.objects.get(username="")
+            'idPaciente': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'disabled':'true', 'required':'true'}),
             'idMedico': forms.Select(attrs={'class':'form-control form-control-sm mx-auto', 'required':'true'}),
             'fecha': forms.DateInput(format = ('%d/%m/%Y'), attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Fecha de cita', 'type':'date', 'required':'true'}),
             'observaciones': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'style': 'height: 100px', 'placeholder':'Escriba las observaciones', 'required':'true'})
