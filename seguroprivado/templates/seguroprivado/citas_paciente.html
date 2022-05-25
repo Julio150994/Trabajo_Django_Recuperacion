@@ -36,9 +36,9 @@
                 <div class="alert alert-warning text-center">El paciente {{ request.user }} no tiene citas pedidas</div>
             </div>
             {% else %}
-                {% if citas_pendientes %}
+                {% if not citas_pendientes %}
                 <div class="container-fluid">
-                    <div class="alert alert-warning text-center">El paciente {{ request.user }} no tiene citas pendientes</div>
+                    <div class="alert alert-warning text-center">El paciente {{ request.user }} ya no tiene citas pendientes</div>
                 </div>
                 {% else %}
                 <h1 class="text-primary text-center mb-5 p-md-3">Citas del paciente</h1>

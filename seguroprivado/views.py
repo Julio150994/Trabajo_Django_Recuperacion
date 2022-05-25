@@ -418,17 +418,22 @@ class CitaList(LoginRequiredMixin, ListView):
         citas_paciente = Cita.objects.filter(idPaciente=paciente)
         context['citas_paciente'] = citas_paciente
         
-        fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day)) 
-        aux_cita = ""
+        # Para saber si el pacientes tiene o no citas realizadas
+        fechas_citas_realizadas = list()
         
-        fechas = Cita.objects.all().values_list('fecha')
-        for cita in fechas:
-            for item in cita:
-                fecha_cita = datetime.strptime(str(item),'%Y-%m-%d')
-                
-                if fecha_cita == fecha_actual:
-                    context['citas_pendientes'] = aux_cita
+        fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
         
+        print("Fechas de citas de "+str(paciente.username)+":")
+        for cita in citas_paciente:
+            fecha_cita = datetime.strptime(str(cita.fecha),'%Y-%m-%d')
+            print(fecha_cita)
+            
+            if fecha_cita >= fecha_actual:
+                fechas_citas_realizadas.append(fecha_cita)
+            
+        if fecha_actual not in fechas_citas_realizadas:
+            context['citas_pendientes'] = fechas_citas_realizadas
+
         return context
     
 
