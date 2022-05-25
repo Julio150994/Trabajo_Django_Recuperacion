@@ -322,6 +322,11 @@ class CitaAdmin(admin.ModelAdmin):
     ordering = ["-id",]
     list_per_page = 3
     #inlines = [PacienteInline, MedicoInline,]
+    
+    def save_model(self, request, obj, form, change):
+        # Pasamos los datos del usuario logueado
+        obj.idPaciente = request.user
+        super().save_model(request, obj, form, change)
 
 class CompraAdmin(admin.ModelAdmin):
     form = CompraAdminForm
