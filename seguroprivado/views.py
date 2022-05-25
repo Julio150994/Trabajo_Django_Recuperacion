@@ -423,10 +423,8 @@ class CitaList(LoginRequiredMixin, ListView):
         
         fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
         
-        print("Fechas de citas de "+str(paciente.username)+":")
         for cita in citas_paciente:
             fecha_cita = datetime.strptime(str(cita.fecha),'%Y-%m-%d')
-            print(fecha_cita)
             
             if fecha_cita >= fecha_actual:
                 fechas_citas_realizadas.append(fecha_cita)
