@@ -417,21 +417,7 @@ class CitaList(LoginRequiredMixin, ListView):
         # Buscamos si el paciente tiene o no citas pendientes
         citas_paciente = Cita.objects.filter(idPaciente=paciente)
         context['citas_paciente'] = citas_paciente
-        
-        # Para saber si el pacientes tiene o no citas realizadas
-        fechas_citas_realizadas = list()
-        
-        fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
-        
-        for cita in citas_paciente:
-            fecha_cita = datetime.strptime(str(cita.fecha),'%Y-%m-%d')
-            
-            if fecha_cita >= fecha_actual:
-                fechas_citas_realizadas.append(fecha_cita)
-            
-        if fecha_actual not in fechas_citas_realizadas:
-            context['citas_pendientes'] = fechas_citas_realizadas
-
+        context['citas_pendientes'] = citas_paciente
         return context
     
 
@@ -467,7 +453,6 @@ class CitaCreate(LoginRequiredMixin, CreateView):
         
         # Obtenemos el objeto del paciente
         idPaciente = request.POST.get('idPaciente')
-        paciente = Paciente.objects.get(id=idPaciente).username
         
         # Obtenemos el objeto del médico
         idMedico = request.POST.get('idMedico')
@@ -506,6 +491,6 @@ class CitaCreate(LoginRequiredMixin, CreateView):
                 messages.add_message(request, level=messages.WARNING, message="El médico "+str(medico.username)+" no puede atender más citas para el "+str(fecha_repetida))
                 return redirect(self.error_url)
             else:
-                if form.is_valid():       
-                    messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(paciente)+" añadida correctamente")
+                if form.is_valid():
+                    messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(request.user)+" añadida correctamente")
                     return super().post(request, *args, **kwargs)

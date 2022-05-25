@@ -6,18 +6,15 @@
 {% block pedir_cita %}
 <div class="rounded bg-light col-3 row m-0 justify-content-center align-items-center" id="formulario">
   
-  <span class="navbar-brand text-primary m-3">Formulario de Cita</span>
+  <span class="navbar-brand text-primary">Formulario de Cita</span>
   
   {% for paciente in pacientes %}
   {% if paciente.username == request.user.username %}
   <form action="{% url 'form_cita' paciente.id %}" method="POST" id="data_medico">
     {% csrf_token %}
+
     
-    {# El propio paciente es quien debe pedir la cita (es decir, que se añade 'el mísmo') #}
-
-    <label for="username" class="text-info mt-1" style="margin-left: -0.9em;">{{ form.idPaciente.label }}</label>
-    {% comment %}<input class="form-control form-control-sm mx-auto" type="text" name="idPaciente" value="{{ paciente }}" disabled>{% endcomment %}
-
+    {# El propio paciente es quien debe pedir sus citas #}
     <div class="input-group input-navbar mb-2">
       <div class="input-group-prepend row">
         <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-user-injured text-info"></span></span>
@@ -26,8 +23,8 @@
     </div>
     {{ form.idPaciente.of_field_errors }}
 
-
-    <label for="idMedico" class="text-primary mt-2" style="margin-left: -0.9em;">{{ form.idMedico.label }}</label>
+    
+    <label for="idMedico" class="text-primary" style="margin-left: -0.9em;">{{ form.idMedico.label }}</label>
     
     <div class="input-group input-navbar mb-2">
       <div class="input-group-prepend row">

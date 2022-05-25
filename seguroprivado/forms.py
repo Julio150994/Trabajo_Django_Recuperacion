@@ -1,6 +1,7 @@
+from email.policy import default
 from django import forms
-from seguroprivado.models import Cita, Paciente, Medico, Medicamento
 from django.contrib.auth.models import User
+from seguroprivado.models import Cita, Paciente, Medico, Medicamento
 from datetime import datetime
 
 # Create your forms here.
@@ -241,7 +242,7 @@ class CitaForm(forms.ModelForm):
         fields = '__all__'
         
         labels = {
-            'idMedico': 'Seleccione un médico',
+            'idMedico': 'Médico',
             'fecha': 'Fecha de cita',
             'observaciones': 'Observaciones',
         }
@@ -253,7 +254,7 @@ class CitaForm(forms.ModelForm):
         }
         
         widgets = {
-            'idPaciente': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'disabled':'true', 'required':'true'}),
+            'idPaciente': forms.Select(attrs={'class':'form-control form-control-sm mx-auto', 'disabled':'true', 'required':'true'}),
             'idMedico': forms.Select(attrs={'class':'form-control form-control-sm mx-auto', 'required':'true'}),
             'fecha': forms.DateInput(format = ('%d/%m/%Y'), attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Fecha de cita', 'type':'date', 'required':'true'}),
             'observaciones': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'style': 'height: 100px', 'placeholder':'Escriba las observaciones', 'required':'true'})
