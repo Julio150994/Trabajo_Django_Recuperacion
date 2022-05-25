@@ -239,7 +239,6 @@ class CitaForm(forms.ModelForm):
     class Meta:
         model = Cita
         fields = '__all__'
-        #paciente = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'disabled':'true', 'required':'true'}))
         
         labels = {
             'idMedico': 'Seleccione un médico',
@@ -254,7 +253,6 @@ class CitaForm(forms.ModelForm):
         }
         
         widgets = {
-            # 'value':Paciente.objects.get(username="")
             'idPaciente': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'disabled':'true', 'required':'true'}),
             'idMedico': forms.Select(attrs={'class':'form-control form-control-sm mx-auto', 'required':'true'}),
             'fecha': forms.DateInput(format = ('%d/%m/%Y'), attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Fecha de cita', 'type':'date', 'required':'true'}),

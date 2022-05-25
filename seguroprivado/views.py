@@ -429,7 +429,6 @@ class CitaList(LoginRequiredMixin, ListView):
                 if fecha_cita == fecha_actual:
                     context['citas_pendientes'] = aux_cita
         
-        context['citas_pendientes']
         return context
     
 
@@ -451,15 +450,9 @@ class CitaCreate(LoginRequiredMixin, CreateView):
         pacientes = Paciente.objects.all()
         context['pacientes'] = pacientes
         
-        #context['paciente'] = 
         paciente_logueado = Paciente.objects.get(username=self.request.user)
-        self.kwargs['paciente'] = paciente_logueado
+        context['paciente'] = paciente_logueado
         return context
-    
-    """def get_initial(self):
-        paciente_logueado = Paciente.objects.get(username=self.request.user)
-        self.initial['paciente'] = paciente_logueado
-        return self.initial.copy()"""
     
     def post(self, request, *args, **kwargs):
         form = CitaForm(request.POST)
