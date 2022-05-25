@@ -15,13 +15,7 @@
 
     
     {# El propio paciente es quien debe pedir sus citas #}
-    <div class="input-group input-navbar mb-2">
-      <div class="input-group-prepend row">
-        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-user-injured text-info"></span></span>
-      </div>
-      {{ form.idPaciente }}
-    </div>
-    {{ form.idPaciente.of_field_errors }}
+    {{ form.idPaciente }}
 
     
     <label for="idMedico" class="text-primary" style="margin-left: -0.9em;">{{ form.idMedico.label }}</label>
