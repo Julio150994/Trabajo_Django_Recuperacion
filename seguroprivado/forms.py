@@ -1,4 +1,3 @@
-from email.policy import default
 from django import forms
 from seguroprivado.models import Cita, Paciente, Medico, Medicamento
 from datetime import datetime
