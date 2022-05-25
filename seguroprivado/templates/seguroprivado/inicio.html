@@ -214,10 +214,11 @@
     {# Búsqueda de médicos por especialidad #}
     <nav class="navbar navbar-white bg-white mb-4 mr-3 ml-3 mb-5 wow fadeInUp">
       <div class="container-fluid">
-        <span class="navbar-brand">Salesin</span>
+        <span class="navbar-brand"></span>
 
         <form class="d-flex" action="" method="GET">
-          <input class="form-control form-control-sm me-5" name="especialidad" type="search" placeholder="Buscar por especialidad" aria-label="Buscar por especialidad"/>
+          <input class="form-control form-control-sm me-5 pr-5" name="especialidad" type="search"
+          placeholder="Buscar por especialidad" aria-label="Buscar por especialidad"/>
           <button class="btn btn-secondary ml-2" type="submit">
             <span class="fas fa-solid fa-search"></span>
           </button>
@@ -227,40 +228,43 @@
 
     <div class="container-fluid justify-content-center wow fadeInUp">
       {% if not medicos %}
-      <div class="container-fluid alert alert-warning text-center">Médicos no encontrados por esta especialidad.</div>
-      {% else %}
-      {# Contenedor para generar el scroll vertical #}
-      <div class="container-fluid" style="max-height: 260px; overflow: auto; display: inline-block;">
-        <table class="table table-bordered text-center">
-          <thead class="bg-primary text-white">
-            <tr>
-              <th>Nombre</th>
-              <th>Apellidos</th>
-              <th>Edad</th>
-              <th>Fecha de alta</th>
-              <th>Especialidad</th>
-              <th>Nombre de usuario</th>
-            </tr>
-          </thead>
-          <tbody class="table table-light">
-            {% for medico in medicos %}
-            <tr>
-              <td>{{ medico.nombre }}</td>
-              <td>{{ medico.apellidos }}</td>
-              <td>{{ medico.edad }}</td>
-              <td>{{ medico.fechaalta|date:"d/m/Y" }}</td>
-              <td>{{ medico.especialidad }}</td>
-              <td>{{ medico.username }}</td>
-            </tr>
-            {% empty %}
-              {% if not medicos %}
-              <div class="container-fluid alert alert-warning text-center">Médicos no encontrados en el sistema</div>
-              {% endif %}
-            {% endfor %}
-          </tbody>
-        </table>
+      <div class="container-fluid alert alert-warning text-center">
+        {% if not especialidad %}
+        Médicos con la especialidad {{ nombre_especialidad }} no encontrados
+        {% elif medicos and not especialidad %}
+        Médicos no contemplados en el sistema
         {% endif %}
       </div>
+      {% else %}
+        {# Contenedor para generar el scroll vertical #}
+        <div class="container-fluid" style="max-height: 260px; overflow: auto; display: inline-block;">
+          <table class="table table-bordered text-center">
+            <thead class="bg-primary text-white">
+              <tr>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Edad</th>
+                <th>Fecha de alta</th>
+                <th>Especialidad</th>
+                <th>Nombre de usuario</th>
+              </tr>
+            </thead>
+            <tbody class="table table-light">
+              {% for medico in medicos %}
+              <tr>
+                <td>{{ medico.nombre }}</td>
+                <td>{{ medico.apellidos }}</td>
+                <td>{{ medico.edad }}</td>
+                <td>{{ medico.fechaalta|date:"d/m/Y" }}</td>
+                <td>{{ medico.especialidad }}</td>
+                <td>{{ medico.username }}</td>
+              </tr>
+              {% empty %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
     </div>
   </div>
 </div>
