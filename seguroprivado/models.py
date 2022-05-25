@@ -78,7 +78,7 @@ class Paciente(models.Model):
     def __str__(self):
         return self.nombre+" "+self.apellidos+" "+str(self.edad)+" "+self.direccion+" "+str(self.foto)+" "+str(self.activo)+" "+self.username+" "+self.password
 
-class Cita(models.Model):
+class Cita(models.Model):  
     id = models.AutoField(primary_key=True)
     idPaciente = models.ForeignKey(Paciente, verbose_name="Paciente", default="Seleccione un paciente", on_delete=models.CASCADE)
     idMedico = models.ForeignKey(Medico, verbose_name="Médico", default="Seleccione un médico", on_delete=models.CASCADE)

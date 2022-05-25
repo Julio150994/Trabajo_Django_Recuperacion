@@ -1,6 +1,5 @@
 from email.policy import default
 from django import forms
-from django.contrib.auth.models import User
 from seguroprivado.models import Cita, Paciente, Medico, Medicamento
 from datetime import datetime
 
@@ -242,7 +241,7 @@ class CitaForm(forms.ModelForm):
         fields = '__all__'
         
         labels = {
-            'idMedico': 'Médico',
+            'idMedico': 'Seleccione un médico',
             'fecha': 'Fecha de cita',
             'observaciones': 'Observaciones',
         }
