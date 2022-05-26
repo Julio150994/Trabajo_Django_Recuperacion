@@ -494,3 +494,26 @@ class CitaCreate(LoginRequiredMixin, CreateView):
                 if form.is_valid():
                     messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(request.user)+" añadida correctamente")
                     return super().post(request, *args, **kwargs)
+
+# Clases para que los médicos puedan realizar sus consultas
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
+class CitaMedicoList(LoginRequiredMixin, ListView):
+    model = Cita
+    template_name = "seguroprivado/citas_medico.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(CitaMedicoList, self).get_context_data(**kwargs)
+        
+        # Mostramos las citas del médico actual
+        citas = Cita.objects.all()
+        context['citas_doctor_list'] = citas
+
+        medico = Medico.objects.get(username=self.request.user)
+        # Buscamos si el médico tiene citas actuales
+        citas_medico = Cita.objects.filter(idMedico=medico)
+        context['citas_medico'] = citas_medico
+        return context

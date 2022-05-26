@@ -70,6 +70,9 @@
       {% block aniadir_medicamento %}{% endblock %}
       {% block editar_medicamento %}{% endblock %}
 
+      {# Para las citas de los médicos #}
+      {% block lista_citas_medico %}{% endblock %}
+
     {% elif request.user.is_authenticated and not request.user.is_staff %}
       {# Bloques donde el paciente puede pedir sus citas #}
       {% block citas_paciente %}{% endblock %}
