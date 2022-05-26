@@ -1,7 +1,7 @@
 {# Extendido de registro.html #}
 {% extends 'seguroprivado/registro.html' %}
 
-{% block title %} Listado de citas del médico {{ request.user }} {% endblock  %}
+{% block title %} Listado de citas del médico {{ request.user }} {% endblock %}
 
 {% block lista_citas_medico %}
 <div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4 pb-5 pt-5">
@@ -10,68 +10,74 @@
             {# Lanzamos mensaje para cuando no se han encontrado citas del médico #}
             {% if not citas_medico %}
             <div class="container-fluid">
-                <div class="alert alert-warning text-center">El médico {{ request.user }} no tiene pacientes</div>
+                <div class="alert alert-warning text-center">El médico {{ request.user }} no tiene citas para los pacientes</div>
             </div>
             {% else %}
-            {# Búsqueda de médicos por fecha de cita #}
-            <nav class="navbar navbar-white bg-white mb-4 mr-3 ml-3 mb-5 wow fadeInUp">
-                <div class="container-fluid">
-                    <div class="navbar-brand">
-                        {# Mostramos formulario que funciona como buscador entre dos fechas #}
-                        <a href="{% url 'filtro_citas' %}" class="btn btn-secondary">
-                            <span class="fas fa-search-plus"></span>
-                            <span>Consultar citas</span>
-                        </a>
+                {# Búsqueda de médicos por fecha de cita #}
+                <nav class="navbar navbar-white bg-white mb-4 mr-3 ml-3 mb-5">
+                    <div class="container-fluid">
+                        <div class="navbar-brand">
+                            {# Mostramos formulario que funciona como buscador entre dos fechas #}
+                            <a href="{% url 'filtro_citas' %}" class="btn btn-secondary">
+                                <span class="fas fa-search-plus"></span>
+                                <span>Filtro de fechas</span>
+                            </a>
+                        </div>
+                        
+                        <form class="d-flex" action="" method="GET">
+                            <input class="form-control form-control-sm" size="40" name="fecha" type="search"
+                                placeholder="Buscar por medicamento" aria-label="Buscar por fecha de cita"/>
+                            <button class="btn btn-secondary ml-2" type="submit">
+                                <span class="fas fa-solid fa-search"></span>
+                            </button>
+                        </form>
                     </div>
-                    
-                    <form class="d-flex" action="" method="GET">
-                        <input class="form-control form-control-sm me-5 pr-5" name="fecha" type="search"
-                        placeholder="Buscar por fecha de cita" aria-label="Buscar por fecha de cita"/>
-                        <button class="btn btn-secondary ml-2" type="submit">
-                            <span class="fas fa-solid fa-search"></span>
-                        </button>
-                    </form>
+                </nav>
+                {% if not citas_actuales %}
+                <div class="container-fluid">
+                    <div class="alert alert-warning text-center">El médico {{ request.user }} no tiene citas para hoy</div>
                 </div>
-            </nav>
-            
-            <h1 class="text-primary text-center mb-5 p-md-3">Citas del médico {{ request.user }}</h1>
-            {# Contenedor para poner un scroll a la tabla #}
-            <div class="container-fluid mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
-                <table class="table table-bordered text-center">
-                    <thead class="table table-dark text-white">
-                        <tr>
-                            <th>Nombre y apellidos del paciente</th>
-                            <th>Dirección del paciente</th>
-                            <th>Edad del paciente</th>
-                            <th>Foto de paciente</th>
-                            <th>Nombre de usuario del paciente</th>
-                            <th>Fecha de cita</th>
-                            <th>Observaciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table table-light">
-                        {% for cita in citas_doctor_list %}
-                        {% if cita.idMedico.username == request.user.username %}
-                        <tr>
-                            <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
-                            <td>{{ cita.idPaciente.direccion }}</td>
-                            <td>{{ cita.idPaciente.edad }}</td>
-                            <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
-                            <td>{{ cita.idPaciente.username }}</td>
-                            <td>{{ cita.fecha|date:"d/m/Y" }}</td>
-                            <td>{{ cita.observaciones }}</td>
-                        </tr>
-                        {% endif %}
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                {% else %}
+                <h1 class="text-primary text-center mb-5 p-md-3">Citas del médico {{ request.user }} de hoy</h1>
+                {# Contenedor para poner un scroll a la tabla #}
+                <div class="container-fluid mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
+                    <table class="table table-bordered text-center">
+                        <thead class="table table-dark text-white">
+                            <tr>
+                                <th>Nombre y apellidos del paciente</th>
+                                <th>Dirección del paciente</th>
+                                <th>Edad del paciente</th>
+                                <th>Foto de paciente</th>
+                                <th>Nombre de usuario del paciente</th>
+                                <th>Fecha de cita</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table table-light">
+                            {% for cita in citas_doctor_list %}
+                            {% if cita.idMedico.username == request.user.username %}
+                            <tr>
+                                <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
+                                <td>{{ cita.idPaciente.direccion }}</td>
+                                <td>{{ cita.idPaciente.edad }}</td>
+                                <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
+                                <td>{{ cita.idPaciente.username }}</td>
+                                <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                                <td>{{ cita.observaciones }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            {% endif %}
         {% endif %}
+
         <a href="{% url 'inicio' %}" class="btn btn-dark ml-3 mt-5 mb-4">
             <span class="fas fa-arrow-left"></span>
             <span>Volver al menú</span>
         </a>
-        {% endif %}
     </div>
 </div>
 {% endblock %}

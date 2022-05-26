@@ -516,18 +516,19 @@ class CitaMedicoList(LoginRequiredMixin, ListView):
         # Buscamos si el médico tiene pacientes en sus citas
         citas_medico = Cita.objects.filter(idMedico=medico)
         context['citas_medico'] = citas_medico
-
-        # Filtramos la búsqueda por fecha actual
-        fecha_actual = self.request.GET.get("fecha")
         
-        if fecha_actual:
-            # Q: revisa todos los campos de un modelo especificado
-            # __icontains: es para buscar por especialidad, sin errores por Case Sensitive
-            citas = Cita.objects.filter(
-                Q(fecha__icontains = fecha_actual)
-            ).distinct()
-            
-            context['citas_medico'] = citas_medico
+        # Validamos si el médico tiene o no citas para la fecha actual
+        formato_fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
+        anio = str(formato_fecha_actual)[0:str(formato_fecha_actual).find('-')]
+        aux_mes = str(formato_fecha_actual)[str(formato_fecha_actual).find('-')+1:]
+        mes = aux_mes[0:aux_mes.find('-')]
+        aux_dia = aux_mes[aux_mes.find('-')+1:]
+        dia = aux_dia[0:aux_dia.find(" ")]
+        
+        fecha_actual = str(anio)+"-"+str(mes)+"-"+str(dia)
+        
+        citas_actuales = Cita.objects.filter(idMedico=medico).filter(fecha=str(fecha_actual))
+        context['citas_actuales'] = citas_actuales
         return context
 
 
