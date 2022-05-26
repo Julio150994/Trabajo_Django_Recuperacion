@@ -4,30 +4,30 @@
 {% block title %} Formulario para el filtro de fechas {% endblock %}
 
 {% block filtro_medico %}
-<div class="rounded bg-light col-3 row m-0 justify-content-center align-items-center" id="formulario">
+
+<div class="rounded bg-light col-3 row mb-5 justify-content-center" id="formulario">
   
-  <span class="navbar-brand text-primary mb-5 mt-4 ml-5">Filtro de citas</span>
+  <span class="navbar-brand text-primary text-center mb-5 mt-4 ml-3">Filtro de citas</span>
   
   <form action="{% url 'filtro_citas' %}" method="GET" id="data_medico">
 
-    {# Buscar por "fecha inicial" #}
     <label for="fecha_inicio" class="text-primary" style="margin-left: -0.9em;">Fecha inicial</label>
     
     <div class="input-group input-navbar mb-2">
       <div class="input-group-prepend row">
         <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-calendar-day"></span></span>
       </div>
-     <input type="date" class="form-control form-control-sm mx-auto" required>
+    <input class="form-control form-control-sm mx-auto" type="date" name="fecha_inicio" id="fecha_inicio" required>
     </div>
-    
-    {# Buscar por "fecha final" #}
+
+
     <label for="fecha_final" class="text-primary mt-4" style="margin-left: -0.9em;">Fecha final</label>
     
     <div class="input-group input-navbar mb-2">
       <div class="input-group-prepend row">
         <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-calendar-day"></span></span>
       </div>
-     <input type="date" class="form-control form-control-sm mx-auto" required>
+    <input class="form-control form-control-sm mx-auto" type="date" name="fecha_final" id="fecha_final" required>
     </div>
 
     <a href="{% url 'citas_medico' %}" class="row btn btn-danger btn-block mt-4">
@@ -35,10 +35,12 @@
       <span>Cancelar</span>
     </a>
     
-    <button class="row btn btn-secondary btn-block text-center">
+    <button class="row btn btn-secondary btn-block text-center mt-4 mb-3">
       <span class="fas fa-search"></span>
-      <span>Buscar</span>
+      <span>Filtrar</span>
     </button>
+
+    <div class="col-sm-5 mr-5 ml-3"><input disabled></div>
   </form>
 </div>
 {% endblock %}
