@@ -513,9 +513,21 @@ class CitaMedicoList(LoginRequiredMixin, ListView):
         context['citas_doctor_list'] = citas
 
         medico = Medico.objects.get(username=self.request.user)
-        # Buscamos si el médico tiene citas actuales
+        # Buscamos si el médico tiene pacientes en sus citas
         citas_medico = Cita.objects.filter(idMedico=medico)
         context['citas_medico'] = citas_medico
+
+        # Filtramos la búsqueda por fecha actual
+        fecha_actual = self.request.GET.get("fecha")
+        
+        if fecha_actual:
+            # Q: revisa todos los campos de un modelo especificado
+            # __icontains: es para buscar por especialidad, sin errores por Case Sensitive
+            citas = Cita.objects.filter(
+                Q(fecha__icontains = fecha_actual)
+            ).distinct()
+            
+            context['citas_medico'] = citas_medico
         return context
 
 
