@@ -25,19 +25,15 @@
                         </div>
                         
                         <form class="d-flex" action="" method="GET">
-                            <input class="form-control form-control-sm" size="40" name="fecha" type="search"
-                                placeholder="Buscar por medicamento" aria-label="Buscar por fecha de cita"/>
+                            <input class="form-control form-control-sm" size="60" name="dato" type="search"
+                                placeholder="Buscar por fecha de cita (formato yyyy-mm-dd) ó medicamento" aria-label="Buscar por fecha de cita"/>
                             <button class="btn btn-secondary ml-2" type="submit">
                                 <span class="fas fa-solid fa-search"></span>
                             </button>
                         </form>
                     </div>
                 </nav>
-                {% if not citas_actuales %}
-                <div class="container-fluid">
-                    <div class="alert alert-warning text-center">El médico {{ request.user }} no tiene citas para hoy</div>
-                </div>
-                {% else %}
+                
                 <h1 class="text-primary text-center mb-5 p-md-3">Citas del médico {{ request.user }} de hoy</h1>
                 {# Contenedor para poner un scroll a la tabla #}
                 <div class="container-fluid mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
@@ -70,7 +66,6 @@
                         </tbody>
                     </table>
                 </div>
-                {% endif %}
             {% endif %}
         {% endif %}
 
