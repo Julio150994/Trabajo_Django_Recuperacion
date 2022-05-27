@@ -13,7 +13,7 @@
             </div>
             {% else %}
             {# Lanzamos mensaje para cuando no se han encontrado citas del médico #}
-            <h1 class="text-primary text-center mb-5 p-md-3">Citas de hoy</h1>
+            <h1 class="text-primary text-center mb-5 p-md-3">Citas del médico {{ request.user }} de hoy</h1>
             {# Contenedor para poner un scroll a la tabla #}
             <div class="container-fluid mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
                 <table class="table table-bordered text-center">
@@ -24,7 +24,6 @@
                             <th>Edad del paciente</th>
                             <th>Foto de paciente</th>
                             <th>Nombre de usuario del paciente</th>
-                            <th>Fecha de cita</th>
                             <th>Observaciones</th>
                             <th>Operaciones</th>
                         </tr>
@@ -39,7 +38,6 @@
                             <td>{{ cita.idPaciente.edad }}</td>
                             <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
                             <td>{{ cita.idPaciente.username }}</td>
-                            <td>{{ cita.fecha|date:"d/m/Y" }}</td>
                             <td>{{ cita.observaciones }}</td>
                             <td>
                                 <a href="{% url 'form_realizar_citas' %}" class="btn btn-success">
