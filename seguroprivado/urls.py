@@ -43,8 +43,8 @@ urlpatterns = [
     path('pedir_cita/<int:pk>/',views.CitaCreate.as_view(), name="form_cita"),
     
     path('citas_medico/',views.CitaMedicoList.as_view(), name="citas_medico"),
-    path('citas_actuales/',views.CitaActualView.as_view(), name="citas_actuales"),
-    path('citas_actuales/cita/',views.RealizaCitasView.as_view(), name="form_realizar_citas"),
+    path('citas_medico/actuales/',views.CitaActualView.as_view(), name="citas_actuales"),
+    path('citas_medico/actuales/cita/',views.RealizaCitasView.as_view(), name="form_realizar_citas"),
     path('citas_medico/buscar/',views.FiltrosCitaView.as_view(),name="filtro_citas"),
     
 ]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
