@@ -517,32 +517,36 @@ class CitaMedicoList(LoginRequiredMixin, ListView):
         citas_medico = Cita.objects.filter(idMedico=medico)
         context['citas_medico'] = citas_medico
         
-        fecha_cita = self.request.GET.get("dato")
+        buscar_fecha_actual = self.request.POST.get("fecha_actual")
         
-        #formato_fecha_cita = datetime.strptime(str(fecha_cita),'%Y-%m-%d')
-        
-        # Validamos si el médico tiene o no citas para la fecha actual
         fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
+        formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
         
-        anio = str(fecha_actual)[0:str(fecha_actual).find('-')]
-        aux_mes = str(fecha_actual)[str(fecha_actual).find('-')+1:]
-        mes = aux_mes[0:aux_mes.find('-')]
-        aux_dia = aux_mes[aux_mes.find('-')+1:]
-        dia = aux_dia[0:aux_dia.find(" ")]
-        formato_fecha_actual = str(anio)+"-"+str(mes)+"-"+str(dia)
+        buscar_fecha_actual = formato_fecha_actual
+        citas_fecha_actual = Cita.objects.filter(idMedico=medico).filter(fecha=str(buscar_fecha_actual))
+        return context
         
-        # Filtramos la búsqueda por cualquier fecha, incluida la actual
-        if fecha_cita:
-            # Q: revisa todos los campos de un modelo especificado
-            # __icontains: es para buscar por especialidad, sin errores por Case Sensitive
-            citas_fecha_actual = Cita.objects.filter(
-                Q(fecha__icontains = str(fecha_cita))
-            ).distinct()
-            
-            print("Consulta: "+str(citas_fecha_actual))
-            
-            context['citas_medico'] = citas_fecha_actual
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
+class CitaActualView(CitaMedicoList): # utilización de herencia de clase
+    template_name = "seguroprivado/citas_actuales.html"
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super(CitaActualView, self).get_context_data(**kwargs)
         
+        medico = Medico.objects.get(username=self.request.user)
+        fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
+        formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
+        
+        buscar_fecha_actual = formato_fecha_actual
+        citas_fecha_actual = Cita.objects.filter(idMedico=medico).filter(fecha=str(buscar_fecha_actual))
+        
+        context['fecha_actual'] = formato_fecha_actual
+        context['citas_hoy'] = citas_fecha_actual
         return context
 
 
