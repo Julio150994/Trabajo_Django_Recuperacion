@@ -533,7 +533,7 @@ class CitaMedicoList(LoginRequiredMixin, ListView):
         
         # Filtramos la búsqueda por cualquier fecha, incluida la actual
         if fecha_cita:
-                # Q: revisa todos los campos de un modelo especificado
+            # Q: revisa todos los campos de un modelo especificado
             # __icontains: es para buscar por especialidad, sin errores por Case Sensitive
             citas_fecha_actual = Cita.objects.filter(
                 Q(fecha__icontains = str(fecha_cita))
@@ -542,7 +542,6 @@ class CitaMedicoList(LoginRequiredMixin, ListView):
             print("Consulta: "+str(citas_fecha_actual))
             
             context['citas_medico'] = citas_fecha_actual
-            #context['citas_actuales'] = citas_fecha_actual
         
         return context
 
