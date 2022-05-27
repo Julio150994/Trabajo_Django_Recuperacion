@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
-from seguroprivado.models import Cita, Medicamento, Paciente, Medico
+from seguroprivado.models import Cita, Compra, CompraMedicamento, Medicamento, Paciente, Medico
 from seguroprivado.forms import CitaForm, MedicamentoForm, MedicoForm, PacienteForm
 from django.db.models import Q
 
@@ -549,6 +549,23 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
         context['citas_hoy'] = citas_fecha_actual
         return context
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
+class RealizaCitasView(LoginRequiredMixin, CreateView):
+    model = Medicamento
+    form_class = MedicamentoForm
+    template_name = "seguroprivado/form_realizar_citas.html"
+    success_url = reverse_lazy('citas_actuales')
+    error_url = reverse_lazy('form_realizar_citas')
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        messages.add_message(request, level=messages.WARNING, message="Nombre de medicamento no encontrado")
+        return redirect(self.error_url)
+        #messages.add_message(request, level=messages.SUCCESS, message="Cita realizada correctamente")
+        #return super().post(request, *args, **kwargs)
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico

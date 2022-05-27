@@ -42,7 +42,7 @@
                             <td>{{ cita.fecha|date:"d/m/Y" }}</td>
                             <td>{{ cita.observaciones }}</td>
                             <td>
-                                <a href="#" class="btn btn-success">
+                                <a href="{% url 'form_realizar_citas' %}" class="btn btn-success">
                                     <span class="fas fa-hand-holding-medical"></span>
                                     <span>Realizar cita</span>
                                 </a>
