@@ -562,14 +562,24 @@ class RealizaCitasView(LoginRequiredMixin, CreateView):
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        nombre_tratamiento = request.POST.get("nombre")
-        print("Nombre del tratamiento: "+str(nombre_tratamiento))
+        nombre_tratamiento = request.POST.get("nombre")# obtenemos el nombre del medicamento del formulario
         
-        medicamentos = Medicamento.objects.all()
-        print("Medicamentos existentes: "+str(medicamentos))
+        busca_medicamento = Medicamento.objects.filter(nombre=nombre_tratamiento)
+        print("Encontrado: "+str(busca_medicamento))
         
-        messages.add_message(request, level=messages.WARNING, message="Medicamento "+str(nombre_tratamiento)+" no encontrado")
-        return redirect(self.error_url)
+        compra = Compra.objects.all()
+        print("Compras del paciente: "+str(compra))
+        
+        compra_medicamento = CompraMedicamento.objects.all()
+        print("\nCompra_medicamento: "+str(compra_medicamento))
+        
+        if not busca_medicamento.exists():
+            messages.error(request, message="Medicamento "+str(nombre_tratamiento)+" no encontrado")
+            return redirect(self.error_url)
+        else:
+            messages.success(request, message="Cita realizada correctamente")
+            return redirect(self.success_url)
+        
         #messages.add_message(request, level=messages.SUCCESS, message="Cita realizada correctamente")
         #return super().post(request, *args, **kwargs)
 

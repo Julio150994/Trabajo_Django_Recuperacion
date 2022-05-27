@@ -12,8 +12,18 @@
                 <div class="alert alert-warning text-center">El médico {{ request.user }} no tiene citas para hoy</div>
             </div>
             {% else %}
-            {# Lanzamos mensaje para cuando no se han encontrado citas del médico #}
+
             <h1 class="text-primary text-center mb-5 p-md-3">Citas del médico {{ request.user }} de hoy</h1>
+
+            {# Mensaje cuando se haya realizado una cita #}
+            {% if messages %}
+            {% for cita_realizada in messages %}
+            <div class="container-fluid alert alert-success mx-auto mt-auto text-center">
+                {{ cita_realizada }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
             {# Contenedor para poner un scroll a la tabla #}
             <div class="container-fluid mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
                 <table class="table table-bordered text-center">

@@ -12,28 +12,26 @@
   <form action="{% url 'form_realizar_citas' %}" method="POST">
     {% csrf_token %}
 
-    <label for="nombre" class="text-primary mt-3" style="margin-left: -1em;">Nombre de medicamento</label>
+    <label for="nombre" class="text-primary mt-3" style="margin-left: -1em;">Tratamiento del paciente</label>
 
     {# Estamos introduciendo un nombre de medicamento para la base de datos #}
     <div class="input-group input-navbar mb-2">
       <div class="input-group-prepend row">
         <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-prescription-bottle"></span></span>
       </div>
-    <input type="text" class="form-control form-control-sm mx-auto" placeholder="Escriba nombre de medicamento" name="nombre" id="nombre" size="60" required>
+    <input type="text" class="form-control form-control-sm mx-auto" placeholder="Nombre del medicamento" name="nombre" id="nombre" size="60" required>
     </div>
 
     {# Mensaje para indicar si no se ha encontrado un medicamento en la base de datos #}
     {% if messages %}
     {% for medicamento in messages %}
-        {% if medicamento.tags %}
-        <div class="input-group input-navbar">
-            <div class="input-group-prepend row mt-4">
-                <div class="alert alert-{{ medicamento.tags }} row mx-auto text-center mb-2 mt-3">
-                    {{ medicamento }}
-                </div>
-            </div>
-        </div>
-        {% endif %}
+    <div class="input-group input-navbar">
+      <div class="input-group-prepend row mt-4">
+          <div class="alert alert-danger row mx-auto text-center mb-2 mt-3">
+              {{ medicamento }}
+          </div>
+      </div>
+    </div>
     {% endfor %}
     {% endif %}
 
