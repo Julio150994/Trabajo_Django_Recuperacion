@@ -20,7 +20,7 @@
                             {# Mostramos formulario que funciona como buscador entre dos fechas #}
                             <a href="{% url 'filtro_citas' %}" class="btn btn-secondary">
                                 <span class="fas fa-search-plus"></span>
-                                <span>Filtro de fechas</span>
+                                <span>Filtrado de fechas</span>
                             </a>
                         </div>
                         
@@ -30,10 +30,21 @@
                         </a>
                     </div>
                 </nav>
-                
-                <h1 class="text-primary text-center mb-5 p-md-3">Citas del médico {{ request.user }}</h1>
+
+                {# Mensaje al filtrar por fechas #}
+                {% if messages %}
+                {% for filtrado in messages %}
+                    {% if filtrado.tags %}
+                    <div class="navbar navbar-brand alert alert-{{ filtrado.tags }} mt-3 rounded text-center">
+                        {{ filtrado }}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                {% endif %}
+
+                <h1 class="text-primary text-center p-md-3">Citas del médico {{ request.user }}</h1>
                 {# Contenedor para poner un scroll a la tabla #}
-                <div class="container-fluid mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
+                <div class="container-fluid mt-2 mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
                     <table class="table table-bordered text-center">
                         <thead class="table table-dark text-white">
                             <tr>
@@ -66,7 +77,7 @@
             {% endif %}
         {% endif %}
 
-        <a href="{% url 'inicio' %}" class="btn btn-dark ml-3 mt-5 mb-4">
+        <a href="{% url 'inicio' %}" class="btn btn-dark ml-3">
             <span class="fas fa-arrow-left"></span>
             <span>Volver al menú</span>
         </a>
