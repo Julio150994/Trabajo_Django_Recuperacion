@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
@@ -594,10 +594,36 @@ class RealizaCitasView(LoginRequiredMixin, CreateView):
 class FiltrosCitaView(LoginRequiredMixin, TemplateView):
     model = Cita
     template_name = "seguroprivado/filtro_citas.html"
+    success_url = reverse_lazy('citas_actuales')
+    error_url = reverse_lazy('filtro_citas')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(FiltrosCitaView, self).get_context_data(**kwargs)
-        return context
+    
+    def get(self, request, *args, **kwargs):
+        medico = Medico.objects.get(username=request.user)# médico logueado obtenido
+                
+        # Realizamos el filtrado entre las fechas inicio y final
+        fecha_inicio = request.GET.get("fecha_inicio")
+        fecha_final = request.GET.get("fecha_final")
+        
+        if fecha_inicio is not None and fecha_final is not None:
+            set_fecha_inicio = datetime.strptime(str(fecha_inicio),'%Y-%m-%d')
+            set_fecha_final = datetime.strptime(str(fecha_final),'%Y-%m-%d') + timedelta(days=1)
+            
+            if set_fecha_inicio == set_fecha_final:
+                messages.add_message(request, level=messages.WARNING, message="Las fechas no pueden ser iguales")
+                return redirect(self.error_url)
+            elif set_fecha_inicio > set_fecha_final:
+                messages.add_message(request, level=messages.WARNING, message="La fecha inicial no puede ser mayor que la fecha final")
+                return redirect(self.error_url)
+            else:        
+                filtro = Cita.objects.filter(idMedico=medico).filter(fecha__range=(set_fecha_inicio, set_fecha_final))
+                
+                if filtro.exists():
+                    messages.add_message(request, level=messages.WARNING, message="Citas no contempladas entre las fechas "+str(fecha_inicio)+" y "+str(fecha_final))
+                    return redirect(self.error_url)
+                else:
+                    messages.add_message(request, level=messages.INFO, message="Filtrado entre fechas realizado correctamente")
+                    return redirect(self.success_url)
+        return super().get(request, *args, **kwargs)

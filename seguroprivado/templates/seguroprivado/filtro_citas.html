@@ -9,7 +9,7 @@
   
   <span class="navbar-brand text-primary text-center mb-5 mt-4 ml-3">Filtro de citas</span>
   
-  <form action="{% url 'filtro_citas' %}" method="POST" id="data_medico">
+  <form action="{% url 'filtro_citas' %}" method="GET" id="data_medico">
     {% csrf_token %}
 
     <label for="fecha_inicio" class="text-primary" style="margin-left: -0.9em;">Fecha inicial</label>
@@ -30,6 +30,19 @@
       </div>
     <input class="form-control form-control-sm mx-auto" type="date" name="fecha_final" required>
     </div>
+
+    {# Mensajes de errores de validación en el filtro #}
+    {% if messages %}
+    {% for error_filtro in messages %}
+        {% if error_filtro.tags %}
+        <div class="input-group input-navbar">
+          <div class="input-group-prepend row">
+            <div class="alert alert-{{ error_filtro.tags }} mx-auto text-center mb-2 mt-3">{{ error_filtro }}</div>
+          </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+    {% endif %}
 
     <a href="{% url 'citas_medico' %}" class="row btn btn-danger btn-block mt-4">
       <span class="fas fa-arrow-left"></span>

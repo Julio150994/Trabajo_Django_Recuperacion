@@ -31,7 +31,9 @@
                     </div>
                 </nav>
 
-                {# Mensaje al filtrar por fechas #}
+                <h1 class="text-primary text-center p-md-3">Citas del médico {{ request.user }}</h1>
+                
+                {# Mensaje imprimido al filtrar entre las dos fechas #}
                 {% if messages %}
                 {% for filtrado in messages %}
                     {% if filtrado.tags %}
@@ -41,8 +43,7 @@
                     {% endif %}
                 {% endfor %}
                 {% endif %}
-
-                <h1 class="text-primary text-center p-md-3">Citas del médico {{ request.user }}</h1>
+                
                 {# Contenedor para poner un scroll a la tabla #}
                 <div class="container-fluid mt-2 mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
                     <table class="table table-bordered text-center">
