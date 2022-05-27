@@ -564,21 +564,27 @@ class RealizaCitasView(LoginRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         nombre_tratamiento = request.POST.get("nombre")# obtenemos el nombre del medicamento del formulario
         
+        #id_medicamento = Medicamento.objects.get(nombre=nombre_tratamiento).id
         busca_medicamento = Medicamento.objects.filter(nombre=nombre_tratamiento)
-        print("Encontrado: "+str(busca_medicamento))
         
-        compra = Compra.objects.all()
-        print("Compras del paciente: "+str(compra))
+        compras_paciente = CompraMedicamento.objects.all().select_related('idMedicamento','idCompra')
+        lista_medicamentos_paciente = list() # para meter los medicamentos que ha comprado el paciente
+        usuario_paciente = ""
         
-        compra_medicamento = CompraMedicamento.objects.all()
-        print("\nCompra_medicamento: "+str(compra_medicamento))
+        for paciente in compras_paciente:
+            usuario_paciente = paciente.idCompra.idPaciente.username
+            lista_medicamentos_paciente.append(paciente.idMedicamento.nombre)
         
         if not busca_medicamento.exists():
-            messages.error(request, message="Medicamento "+str(nombre_tratamiento)+" no encontrado")
+            messages.add_message(request, level=messages.WARNING, message="Medicamento "+str(nombre_tratamiento)+" no encontrado")
             return redirect(self.error_url)
         else:
-            messages.success(request, message="Cita realizada correctamente")
-            return redirect(self.success_url)
+            if nombre_tratamiento in lista_medicamentos_paciente:
+                messages.add_message(request, level=messages.WARNING, message="El paciente "+str(usuario_paciente)+" ya tiene el tratamiento "+str(nombre_tratamiento))
+                return redirect(self.error_url)
+            else:
+                messages.success(request, message="Cita de "+str(usuario_paciente)+" realizada correctamente")
+                return redirect(self.success_url)
         
         #messages.add_message(request, level=messages.SUCCESS, message="Cita realizada correctamente")
         #return super().post(request, *args, **kwargs)
