@@ -7,21 +7,20 @@
 {% block cita_realizada %}
 <div class="rounded bg-light col-3 row mb-5 justify-content-center" id="formulario">
   
-  <span class="navbar-brand text-primary m-3">Formulario para realizar cita</span>
+  <span class="navbar-brand text-primary mt-2 mb-3 ml-2">Formulario para realizar cita</span>
   
   <form action="{% url 'form_realizar_citas' %}" method="POST">
     {% csrf_token %}
 
+    <label for="nombre" class="text-primary mt-3" style="margin-left: -1em;">Nombre de medicamento</label>
+
     {# Estamos introduciendo un nombre de medicamento para la base de datos #}
-    <label for="nombre" class="text-primary mt-3" style="margin-left: -0.9em;">Nombre de tratamiento</label>
-    
     <div class="input-group input-navbar mb-2">
       <div class="input-group-prepend row">
         <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-prescription-bottle"></span></span>
       </div>
-      {{ form.nombre }}
+    <input type="text" class="form-control form-control-sm mx-auto" placeholder="Escriba nombre de medicamento" name="nombre" id="nombre" size="60" required>
     </div>
-    {{ form.nombre.of_field_errors }}
 
     {# Mensaje para indicar si no se ha encontrado un medicamento en la base de datos #}
     {% if messages %}
@@ -38,12 +37,12 @@
     {% endfor %}
     {% endif %}
 
-    <a href="{% url 'citas_actuales' %}" class="row btn btn-danger btn-block mt-5">
+    <a href="{% url 'citas_actuales' %}" class="btn btn-danger btn-block mt-5">
       <span class="fas fa-arrow-left"></span>
       <span>Cancelar</span>
     </a>
     
-    <button class="row btn btn-primary btn-block text-center">
+    <button class="btn btn-primary btn-block text-center mb-4 mt-3" type="submit">
       <span class="fas fa-hand-holding-medical"></span>
       <span>Realizar cita</span>
     </button>

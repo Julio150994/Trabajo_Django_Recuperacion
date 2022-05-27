@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import RedirectView, TemplateView, View, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
@@ -562,7 +562,13 @@ class RealizaCitasView(LoginRequiredMixin, CreateView):
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        messages.add_message(request, level=messages.WARNING, message="Nombre de medicamento no encontrado")
+        nombre_tratamiento = request.POST.get("nombre")
+        print("Nombre del tratamiento: "+str(nombre_tratamiento))
+        
+        medicamentos = Medicamento.objects.all()
+        print("Medicamentos existentes: "+str(medicamentos))
+        
+        messages.add_message(request, level=messages.WARNING, message="Medicamento "+str(nombre_tratamiento)+" no encontrado")
         return redirect(self.error_url)
         #messages.add_message(request, level=messages.SUCCESS, message="Cita realizada correctamente")
         #return super().post(request, *args, **kwargs)
