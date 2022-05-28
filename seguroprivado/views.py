@@ -517,13 +517,13 @@ class CitaMedicoList(LoginRequiredMixin, ListView):
         citas_medico = Cita.objects.filter(idMedico=medico)
         context['citas_medico'] = citas_medico
         
-        buscar_fecha_actual = self.request.POST.get("fecha_actual")
+        # Obtenemos las fechas del filtrado
+        fecha_inicio = self.request.POST.get("fecha_inicio")
+        print("Fecha inicio: "+str(fecha_inicio))
         
-        fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
-        formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
+        fecha_final = self.request.POST.get("fecha_final")
+        print("Fecha final: "+str(fecha_final))
         
-        buscar_fecha_actual = formato_fecha_actual
-        citas_fecha_actual = Cita.objects.filter(idMedico=medico).filter(fecha=str(buscar_fecha_actual))
         return context
         
 
