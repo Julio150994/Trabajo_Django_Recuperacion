@@ -9,7 +9,9 @@
   
   <span class="navbar-brand text-primary mt-2 mb-3 ml-2">Formulario para realizar cita</span>
   
-  <form action="{% url 'form_realizar_citas' %}" method="POST">
+  {% for cita in citas %}
+  {% if cita.idPaciente.username == "alfredo67" %}
+  <form action="{% url 'form_realizar_citas' cita.idPaciente.id %}" method="POST">
     {% csrf_token %}
 
     <label for="nombre" class="text-primary mt-3" style="margin-left: -1em;">Tratamiento del paciente</label>
@@ -47,5 +49,7 @@
       <span>Realizar cita</span>
     </button>
   </form>
+  {% endif %}
+  {% endfor %}
 </div>
 {% endblock %}

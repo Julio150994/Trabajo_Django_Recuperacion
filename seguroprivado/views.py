@@ -544,18 +544,7 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
         context['fecha_actual'] = formato_fecha_actual
         context['citas_hoy'] = citas_fecha_actual
         
-        # Validamos si un paciente tiene o no la cita de ese médico realizada hoy .select_related()
         citas_realizadas = CompraMedicamento.objects.all().select_related('idMedicamento','idCompra')
-        lista_citas_realizadas = list()
-        
-        for cita in citas_realizadas:
-            dict_citas = {str(cita.idMedicamento.nombre): str(cita.idCompra.idPaciente.username)}
-            lista_citas_realizadas.append(dict_citas)
-        
-        print("\nCitas realizadas: "+str(lista_citas_realizadas))
-        #print("\nValor del dict true: "+str(dict_citas.values()))# True: dict_values[('sandralo93')]
-        #print("Valor del dict false: "+str(not dict_citas.values()))# False: nadie
-        
         context['citas_realizadas'] = citas_realizadas
         return context
 
@@ -570,8 +559,15 @@ class RealizaCitasView(LoginRequiredMixin, CreateView):
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super(RealizaCitasView, self).get_context_data(**kwargs)
+        
+        citas = Cita.objects.all()
+        context['citas'] = citas
+        return context
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):        
         nombre_tratamiento = request.POST.get("nombre")# obtenemos el nombre del medicamento del formulario
         
         #id_medicamento = Medicamento.objects.get(nombre=nombre_tratamiento).id
