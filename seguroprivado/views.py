@@ -517,13 +517,9 @@ class CitaMedicoList(LoginRequiredMixin, ListView):
         # Buscamos si el médico tiene pacientes en sus citas
         citas_medico = Cita.objects.filter(idMedico=medico)
         context['citas_medico'] = citas_medico
-        print("TRAZA 1")
         
         if citas_medico.exists():
-            print("\nTRAZA 1.1")
             context['filtro_fechas'] = citas_medico
-        else:
-            print("TRAZA 1.2\n")
         return context
         
 
@@ -547,6 +543,20 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
         
         context['fecha_actual'] = formato_fecha_actual
         context['citas_hoy'] = citas_fecha_actual
+        
+        # Validamos si un paciente tiene o no la cita de ese médico realizada hoy .select_related()
+        citas_realizadas = CompraMedicamento.objects.all().select_related('idMedicamento','idCompra')
+        lista_citas_realizadas = list()
+        
+        for cita in citas_realizadas:
+            dict_citas = {str(cita.idMedicamento.nombre): str(cita.idCompra.idPaciente.username)}
+            lista_citas_realizadas.append(dict_citas)
+        
+        print("\nCitas realizadas: "+str(lista_citas_realizadas))
+        #print("\nValor del dict true: "+str(dict_citas.values()))# True: dict_values[('sandralo93')]
+        #print("Valor del dict false: "+str(not dict_citas.values()))# False: nadie
+        
+        context['citas_realizadas'] = citas_realizadas
         return context
 
 @method_decorator(login_required, name='dispatch')
@@ -623,11 +633,9 @@ class FiltroCitaView(LoginRequiredMixin, TemplateView):
                 context['filtro_fechas'] = filtro
                 
                 if not filtro.exists():
-                    print("TRAZA 2")
                     context['fecha_inicio'] = fecha_inicio
                     context['fecha_final'] = fecha_final
                 else:
-                    print("TRAZA 3")
                     messages.add_message(request, level=messages.INFO, message="Filtrado entre fechas realizado correctamente")
                 return render(request, template_name="seguroprivado/citas_medico.html", context=context)
                 
