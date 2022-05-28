@@ -1,9 +1,9 @@
-from datetime import datetime, timedelta
-from django.shortcuts import redirect
+from datetime import datetime
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.views.generic import RedirectView, TemplateView, View, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
-from seguroprivado.models import Cita, Compra, CompraMedicamento, Medicamento, Paciente, Medico
+from seguroprivado.models import Cita, CompraMedicamento, Medicamento, Paciente, Medico
 from seguroprivado.forms import CitaForm, MedicamentoForm, MedicoForm, PacienteForm
 from django.db.models import Q
 
@@ -495,6 +495,7 @@ class CitaCreate(LoginRequiredMixin, CreateView):
                     messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(request.user)+" añadida correctamente")
                     return super().post(request, *args, **kwargs)
 
+
 # Clases para que los médicos puedan realizar sus consultas
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
@@ -508,22 +509,21 @@ class CitaMedicoList(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(CitaMedicoList, self).get_context_data(**kwargs)
         
-        # Mostramos las citas del médico actual
         citas = Cita.objects.all()
         context['citas_doctor_list'] = citas
 
+        # Mostramos las citas del médico actual
         medico = Medico.objects.get(username=self.request.user)
         # Buscamos si el médico tiene pacientes en sus citas
         citas_medico = Cita.objects.filter(idMedico=medico)
         context['citas_medico'] = citas_medico
+        print("TRAZA 1")
         
-        # Obtenemos las fechas del filtrado
-        fecha_inicio = self.request.POST.get("fecha_inicio")
-        print("Fecha inicio: "+str(fecha_inicio))
-        
-        fecha_final = self.request.POST.get("fecha_final")
-        print("Fecha final: "+str(fecha_final))
-        
+        if citas_medico.exists():
+            print("\nTRAZA 1.1")
+            context['filtro_fechas'] = citas_medico
+        else:
+            print("TRAZA 1.2\n")
         return context
         
 
@@ -591,8 +591,7 @@ class RealizaCitasView(LoginRequiredMixin, CreateView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
-class FiltrosCitaView(LoginRequiredMixin, TemplateView):
-    model = Cita
+class FiltroCitaView(LoginRequiredMixin, TemplateView):
     template_name = "seguroprivado/filtro_citas.html"
     success_url = reverse_lazy('citas_medico')
     error_url = reverse_lazy('filtro_citas')
@@ -601,8 +600,10 @@ class FiltrosCitaView(LoginRequiredMixin, TemplateView):
         return super().dispatch(request, *args, **kwargs)
     
     def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        
         medico = Medico.objects.get(username=request.user)# médico logueado obtenido
-                
+                    
         # Realizamos el filtrado entre las fechas inicio y final
         fecha_inicio = request.GET.get("fecha_inicio")
         fecha_final = request.GET.get("fecha_final")
@@ -619,11 +620,15 @@ class FiltrosCitaView(LoginRequiredMixin, TemplateView):
                 return redirect(self.error_url)
             else:        
                 filtro = Cita.objects.filter(idMedico=medico).filter(fecha__range=(set_fecha_inicio, set_fecha_final))
+                context['filtro_fechas'] = filtro
                 
                 if not filtro.exists():
-                    messages.add_message(request, level=messages.WARNING, message="Citas no contempladas entre las fechas "+str(fecha_inicio)+" y "+str(fecha_final))
-                    return redirect(self.error_url)
+                    print("TRAZA 2")
+                    context['fecha_inicio'] = fecha_inicio
+                    context['fecha_final'] = fecha_final
                 else:
+                    print("TRAZA 3")
                     messages.add_message(request, level=messages.INFO, message="Filtrado entre fechas realizado correctamente")
-                    return redirect(self.success_url)
+                return render(request, template_name="seguroprivado/citas_medico.html", context=context)
+                
         return super().get(request, *args, **kwargs)

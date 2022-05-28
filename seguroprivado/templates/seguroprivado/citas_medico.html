@@ -10,27 +10,35 @@
             {# Lanzamos mensaje para cuando no se han encontrado citas del médico #}
             {% if not citas_medico %}
             <div class="container-fluid">
-                <div class="alert alert-warning text-center">El médico {{ request.user }} no tiene citas {{ cita }}</div>
+                <div class="alert alert-warning text-center">El médico {{ request.user }} no tiene citas registradas</div>
             </div>
             {% else %}
                 {# Búsqueda de médicos por fecha de cita #}
                 <nav class="navbar navbar-white bg-white mb-4 mr-3 ml-3 mb-5">
                     <div class="container-fluid">
+                        <div class="navbar-brand"></div>
                         <div class="navbar-brand">
                             {# Mostramos formulario que funciona como buscador entre dos fechas #}
-                            <a href="{% url 'filtro_citas' %}" class="btn btn-secondary">
+                            <a href="{% url 'filtro_citas' %}" class="btn btn-secondary mr-5">
                                 <span class="fas fa-search-plus"></span>
-                                <span>Filtrado de fechas</span>
+                                <span>Filtrado entre fechas</span>
+                            </a>
+
+                            <a href="{% url 'citas_actuales' %}" class="btn btn-secondary ml-2" name="fecha_actual" type="submit">
+                                <span class="fas fa-solid fa-search"></span>
+                                <span>Citas de hoy</span>
                             </a>
                         </div>
-                        
-                        <a href="{% url 'citas_actuales' %}" class="btn btn-secondary ml-2" name="fecha_actual" type="submit">
-                            <span class="fas fa-solid fa-search"></span>
-                            <span>Citas de hoy</span>
-                        </a>
                     </div>
                 </nav>
-
+                
+                {% if not filtro_fechas %}
+                <div class="container-fluid pr-2">
+                    <div class="alert alert-warning rounded text-center">
+                        Citas no contempladas entre las fechas {{ fecha_inicio|date:"d/m/Y" }} y {{ fecha_final|date:"d/m/Y" }}
+                    </div>
+                </div>
+                {% else %}
                 <h1 class="text-primary text-center p-md-3">Citas del médico {{ request.user }}</h1>
                 
                 {# Mensaje imprimido al filtrar entre las dos fechas #}
@@ -45,7 +53,6 @@
                     {% endif %}
                 {% endfor %}
                 {% endif %}
-                
                 
                 {# Contenedor para poner un scroll a la tabla #}
                 <div class="container-fluid mt-2 mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
@@ -78,6 +85,7 @@
                         </tbody>
                     </table>
                 </div>
+                {% endif %}
             {% endif %}
         {% endif %}
 
