@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
-from seguroprivado.models import Cita, CompraMedicamento, Medicamento, Paciente, Medico
+from seguroprivado.models import Cita, CompraMedicamento, Compra, Medicamento, Paciente, Medico
 from seguroprivado.forms import CitaForm, MedicamentoForm, MedicoForm, PacienteForm
 from django.db.models import Q
 
@@ -538,8 +538,7 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
         fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
         formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
         
-        buscar_fecha_actual = formato_fecha_actual
-        citas_fecha_actual = Cita.objects.filter(idMedico=medico).filter(fecha=str(buscar_fecha_actual))
+        citas_fecha_actual = Cita.objects.filter(idMedico=medico).filter(fecha=str(formato_fecha_actual))
         
         context['fecha_actual'] = formato_fecha_actual
         context['citas_hoy'] = citas_fecha_actual
@@ -550,35 +549,30 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
-class RealizaCitasView(LoginRequiredMixin, CreateView):
-    model = Medicamento
-    form_class = MedicamentoForm
+class RealizaCitasView(LoginRequiredMixin, UpdateView):
+    model = Cita
+    form_class = CitaForm
     template_name = "seguroprivado/form_realizar_citas.html"
     success_url = reverse_lazy('citas_actuales')
     error_url = reverse_lazy('form_realizar_citas')
     
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):    
         return super().dispatch(request, *args, **kwargs)
     
-    def get_context_data(self, **kwargs):
-        context = super(RealizaCitasView, self).get_context_data(**kwargs)
+    def post(self, request, *args, **kwargs):
+        paciente_cita = self.get_object() # para obtener el paciente al cual se le realiza la cita
+             
+        nombre_tratamiento = request.POST.get("nombre")
+        precio_tratamiento = request.POST.get("precio")
         
-        citas = Cita.objects.all()
-        context['citas'] = citas
-        return context
-
-    def post(self, request, *args, **kwargs):        
-        nombre_tratamiento = request.POST.get("nombre")# obtenemos el nombre del medicamento del formulario
-        
-        #id_medicamento = Medicamento.objects.get(nombre=nombre_tratamiento).id
         busca_medicamento = Medicamento.objects.filter(nombre=nombre_tratamiento)
         
         compras_paciente = CompraMedicamento.objects.all().select_related('idMedicamento','idCompra')
+        
         lista_medicamentos_paciente = list() # para meter los medicamentos que ha comprado el paciente
-        usuario_paciente = ""
         
         for paciente in compras_paciente:
-            usuario_paciente = paciente.idCompra.idPaciente.username
+            #usuario_paciente = paciente.idCompra.idPaciente.username
             lista_medicamentos_paciente.append(paciente.idMedicamento.nombre)
         
         if not busca_medicamento.exists():
@@ -586,14 +580,24 @@ class RealizaCitasView(LoginRequiredMixin, CreateView):
             return redirect(self.error_url)
         else:
             if nombre_tratamiento in lista_medicamentos_paciente:
-                messages.add_message(request, level=messages.WARNING, message="El paciente "+str(usuario_paciente)+" ya tiene el tratamiento "+str(nombre_tratamiento))
+                messages.add_message(request, level=messages.WARNING, message="El paciente "+str(paciente_cita.idPaciente.username)+" ya tiene el tratamiento "+str(nombre_tratamiento))
                 return redirect(self.error_url)
             else:
-                messages.success(request, message="Cita de "+str(usuario_paciente)+" realizada correctamente")
+                # Realizamos la cita a través de añadir datos a los modelos Compra y CompraMedicamento en relación al Medicamento y al Paciente de la cita actual
+                fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
+                fecha_tratamiento = datetime.strftime(fecha_actual, '%Y-%m-%d')
+                
+                medicamento_paciente = Medicamento.objects.get(nombre=nombre_tratamiento)
+                
+                compra_paciente = Compra(fecha=fecha_tratamiento, precio=precio_tratamiento, idPaciente=paciente_cita.idPaciente)
+                compra_paciente.save()
+                
+                tratamiento_paciente = CompraMedicamento(idMedicamento=medicamento_paciente, idCompra=compra_paciente)
+                tratamiento_paciente.save()
+                
+                messages.success(request, message="Cita de "+str(paciente_cita.idPaciente.username)+" realizada correctamente")
                 return redirect(self.success_url)
-        
-        #messages.add_message(request, level=messages.SUCCESS, message="Cita realizada correctamente")
-        #return super().post(request, *args, **kwargs)
+
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico

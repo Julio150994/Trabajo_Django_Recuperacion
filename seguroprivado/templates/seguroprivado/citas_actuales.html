@@ -18,8 +18,10 @@
             {# Mensaje cuando se haya realizado una cita #}
             {% if messages %}
             {% for cita_realizada in messages %}
-            <div class="container-fluid alert alert-success mx-auto mt-auto text-center">
-                {{ cita_realizada }}
+            <div class="container-fluid pr-1">
+                <div class="alert alert-success mx-auto mt-auto text-center">
+                    {{ cita_realizada }}
+                </div>
             </div>
             {% endfor %}
             {% endif %}
@@ -54,7 +56,7 @@
                                     <td class="text-danger">Paciente sin tratamiento</td>
                                     <td>{{ cita.observaciones }}</td>
                                     <td>
-                                        <a href="{% url 'form_realizar_citas' cita.idPaciente.id %}" class="btn btn-success">
+                                        <a href="{% url 'form_realizar_citas' cita.id %}" class="btn btn-success">
                                             <span class="fas fa-hand-holding-medical"></span>
                                             <span>Realizar cita</span>
                                         </a>
@@ -83,20 +85,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
-            </div>
-
-            {% comment %}
-            <div class="container-fluid mb-5">
-                {% for paciente in citas_realizadas %}
-                {% if not paciente.idMedicamento.nombre %}
-                <span class="text-center" style="background-color: #FFD9D9;">Texto de prueba</span>
-                {% else %}
-                <span class="text-center" style="background-color: ">{{ paciente.idMedicamento.nombre }}</span>
-                {% endif %}
-                {% endfor %}
-            </div>
-            {% endcomment %}
-            
+            </div>            
             {% endif %}
         {% endif %}
 

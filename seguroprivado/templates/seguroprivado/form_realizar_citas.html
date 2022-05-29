@@ -9,19 +9,27 @@
   
   <span class="navbar-brand text-primary mt-2 mb-3 ml-2">Formulario para realizar cita</span>
   
-  {% for cita in citas %}
-  {% if cita.idPaciente.username == "alfredo67" %}
-  <form action="{% url 'form_realizar_citas' cita.idPaciente.id %}" method="POST">
+  <form action="{% url 'form_realizar_citas' cita.id %}" method="POST">
     {% csrf_token %}
 
     <label for="nombre" class="text-primary mt-3" style="margin-left: -1em;">Tratamiento del paciente</label>
 
-    {# Estamos introduciendo un nombre de medicamento para la base de datos #}
     <div class="input-group input-navbar mb-2">
       <div class="input-group-prepend row">
         <span class="input-group-text" id="icon-addon1"><span class="fas fa-prescription-bottle-alt"></span></span>
       </div>
-    <input type="text" class="form-control form-control-sm mx-auto" placeholder="Nombre del medicamento" name="nombre" id="nombre" size="60" required>
+    <input type="text" class="form-control form-control-sm mx-auto" placeholder="Escriba nombre de medicamento" name="nombre" id="nombre" size="60" required>
+    </div>
+
+
+    <label for="precio" class="text-primary mt-3" style="margin-left: -1em;">Precio del tratamiento</label>
+    
+    <div class="input-group input-navbar mb-2">
+      <div class="input-group-prepend row">
+        <span class="input-group-text" id="icon-addon1"><span class="fas fa-dollar-sign"></span></span>
+      </div>
+    {# Ponemos el precio para introducir con dos decimales #}
+    <input type="number" class="form-control form-control-sm mx-auto" placeholder="Escriba su precio" name="precio" id="precio" size="60" step=".01" required>
     </div>
 
     {# Mensajes de error de validación para el tratamiento #}
@@ -44,12 +52,10 @@
       <span>Cancelar</span>
     </a>
     
-    <button class="btn btn-success btn-block text-center mb-4 mt-3" type="submit">
+    <button class="btn btn-primary btn-block text-center mb-4 mt-3" type="submit">
       <span class="fas fa-notes-medical"></span>
       <span>Realizar cita</span>
     </button>
   </form>
-  {% endif %}
-  {% endfor %}
 </div>
 {% endblock %}
