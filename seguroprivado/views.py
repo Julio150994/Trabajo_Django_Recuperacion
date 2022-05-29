@@ -611,10 +611,9 @@ class FiltroCitaView(LoginRequiredMixin, TemplateView):
     
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
-        
+
         medico = Medico.objects.get(username=request.user)# médico logueado obtenido
-                    
-        # Realizamos el filtrado entre las fechas inicio y final
+                
         fecha_inicio = request.GET.get("fecha_inicio")
         fecha_final = request.GET.get("fecha_final")
         
@@ -630,13 +629,9 @@ class FiltroCitaView(LoginRequiredMixin, TemplateView):
                 return redirect(self.error_url)
             else:        
                 filtro = Cita.objects.filter(idMedico=medico).filter(fecha__range=(set_fecha_inicio, set_fecha_final))
-                context['filtro_fechas'] = filtro
                 
-                if not filtro.exists():
-                    context['fecha_inicio'] = fecha_inicio
-                    context['fecha_final'] = fecha_final
-                else:
+                if filtro.exists():
+                    context['filtro_fechas'] = filtro
                     messages.add_message(request, level=messages.INFO, message="Filtrado entre fechas realizado correctamente")
-                return render(request, template_name="seguroprivado/citas_medico.html", context=context)
-                
+                    return render(request, "seguroprivado/citas_medico.html", {'filtro_fechas':context['filtro_fechas']})
         return super().get(request, *args, **kwargs)

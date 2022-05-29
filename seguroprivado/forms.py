@@ -282,4 +282,4 @@ class CitaForm(forms.ModelForm):
         if len(observaciones) > 100:
             raise forms.ValidationError('Las observaciones deben contener 100 caracteres como máximo')
         else:
-            return observaciones  
+            return observaciones

@@ -11,7 +11,7 @@
   
   <form action="{% url 'filtro_citas' %}" method="GET" id="data_medico">
 
-    <label for="fecha_inicio" class="text-primary" style="margin-left: -0.9em;">Fecha inicial</label>
+    <label for="fecha_inicio" class="text-primary" style="margin-left: -0.9em;">Fecha de inicio</label>
     
     <div class="input-group input-navbar mb-2">
       <div class="input-group-prepend row">
@@ -30,6 +30,7 @@
     <input class="form-control form-control-sm mx-auto" type="date" name="fecha_final" required>
     </div>
 
+    
     {# Mensajes de errores de validación en el filtro #}
     {% if messages %}
     {% for error_filtro in messages %}

@@ -32,13 +32,6 @@
                     </div>
                 </nav>
                 
-                {% if not filtro_fechas %}
-                <div class="container-fluid pr-2">
-                    <div class="alert alert-warning rounded text-center">
-                        Citas no contempladas entre las fechas {{ fecha_inicio|date:"d/m/Y" }} y {{ fecha_final|date:"d/m/Y" }}
-                    </div>
-                </div>
-                {% else %}
                 <h1 class="text-primary text-center p-md-3">Citas del médico {{ request.user }}</h1>
                 
                 {# Mensaje imprimido al filtrar entre las dos fechas #}
@@ -69,23 +62,39 @@
                             </tr>
                         </thead>
                         <tbody class="table table-light">
-                            {% for cita in citas_doctor_list %}
-                            {% if cita.idMedico.username == request.user.username %}
-                            <tr>
-                                <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
-                                <td>{{ cita.idPaciente.direccion }}</td>
-                                <td>{{ cita.idPaciente.edad }}</td>
-                                <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
-                                <td>{{ cita.idPaciente.username }}</td>
-                                <td>{{ cita.fecha|date:"d/m/Y" }}</td>
-                                <td>{{ cita.observaciones }}</td>
-                            </tr>
+                            {% if not filtro_fechas %}
+                                {% for cita in citas_doctor_list %}
+                                {% if cita.idMedico.username == request.user.username %}
+                                <tr>
+                                    <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
+                                    <td>{{ cita.idPaciente.direccion }}</td>
+                                    <td>{{ cita.idPaciente.edad }}</td>
+                                    <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
+                                    <td>{{ cita.idPaciente.username }}</td>
+                                    <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                                    <td>{{ cita.observaciones }}</td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {# Para mostrar el filtrado entre las fechas #}
+                                {% for cita in filtro_fechas %}
+                                    {% if cita.idMedico.username == request.user.username %}
+                                    <tr>
+                                        <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
+                                        <td>{{ cita.idPaciente.direccion }}</td>
+                                        <td>{{ cita.idPaciente.edad }}</td>
+                                        <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
+                                        <td>{{ cita.idPaciente.username }}</td>
+                                        <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                                        <td>{{ cita.observaciones }}</td>
+                                    </tr>
+                                    {% endif %}
+                                {% endfor %}
                             {% endif %}
-                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
-                {% endif %}
             {% endif %}
         {% endif %}
 
