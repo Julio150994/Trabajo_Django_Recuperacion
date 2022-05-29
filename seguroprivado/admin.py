@@ -210,8 +210,8 @@ class CitaAdminForm(forms.ModelForm):
         set_fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
         set_fecha_cita = datetime.strptime(str(fecha),'%Y-%m-%d')
         
-        if set_fecha_cita <= set_fecha_actual:
-            raise forms.ValidationError('La fecha de la cita no debe ser menor o igual que la fecha actual')
+        if set_fecha_cita >= set_fecha_actual:
+            raise forms.ValidationError('La fecha de la cita debe ser mayor o igual que la fecha actual')
         else:
             return fecha
     
