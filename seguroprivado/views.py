@@ -631,7 +631,7 @@ class FiltroCitaView(LoginRequiredMixin, TemplateView):
                 filtro = Cita.objects.filter(idMedico=medico).filter(fecha__range=(set_fecha_inicio, set_fecha_final))
                 
                 if filtro.exists():
-                    context['filtro_fechas'] = filtro
+                    context = {'filtro_fechas': filtro} # llevamos la consulta a la tabla de citas del médico
                     messages.add_message(request, level=messages.INFO, message="Filtrado entre fechas realizado correctamente")
-                    return render(request, "seguroprivado/citas_medico.html", {'filtro_fechas':context['filtro_fechas']})
+                    return render(request, "seguroprivado/citas_medico.html", context)
         return super().get(request, *args, **kwargs)
