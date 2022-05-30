@@ -45,7 +45,6 @@ class TemplateInicioView(TemplateView):
                     Q(especialidad__icontains = busqueda)
                 ).distinct()
                 
-                
                 if consulta_especialidad.exists():
                     context['especialidad'] = consulta_especialidad
                 else:
