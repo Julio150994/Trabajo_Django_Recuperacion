@@ -39,8 +39,22 @@
                     </div>
                 </div>
                 {% else %}
+
                 <h1 class="text-primary text-center p-md-3">Citas del médico {{ request.user }}</h1>
                 
+                {# Mensaje imprimido al filtrar entre las dos fechas #}
+                {% if messages %}
+                {% for filtrado in messages %}
+                    {% if filtrado.tags %}
+                    <div class="container-fluid pr-2">
+                        <div class="alert alert-{{ filtrado.tags }} rounded text-center">
+                            {{ filtrado }}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                {% endif %}
+
                 {# Contenedor para poner un scroll a la tabla #}
                 <div class="container-fluid mt-2 mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
                     <table class="table table-bordered text-center">
@@ -56,8 +70,22 @@
                             </tr>
                         </thead>
                         <tbody class="table table-light">
+                        {% if not filtro_fechas %}
+                            {# Para cuando no se ha hecho la consulta entre dos fechas #}
                             {% for cita in citas_medico %}
-                            {% if filtro_fechas %}
+                            <tr>
+                                <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
+                                <td>{{ cita.idPaciente.direccion }}</td>
+                                <td>{{ cita.idPaciente.edad }}</td>
+                                <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
+                                <td>{{ cita.idPaciente.username }}</td>
+                                <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                                <td>{{ cita.observaciones }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            {# Para cuando se ha hecho el filtro #}
+                            {% for cita in filtro_fechas %}
                                 <tr>
                                     <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
                                     <td>{{ cita.idPaciente.direccion }}</td>
@@ -67,8 +95,8 @@
                                     <td>{{ cita.fecha|date:"d/m/Y" }}</td>
                                     <td>{{ cita.observaciones }}</td>
                                 </tr>
-                            {% endif %}
                             {% endfor %}
+                        {% endif %}
                         </tbody>
                     </table>
                 </div>

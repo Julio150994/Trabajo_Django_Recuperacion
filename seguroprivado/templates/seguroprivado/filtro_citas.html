@@ -5,27 +5,27 @@
 
 {% block filtro_medico %}
 
-<div class="rounded bg-light col-3 row mb-5 justify-content-center" id="formulario">
+<div class="rounded bg-light col-3 row mb-5 p-3 justify-content-center">
   
-  <span class="navbar-brand text-primary text-center mb-5 mt-4 ml-3">Filtro de citas</span>
+  <span class="navbar-brand text-secondary text-center mb-5 mt-4 ml-3">Filtro de citas</span>
   
   <form action="{% url 'filtro_citas' %}" method="GET" id="data_medico">
 
-    <label for="fecha_inicio" class="text-primary" style="margin-left: -0.9em;">Fecha de inicio</label>
+    <label for="fecha_inicio" class="text-info" style="margin-left: -0.9em;">Fecha de inicio</label>
     
     <div class="input-group input-navbar mb-2">
       <div class="input-group-prepend row">
-        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-calendar-day"></span></span>
+        <span class="input-group-text text-secondary" id="icon-addon1"><span class="fas fa-solid fa-calendar-day"></span></span>
       </div>
     <input class="form-control form-control-sm mx-auto" type="date" name="fecha_inicio" required>
     </div>
 
 
-    <label for="fecha_final" class="text-primary mt-4" style="margin-left: -0.9em;">Fecha final</label>
+    <label for="fecha_final" class="text-info mt-4" style="margin-left: -0.9em;">Fecha final</label>
     
     <div class="input-group input-navbar mb-2">
       <div class="input-group-prepend row">
-        <span class="input-group-text" id="icon-addon1"><span class="fas fa-solid fa-calendar-day"></span></span>
+        <span class="input-group-text text-secondary" id="icon-addon1"><span class="fas fa-solid fa-calendar-day"></span></span>
       </div>
     <input class="form-control form-control-sm mx-auto" type="date" name="fecha_final" required>
     </div>
