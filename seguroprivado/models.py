@@ -57,7 +57,7 @@ class Medicamento(models.Model):
         ordering = ["-id"]
 
     def __str__(self):
-        return self.nombre+" "+self.descripcion+" "+self.receta+" "+str(self.precio)+" "+str(self.stock)
+        return self.nombre
 
 class Paciente(models.Model):
     id = models.AutoField(primary_key=True)
@@ -76,7 +76,7 @@ class Paciente(models.Model):
         ordering = ["-id"]
 
     def __str__(self):
-        return self.nombre+" "+self.apellidos+" "+str(self.edad)+" "+self.direccion+" "+str(self.foto)+" "+str(self.activo)+" "+self.username+" "+self.password
+        return self.username
 
 class Cita(models.Model):  
     id = models.AutoField(primary_key=True)
