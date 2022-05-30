@@ -624,17 +624,15 @@ class FiltroCitaView(LoginRequiredMixin, TemplateView):
             formato_fecha_inicio = datetime.strptime(str(fecha_inicio),'%Y-%m-%d')
             formato_fecha_final = datetime.strptime(str(fecha_final),'%Y-%m-%d')
             
-            if formato_fecha_inicio == formato_fecha_final:
-                messages.add_message(request, level=messages.WARNING, message="Las fechas no pueden ser iguales")
-                return redirect(self.error_url)
-            elif formato_fecha_inicio > formato_fecha_final:
+            if formato_fecha_inicio > formato_fecha_final:
                 messages.add_message(request, level=messages.WARNING, message="La fecha inicial no puede ser mayor que la fecha final")
                 return redirect(self.error_url)
-            else:        
+            else:
                 filtro = Cita.objects.filter(idMedico=medico).filter(fecha__range=(formato_fecha_inicio, formato_fecha_final))
+                context = {'filtro_fechas': filtro} # llevamos la consulta a la tabla de citas del médico
                 
                 if filtro.exists():
-                    context = {'filtro_fechas': filtro} # llevamos la consulta a la tabla de citas del médico
                     messages.add_message(request, level=messages.INFO, message="Filtrado entre fechas realizado correctamente")
-                    return render(request, "seguroprivado/citas_medico.html", context)
+                    
+                return render(request, "seguroprivado/citas_medico.html", context)
         return super().get(request, *args, **kwargs)
