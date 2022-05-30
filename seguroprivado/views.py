@@ -1,4 +1,5 @@
 from datetime import datetime
+import datetime
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
@@ -625,18 +626,30 @@ class FiltroCitaView(LoginRequiredMixin, TemplateView):
         fecha_final = request.GET.get("fecha_final")
         
         if fecha_inicio is not None and fecha_final is not None:
-            formato_fecha_inicio = datetime.strptime(str(fecha_inicio),'%Y-%m-%d')
-            formato_fecha_final = datetime.strptime(str(fecha_final),'%Y-%m-%d')
+            inicio = datetime.datetime.strptime(str(fecha_inicio),"%Y-%m-%d")
+            final = datetime.datetime.strptime(str(fecha_final),"%Y-%m-%d")
+            
+            formato_fecha_inicio = datetime.datetime.strptime(str(fecha_inicio),'%Y-%m-%d')
+            formato_fecha_final = datetime.datetime.strptime(str(fecha_final),'%Y-%m-%d')
             
             if formato_fecha_inicio > formato_fecha_final:
                 messages.add_message(request, level=messages.WARNING, message="La fecha inicial no puede ser mayor que la fecha final")
                 return redirect(self.error_url)
             else:
                 filtro = Cita.objects.filter(idMedico=medico).filter(fecha__range=(formato_fecha_inicio, formato_fecha_final))
-                context = {'filtro_fechas': filtro} # llevamos la consulta a la tabla de citas del médico
                 
                 if filtro.exists():
-                    messages.add_message(request, level=messages.INFO, message="Filtrado entre fechas realizado correctamente")
+                    context['citas_medico'] = filtro # llevamos la consulta a la tabla de citas del médico
                     
+                    # Mostramos el error de validación cuando no hay citas entre ese rango de fechas y con el formato dd/mm/yyyy
+                    aux_fecha_inicio = datetime.datetime.strptime(str(inicio),"%Y-%m-%d %H:%M:%S")
+                    aux_fecha_final = datetime.datetime.strptime(str(final),"%Y-%m-%d %H:%M:%S")
+                    formato_fecha_inicio = aux_fecha_inicio.strftime("%d/%m/%Y")
+                    formato_fecha_final = aux_fecha_final.strftime("%d/%m/%Y")
+                    
+                    context['fecha_inicio'] = formato_fecha_inicio
+                    context['fecha_final'] = formato_fecha_final
+                else:
+                    context['filtro_fechas'] = filtro
                 return render(request, "seguroprivado/citas_medico.html", context)
         return super().get(request, *args, **kwargs)

@@ -35,24 +35,11 @@
                 {% if not filtro_fechas %}
                 <div class="container-fluid pr-2">
                     <div class="alert alert-warning rounded text-center">
-                        Citas no contempladas entre las fechas {{ fecha_inicio|date:"d/m/Y" }} y {{ fecha_final|date:"d/m/Y" }}
+                        Citas no contempladas entre las fechas {{ fecha_inicio }} y {{ fecha_final }}
                     </div>
                 </div>
                 {% else %}
                 <h1 class="text-primary text-center p-md-3">Citas del médico {{ request.user }}</h1>
-                
-                {# Mensaje imprimido al filtrar entre las dos fechas #}
-                {% if messages %}
-                {% for filtrado in messages %}
-                    {% if filtrado.tags %}
-                    <div class="container-fluid pr-2">
-                        <div class="alert alert-{{ filtrado.tags }} rounded text-center">
-                            {{ filtrado }}
-                        </div>
-                    </div>
-                    {% endif %}
-                {% endfor %}
-                {% endif %}
                 
                 {# Contenedor para poner un scroll a la tabla #}
                 <div class="container-fluid mt-2 mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
@@ -70,6 +57,7 @@
                         </thead>
                         <tbody class="table table-light">
                             {% for cita in citas_medico %}
+                            {% if filtro_fechas %}
                                 <tr>
                                     <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
                                     <td>{{ cita.idPaciente.direccion }}</td>
@@ -79,6 +67,7 @@
                                     <td>{{ cita.fecha|date:"d/m/Y" }}</td>
                                     <td>{{ cita.observaciones }}</td>
                                 </tr>
+                            {% endif %}
                             {% endfor %}
                         </tbody>
                     </table>
