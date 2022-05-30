@@ -289,10 +289,15 @@ class CompraInline(admin.StackedInline):
 class CompraMedicamentoInline(admin.StackedInline):
     model = CompraMedicamento
 
-
+    
 class MedicoAdmin(admin.ModelAdmin):
     form = MedicoAdminForm
-    list_display = ["nombre","apellidos","edad","fechaalta","especialidad","username","password"]
+    
+    # Cambiamos el formato de fecha de alta del médico
+    def fecha_alta(self, obj):
+        return obj.fechaalta.strftime("%d/%m/%Y")
+    
+    list_display = ["nombre","apellidos","edad","fecha_alta","especialidad","username","password"]
     search_fields = ["nombre","username",]
     list_filter = ["username",]
     ordering = ["-id",]
@@ -316,22 +321,30 @@ class MedicamentoAdmin(admin.ModelAdmin):
 
 class CitaAdmin(admin.ModelAdmin):
     form = CitaAdminForm
-    list_display = ["idPaciente","idMedico","fecha","observaciones"]
+    
+    # Cambiamos el formato de fecha de alta del médico
+    def fecha_cita(self, obj):
+        return obj.fecha.strftime("%d/%m/%Y")
+    
+    list_display = ["idPaciente","idMedico","fecha_cita","observaciones"]
     search_fields = ["idPaciente","idMedico",]
     list_filter = ["idPaciente","idMedico",]
     ordering = ["-id",]
     list_per_page = 3
-    #inlines = [PacienteInline, MedicoInline,]
-
+    
 class CompraAdmin(admin.ModelAdmin):
     form = CompraAdminForm
-    list_display = ["fecha","precio","idPaciente"]
+    
+    # Cambiamos el formato de fecha de alta del médico
+    def fecha_compra(self, obj):
+        return obj.fecha.strftime("%d/%m/%Y")
+    
+    list_display = ["fecha_compra","precio","idPaciente"]
     search_fields = ["idPaciente",]
     list_filter = ["idPaciente",]
     ordering = ["-id",]
     list_per_page = 3
-    #inlines = [PacienteInline,]
-
+    
 class CompraMedicamentoAdmin(admin.ModelAdmin):
     form = CompraMedicamentoAdminForm
     list_display = ["idMedicamento","idCompra"]
@@ -339,7 +352,6 @@ class CompraMedicamentoAdmin(admin.ModelAdmin):
     list_filter = ["idMedicamento",]
     ordering = ["-id",]
     list_per_page = 3
-    #inlines = [MedicamentoInline, CompraInline,]
 
 # Register your models here.
 
