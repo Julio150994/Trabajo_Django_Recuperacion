@@ -30,21 +30,26 @@ class TemplateInicioView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        context['medicos'] = Medico.objects.all()
-        busqueda = self.request.GET.get("especialidad")
+        medicos = Medico.objects.all()
+        context['medicos'] = medicos
         
-        if busqueda:
-            # Q: revisa todos los campos de un modelo especificado
-            # __icontains: es para buscar por especialidad, sin errores por Case Sensitive
-            medicos = Medico.objects.filter(
-                Q(especialidad__icontains = busqueda)
-            ).distinct()
+        if medicos.exists():
+            busqueda = self.request.GET.get("especialidad")
             
-            context['medicos'] = medicos
-            
-            if not medicos.exists():
+            if busqueda is None:
                 context['especialidad'] = medicos
-                context['nombre_especialidad'] = busqueda
+            else:
+                # Q: revisa todos los campos de un modelo especificado
+                # __icontains: es para buscar por especialidad, sin errores por Case Sensitive
+                consulta_especialidad = Medico.objects.filter(
+                    Q(especialidad__icontains = busqueda)
+                ).distinct()
+                
+                
+                if consulta_especialidad.exists():
+                    context['especialidad'] = consulta_especialidad
+                else:
+                    context['nombre_especialidad'] = busqueda
         return context
     
     
