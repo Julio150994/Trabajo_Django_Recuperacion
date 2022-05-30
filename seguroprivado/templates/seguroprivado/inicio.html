@@ -22,6 +22,9 @@
 
   <link rel="stylesheet" href="{% static 'assets/css/theme.css' %}">
 
+  {# Código CSS para el botón dropdown #}
+  <link rel="stylesheet" href="{% static 'assets/css/inicio.css' %}">
+
   {# Font Awesome icons (free version) #}
   <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
 </head>
@@ -61,21 +64,24 @@
                     <span class="fas fad fa-cogs"></span>
                     <span>Operaciones</span>
                   </button>
-                  <ul class="dropdown-menu pl-2">
-                    <li>
-                      <a href="{% url 'pacientes' %}" class="dropdown-item text-dark">
+                  <ul class="dropdown-menu pl-2 bg-primary">
+                    <li class="dropdown-item">
+                      <a href="{% url 'pacientes' %}" class="text-white">
+                        <span class="fas fa-users"></span>
                         <span>Pacientes</span>
                       </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
-                    <li>
-                      <a href="{% url 'medicos' %}" class="dropdown-item text-dark">
+                    <li class="dropdown-item">
+                      <a href="{% url 'medicos' %}" class="text-white">
+                        <span class="fas fa-user-md"></span>
                         <span>Médicos</span>
                       </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
-                    <li>
-                      <a href="{% url 'medicamentos' %}" class="dropdown-item text-dark">
+                    <li class="dropdown-item">
+                      <a href="{% url 'medicamentos' %}" class="text-white">
+                        <span class="fas fa-solid fa-prescription-bottle"></span>
                         <span>Medicamentos</span>
                       </a>
                     </li>
