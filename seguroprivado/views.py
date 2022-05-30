@@ -515,9 +515,6 @@ class CitaMedicoList(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(CitaMedicoList, self).get_context_data(**kwargs)
         
-        citas = Cita.objects.all()
-        context['citas_doctor_list'] = citas
-
         # Mostramos las citas del médico actual
         medico = Medico.objects.get(username=self.request.user)
         # Buscamos si el médico tiene pacientes en sus citas
@@ -624,17 +621,17 @@ class FiltroCitaView(LoginRequiredMixin, TemplateView):
         fecha_final = request.GET.get("fecha_final")
         
         if fecha_inicio is not None and fecha_final is not None:
-            set_fecha_inicio = datetime.strptime(str(fecha_inicio),'%Y-%m-%d')
-            set_fecha_final = datetime.strptime(str(fecha_final),'%Y-%m-%d')
+            formato_fecha_inicio = datetime.strptime(str(fecha_inicio),'%Y-%m-%d')
+            formato_fecha_final = datetime.strptime(str(fecha_final),'%Y-%m-%d')
             
-            if set_fecha_inicio == set_fecha_final:
+            if formato_fecha_inicio == formato_fecha_final:
                 messages.add_message(request, level=messages.WARNING, message="Las fechas no pueden ser iguales")
                 return redirect(self.error_url)
-            elif set_fecha_inicio > set_fecha_final:
+            elif formato_fecha_inicio > formato_fecha_final:
                 messages.add_message(request, level=messages.WARNING, message="La fecha inicial no puede ser mayor que la fecha final")
                 return redirect(self.error_url)
             else:        
-                filtro = Cita.objects.filter(idMedico=medico).filter(fecha__range=(set_fecha_inicio, set_fecha_final))
+                filtro = Cita.objects.filter(idMedico=medico).filter(fecha__range=(formato_fecha_inicio, formato_fecha_final))
                 
                 if filtro.exists():
                     context = {'filtro_fechas': filtro} # llevamos la consulta a la tabla de citas del médico

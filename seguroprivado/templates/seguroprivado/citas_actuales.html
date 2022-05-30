@@ -41,7 +41,7 @@
                         </tr>
                     </thead>
                     <tbody class="table table-light">
-                        {% for cita in citas_doctor_list %}
+                        {% for cita in citas_medico %}
                         {% if cita.idMedico.username == request.user.username and cita.fecha|date:"Y-m-d" == fecha_actual %}
                             {# Condiciones para determinar si se ha realizado o no la cita #}
                             {% for paciente in citas_realizadas %}
