@@ -29,18 +29,13 @@
     {% endif %}
     
     <div class="container-fluid mx-auto bg-light rounded mt-2">
-        {% if request.user.is_authenticated %}            
-            {# Lanzamos mensaje cuando no se han encontrado citas para un paciente determinado #}
-            {% if not citas_paciente %}
+        {% if request.user.is_authenticated %}     
+            {# Lanzamos mensaje cuando no se han encontrado citas pendientes para un paciente determinado #}
+            {% if not citas_pendientes %}
             <div class="container-fluid">
-                <div class="alert alert-warning text-center">El paciente {{ request.user }} no tiene citas pedidas</div>
+                <div class="alert alert-warning text-center">El paciente {{ request.user }} no tiene citas pendientes</div>
             </div>
             {% else %}
-                {% if not citas_pendientes %}
-                <div class="container-fluid">
-                    <div class="alert alert-warning text-center">El paciente {{ request.user }} ha realizado todas sus citas</div>
-                </div>
-                {% else %}
                 <h1 class="text-primary text-center mb-5 p-md-3">Citas del paciente</h1>
                 {# Contenedor para poner un scroll a la tabla #}
                 <div class="container-fluid mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
@@ -49,31 +44,28 @@
                             <tr>
                                 <th>Nombre y apellidos del médico</th>
                                 <th>Edad del médico</th>
-                                <th>Fecha de alta</th>
+                                <th>Fecha de alta del médico</th>
                                 <th>Especialidad</th>
-                                <th>Nombre de usuario</th>
-                                <th>Fecha de cita</th>
+                                <th>Nombre de usuario del médico</th>
+                                <th>Fecha de cita de paciente</th>
                                 <th>Observaciones</th>
                             </tr>
                         </thead>
                         <tbody class="table table-light">
-                            {% for cita in cita_list %}
-                            {% if cita.idPaciente.username == request.user.username %}
+                            {% for cita in citas_pendientes %}
                             <tr>
                                 <td>{{ cita.idMedico.nombre }} {{ cita.idMedico.apellidos }}</td>
                                 <td>{{ cita.idMedico.edad }}</td>
-                                <td>{{ cita.idMedico.fechaalta }}</td>
+                                <td>{{ cita.idMedico.fechaalta|date:"d/m/Y" }}</td>
                                 <td>{{ cita.idMedico.especialidad }}</td>
                                 <td>{{ cita.idMedico.username }}</td>
                                 <td>{{ cita.fecha|date:"d/m/Y" }}</td>
                                 <td>{{ cita.observaciones }}</td>
                             </tr>
-                            {% endif %}
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-                {% endif %}
             {% endif %}  
         {% endif %}
         <a href="{% url 'inicio' %}" class="btn btn-dark ml-3 mt-5 mb-5">

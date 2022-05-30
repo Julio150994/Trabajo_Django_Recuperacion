@@ -405,6 +405,9 @@ class MedicamentoDelete(LoginRequiredMixin, DeleteView):
 class CitaList(LoginRequiredMixin, ListView):
     model = Cita
     template_name = "seguroprivado/citas_paciente.html"
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(CitaList, self).get_context_data(**kwargs)
@@ -414,10 +417,13 @@ class CitaList(LoginRequiredMixin, ListView):
         context['pacientes'] = pacientes
         
         paciente = Paciente.objects.get(username=self.request.user)
-        # Buscamos si el paciente tiene o no citas pendientes
-        citas_paciente = Cita.objects.filter(idPaciente=paciente)
-        context['citas_paciente'] = citas_paciente
-        context['citas_pendientes'] = citas_paciente
+        # Para determinar si el paciente tiene o no citas pendientes
+        fecha_cita_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
+        fecha_actual = datetime.strftime(fecha_cita_actual,'%Y-%m-%d')
+
+        # fecha__gte: para buscar valores de fecha mayores o iguales en la consulta
+        citas_pendientes = Cita.objects.filter(idPaciente=paciente).filter(fecha__gte=fecha_actual)
+        context['citas_pendientes'] = citas_pendientes    
         return context
     
 
