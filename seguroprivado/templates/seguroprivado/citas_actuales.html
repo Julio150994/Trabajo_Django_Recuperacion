@@ -44,43 +44,41 @@
                         {% for cita in citas_medico %}
                         {% if cita.idMedico.username == request.user.username and cita.fecha|date:"Y-m-d" == fecha_actual %}
                             {# Condiciones para determinar si se ha realizado o no la cita #}
-                            {% for paciente in citas_realizadas %}
-                                {% if not paciente.idCompra.idPaciente.username == cita.idPaciente.username %}
-                                {# Color rojo de fondo para cuando la cita no se ha realizado #}
-                                <tr style="background-color: #FFD9D9;">
-                                    <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
-                                    <td>{{ cita.idPaciente.edad }}</td>
-                                    <td>{{ cita.idPaciente.direccion }}</td>
-                                    <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
-                                    <td>{{ cita.idPaciente.username }}</td>
-                                    <td class="text-danger">Paciente sin tratamiento</td>
-                                    <td>{{ cita.observaciones }}</td>
-                                    <td>
-                                        <a href="{% url 'form_realizar_citas' cita.id %}" class="btn btn-success">
-                                            <span class="fas fa-hand-holding-medical"></span>
-                                            <span>Realizar cita</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% else %}
-                                {# Color verde de fondo para cuando la cita se ha realizado #}
-                                <tr style="background-color: #D3FFD9;">
-                                    <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
-                                    <td>{{ cita.idPaciente.edad }}</td>
-                                    <td>{{ cita.idPaciente.direccion }}</td>
-                                    <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
-                                    <td>{{ cita.idPaciente.username }}</td>
-                                    <td>{{ paciente.idMedicamento.nombre }}</td>
-                                    <td>{{ cita.observaciones }}</td>
-                                    <td>
-                                        <div class="rounded bg-info text-white p-2">
-                                            <span class="fas fa-user-check"></span>
-                                            <span>Cita realizada</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endif %}
-                            {% endfor %}
+                            {% if not citas_realizadas %}
+                            {# Color rojo de fondo para cuando la cita no se ha realizado #}
+                            <tr style="background-color: #FFD9D9;">
+                                <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
+                                <td>{{ cita.idPaciente.edad }}</td>
+                                <td>{{ cita.idPaciente.direccion }}</td>
+                                <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
+                                <td>{{ cita.idPaciente.username }}</td>
+                                <td class="text-danger">Paciente sin tratamiento</td>
+                                <td>{{ cita.observaciones }}</td>
+                                <td>
+                                    <a href="{% url 'form_realizar_citas' cita.id %}" class="btn btn-success">
+                                        <span class="fas fa-hand-holding-medical"></span>
+                                        <span>Realizar cita</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            {# Color verde de fondo para cuando la cita se ha realizado #}
+                            <tr style="background-color: #D3FFD9;">
+                                <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
+                                <td>{{ cita.idPaciente.edad }}</td>
+                                <td>{{ cita.idPaciente.direccion }}</td>
+                                <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
+                                <td>{{ cita.idPaciente.username }}</td>
+                                <td>{{ tratamiento }}</td>
+                                <td>{{ cita.observaciones }}</td>
+                                <td>
+                                    <div class="rounded bg-info text-white p-2">
+                                        <span class="fas fa-user-check"></span>
+                                        <span>Cita realizada</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endif %}
                         {% endif %}
                         {% endfor %}
                     </tbody>

@@ -551,6 +551,7 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
         context['citas_hoy'] = citas_fecha_actual
         
         citas_realizadas = CompraMedicamento.objects.all().select_related('idMedicamento','idCompra')
+        context['tratamiento'] = ""
         context['citas_realizadas'] = citas_realizadas
         return context
 
