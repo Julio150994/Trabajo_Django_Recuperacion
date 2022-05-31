@@ -43,9 +43,8 @@
                     </thead>
                     <tbody class="table table-light">
                         {% for cita in citas_medico %}
+                        {# Condiciones para determinar si se ha realizado o no la cita #}
                         {% if cita.idMedico.username == request.user.username and cita.fecha|date:"Y-m-d" == fecha_actual %}
-                            {# Condiciones para determinar si se ha realizado o no la cita #}
-                            {% if not citas_realizadas %}
                             {# Color rojo de fondo para cuando la cita no se ha realizado #}
                             <tr style="background-color: #FFD9D9;">
                                 <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
@@ -53,7 +52,7 @@
                                 <td>{{ cita.idPaciente.direccion }}</td>
                                 <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
                                 <td>{{ cita.idPaciente.username }}</td>
-                                <td class="text-danger">Paciente sin tratamiento</td>
+                                <td class="text-danger">Sin tratamiento disponible</td>
                                 <td>{{ cita.observaciones }}</td>
                                 <td>
                                     <form action="{% url 'realizar_citas' cita.id %}" method="POST">
@@ -73,25 +72,26 @@
                                     </form>
                                 </td>
                             </tr>
-                            {% else %}
-                            {# Color verde de fondo para cuando la cita se ha realizado #}
-                            <tr style="background-color: #D3FFD9;">
-                                <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
-                                <td>{{ cita.idPaciente.edad }}</td>
-                                <td>{{ cita.idPaciente.direccion }}</td>
-                                <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
-                                <td>{{ cita.idPaciente.username }}</td>
-                                <td>{{ tratamiento }}</td>
-                                <td>{{ cita.observaciones }}</td>
-                                <td>
-                                    <div class="rounded bg-info text-white p-2">
-                                        <span class="fas fa-user-check"></span>
-                                        <span>Cita realizada</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endif %}
                         {% endif %}
+                        {% endfor %}
+
+                        {# Color verde de fondo para cuando la cita se ha realizado #}
+                        {% for cita in citas_realizadas %}
+                        <tr style="background-color: #D3FFD9;">
+                            <td>{{ cita.idCompra.idPaciente.nombre }} {{ cita.idCompra.idPaciente.apellidos }}</td>
+                            <td>{{ cita.idCompra.idPaciente.edad }}</td>
+                            <td>{{ cita.idCompra.idPaciente.direccion }}</td>
+                            <td><img src="{{ cita.idCompra.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
+                            <td>{{ cita.idCompra.idPaciente.username }}</td>
+                            <td>{{ cita.idMedicamento.nombre }}</td>
+                            <td>{{ tratamiento }}</td>
+                            <td>
+                                <div class="rounded bg-info text-white p-2 ml-5 mr-5">
+                                    <span class="fas fa-user-check"></span>
+                                    <span>Cita realizada</span>
+                                </div>
+                            </td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>

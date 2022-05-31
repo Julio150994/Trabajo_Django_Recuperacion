@@ -553,14 +553,18 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
         context['medicamentos'] = Medicamento.objects.all()
         
         citas_realizadas = CompraMedicamento.objects.all()
-        lista_citas_realizadas = list()
+        context['citas_realizadas'] = citas_realizadas
+        
+        context['tratamiento'] = "El paciente necesita dosis de vacuna"
+        
+        """lista_citas_realizadas = list()
         
         for tratamiento in citas_realizadas:
             dic_citas = {tratamiento.idMedicamento.nombre: tratamiento.idCompra.idPaciente.username}
             lista_citas_realizadas.append(dic_citas)
         
         if lista_citas_realizadas:
-            context['citas_realizadas'] = citas_realizadas
+            context['citas_realizadas'] = citas_realizadas"""
         
         return context
 
