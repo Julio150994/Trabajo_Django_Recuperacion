@@ -550,8 +550,9 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
         context['fecha_actual'] = formato_fecha_actual
         context['citas_hoy'] = citas_fecha_actual
         
-        citas_realizadas = CompraMedicamento.objects.all().select_related('idMedicamento','idCompra')
-        context['tratamiento'] = ""
+        context['medicamentos'] = Medicamento.objects.all()
+        
+        citas_realizadas = CompraMedicamento.objects.all()
         context['citas_realizadas'] = citas_realizadas
         return context
 
@@ -562,48 +563,30 @@ class RealizaCitasView(LoginRequiredMixin, UpdateView):
     form_class = CitaForm
     template_name = "seguroprivado/form_realizar_citas.html"
     success_url = reverse_lazy('citas_actuales')
-    error_url = reverse_lazy('form_realizar_citas')
     
     def dispatch(self, request, *args, **kwargs):    
         return super().dispatch(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
         paciente_cita = self.get_object() # para obtener el paciente al cual se le realiza la cita
-             
-        nombre_tratamiento = request.POST.get("nombre")
-        precio_tratamiento = request.POST.get("precio")
         
-        busca_medicamento = Medicamento.objects.filter(nombre=nombre_tratamiento)
+        id_tratamiento = request.POST.get("medicamentos[]")
+        medicamento = Medicamento.objects.get(id=id_tratamiento)
         
-        compras_paciente = CompraMedicamento.objects.all().select_related('idMedicamento','idCompra')
+        # Realizamos la cita a través de añadir datos a los modelos Compra y CompraMedicamento en relación al Medicamento y al Paciente de la cita actual
+        fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
+        fecha_tratamiento = datetime.strftime(fecha_actual, '%Y-%m-%d')
+           
+        medicamento_paciente = Medicamento.objects.get(nombre=medicamento.nombre)            
+            
+        compra_paciente = Compra(fecha=fecha_tratamiento, precio=medicamento.precio, idPaciente=paciente_cita.idPaciente)
+        compra_paciente.save()
         
-        lista_medicamentos_paciente = list() # para meter los medicamentos que ha comprado el paciente
-        
-        for paciente in compras_paciente:
-            lista_medicamentos_paciente.append(paciente.idMedicamento.nombre)
-        
-        if not busca_medicamento.exists():
-            messages.add_message(request, level=messages.WARNING, message="Medicamento "+str(nombre_tratamiento)+" no encontrado")
-            return redirect(self.error_url)
-        else:
-            if nombre_tratamiento in lista_medicamentos_paciente:
-                messages.add_message(request, level=messages.WARNING, message="El paciente "+str(paciente_cita.idPaciente.username)+" ya tiene el tratamiento "+str(nombre_tratamiento))
-                return redirect(self.error_url)
-            else:
-                # Realizamos la cita a través de añadir datos a los modelos Compra y CompraMedicamento en relación al Medicamento y al Paciente de la cita actual
-                fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
-                fecha_tratamiento = datetime.strftime(fecha_actual, '%Y-%m-%d')
-                
-                medicamento_paciente = Medicamento.objects.get(nombre=nombre_tratamiento)
-                
-                compra_paciente = Compra(fecha=fecha_tratamiento, precio=precio_tratamiento, idPaciente=paciente_cita.idPaciente)
-                compra_paciente.save()
-                
-                tratamiento_paciente = CompraMedicamento(idMedicamento=medicamento_paciente, idCompra=compra_paciente)
-                tratamiento_paciente.save()
-                
-                messages.success(request, message="Cita de "+str(paciente_cita.idPaciente.username)+" realizada correctamente")
-                return redirect(self.success_url)
+        tratamiento_paciente = CompraMedicamento(idMedicamento=medicamento_paciente, idCompra=compra_paciente)
+        tratamiento_paciente.save()
+            
+        messages.success(request, message="Cita de "+str(paciente_cita.idPaciente.username)+" realizada correctamente")
+        return redirect(self.success_url)
 
 
 @method_decorator(login_required, name='dispatch')

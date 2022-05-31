@@ -36,8 +36,9 @@
                             <th>Dirección del paciente</th>
                             <th>Foto de paciente</th>
                             <th>Nombre de usuario del paciente</th>
-                            <th>Medicamento</th>
+                            <th>Tratamiento</th>
                             <th>Observaciones</th>
+                            <th>Operaciones</th>
                         </tr>
                     </thead>
                     <tbody class="table table-light">
@@ -55,10 +56,20 @@
                                 <td class="text-danger">Paciente sin tratamiento</td>
                                 <td>{{ cita.observaciones }}</td>
                                 <td>
-                                    <a href="{% url 'form_realizar_citas' cita.id %}" class="btn btn-success">
-                                        <span class="fas fa-hand-holding-medical"></span>
-                                        <span>Realizar cita</span>
-                                    </a>
+                                    <form action="{% url 'realizar_citas' cita.id %}" method="POST">
+                                        {% csrf_token %}
+
+                                        <select class="form-select p-2 border-0 bg-info text-white" name="medicamentos[]" id="tratamiento">
+                                            <option selected>Seleccione medicamento</option>
+                                            {% for medicamento in medicamentos %}
+                                                <option value="{{ medicamento.id }}">{{ medicamento.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+
+                                        <button type="submit" class="btn btn-secondary ml-5">
+                                            <span class="fas fa-save"></span>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                             {% else %}
@@ -69,7 +80,7 @@
                                 <td>{{ cita.idPaciente.direccion }}</td>
                                 <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
                                 <td>{{ cita.idPaciente.username }}</td>
-                                <td>{{ tratamiento }}</td>
+                                <td>{{ paciente.idMedicamento.nombre }}</td>
                                 <td>{{ cita.observaciones }}</td>
                                 <td>
                                     <div class="rounded bg-info text-white p-2">
