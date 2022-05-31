@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django import forms
+from seguroprivado.forms import MedicamentoForm
 from seguroprivado.models import Paciente, Medico, Medicamento, Cita, Compra, CompraMedicamento
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -83,6 +84,8 @@ class MedicoAdminForm(forms.ModelForm):
                 return password
 
 class MedicamentoAdminForm(forms.ModelForm):
+    form = MedicamentoForm
+    
     def clean_nombre(self):
         nombre = self.cleaned_data['nombre']
         
@@ -111,7 +114,14 @@ class MedicamentoAdminForm(forms.ModelForm):
             raise forms.ValidationError('El número de precio debe contener dos decimales')
         else:
             return precio
-
+        
+    def clean_stock(self):
+        stock = self.cleaned_data['stock']
+        
+        if not stock:
+            raise forms.ValidationError('Debe poner un número de stock')
+        else:
+            return stock
 
 class PacienteAdminForm(forms.ModelForm):
     def clean_nombre(self):
@@ -289,7 +299,7 @@ class CompraInline(admin.StackedInline):
 class CompraMedicamentoInline(admin.StackedInline):
     model = CompraMedicamento
 
-    
+
 class MedicoAdmin(admin.ModelAdmin):
     form = MedicoAdminForm
     
@@ -310,12 +320,12 @@ class PacienteAdmin(admin.ModelAdmin):
     list_filter = ["username",]
     ordering = ["-id",]
     list_per_page = 3
-    
-class MedicamentoAdmin(admin.ModelAdmin):
-    form = MedicamentoAdminForm
-    list_display = ["nombre","descripcion","precio","stock"]
+
+class MedicamentoAdmin(admin.ModelAdmin):    
+    form = MedicamentoForm
+    list_display = ["nombre","descripcion","precio","receta","stock"]
     search_fields = ["nombre",]
-    list_filter = ["nombre","descripcion","precio",]
+    list_filter = ["nombre","descripcion","precio","receta",]
     ordering = ["-id",]
     list_per_page = 3
 
