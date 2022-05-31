@@ -6,17 +6,10 @@
 {% block pedir_cita %}
 <div class="rounded bg-light col-3 row m-0 justify-content-center align-items-center" id="formulario">
   
-  <span class="navbar-brand text-primary">Formulario de Cita</span>
-  
-  {% for paciente in pacientes %}
-  {% if paciente.username == request.user.username %}
-  <form action="{% url 'form_cita' paciente.id %}" method="POST" id="data_medico">
+  <span class="navbar-brand text-primary mt-2 mb-4">Formulario de Cita</span>
+
+  <form action="{% url 'form_cita' %}" method="POST" id="data_medico">
     {% csrf_token %}
-
-    
-    {# El propio paciente es quien debe pedir sus citas #}
-    {{ form.idPaciente }}
-
     
     <label for="idMedico" class="text-primary" style="margin-left: -0.9em;">{{ form.idMedico.label }}</label>
     
@@ -73,7 +66,5 @@
       <span>Pedir Cita</span>
     </button>
   </form>
-  {% endif %}
-  {% endfor %}
 </div>
 {% endblock %}

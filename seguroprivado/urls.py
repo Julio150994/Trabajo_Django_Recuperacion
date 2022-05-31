@@ -40,7 +40,7 @@ urlpatterns = [
     path('eliminar_medicamento/<int:pk>/',views.MedicamentoDelete.as_view(), name="medicamentos"),
     
     path('citas/',views.CitaList.as_view(), name="citas_paciente"),
-    path('pedir_cita/<int:pk>/',views.CitaCreate.as_view(), name="form_cita"),
+    path('pedir_cita/',views.CitaCreate.as_view(), name="form_cita"),
     
     path('citas_medico/',views.CitaMedicoList.as_view(), name="citas_medico"),
     path('citas_medico/actuales/',views.CitaActualView.as_view(), name="citas_actuales"),

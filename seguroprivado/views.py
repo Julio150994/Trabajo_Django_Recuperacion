@@ -417,17 +417,22 @@ class CitaList(LoginRequiredMixin, ListView):
         context = super(CitaList, self).get_context_data(**kwargs)
         
         # Pasamos los pacientes al template #
-        pacientes = Paciente.objects.all()
-        context['pacientes'] = pacientes
+        #pacientes = Paciente.objects.all()
+        #context['pacientes'] = pacientes
         
         paciente = Paciente.objects.get(username=self.request.user)
+        
+        citas_paciente = Cita.objects.filter(idPaciente=paciente)
+        #print("Citas del paciente: "+str(citas_paciente))
+        context['citas_paciente'] = citas_paciente
+        
         # Para determinar si el paciente tiene o no citas pendientes
-        fecha_cita_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
-        fecha_actual = datetime.strftime(fecha_cita_actual,'%Y-%m-%d')
+        #fecha_cita_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
+        #fecha_actual = datetime.strftime(fecha_cita_actual,'%Y-%m-%d')
 
         # fecha__gte: para buscar valores de fecha mayores o iguales en la consulta
-        citas_pendientes = Cita.objects.filter(idPaciente=paciente).filter(fecha__gte=fecha_actual)
-        context['citas_pendientes'] = citas_pendientes    
+        #citas_pendientes = Cita.objects.filter(idPaciente=paciente).filter(fecha__gte=fecha_actual)
+        #context['citas_pendientes'] = citas_pendientes    
         return context
     
 
@@ -443,16 +448,6 @@ class CitaCreate(LoginRequiredMixin, CreateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
-    def get_context_data(self, **kwargs):
-        context = super(CitaCreate, self).get_context_data(**kwargs)
-        
-        pacientes = Paciente.objects.all()
-        context['pacientes'] = pacientes
-        
-        paciente_logueado = Paciente.objects.get(username=self.request.user)
-        context['paciente'] = paciente_logueado
-        return context
-    
     def post(self, request, *args, **kwargs):
         form = CitaForm(request.POST)
         
@@ -461,16 +456,18 @@ class CitaCreate(LoginRequiredMixin, CreateView):
         lista_citas = list()
         list_aux_medico = list()
         
-        # Obtenemos el objeto del paciente
-        idPaciente = request.POST.get('idPaciente')
+        # Obtenemos al paciente logueado
+        paciente = Paciente.objects.get(username=self.request.user)
         
         # Obtenemos el objeto del médico
         idMedico = request.POST.get('idMedico')
         medico = Medico.objects.get(id=idMedico)
         
-        fecha = request.POST.get('fecha')# fecha de cita enviada
+        fecha = request.POST.get('fecha')# fecha de cita enviada)
         fecha_cita = datetime.strptime(fecha, '%Y-%m-%d')
         fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
+        
+        observaciones = request.POST.get('observaciones')# fecha de cita enviada
         
         if fecha_cita < fecha_actual:
             messages.add_message(request, level=messages.WARNING, message="La fecha de cita debe ser mayor o igual que la fecha actual")
@@ -490,7 +487,7 @@ class CitaCreate(LoginRequiredMixin, CreateView):
             citas_repetidas = lista_citas.count({str(medico.username) : str(fecha)})
             
             # Validamos que un médico solamente puede atender hasta 3 citas en un mismo día.
-            if citas_repetidas == 3:
+            if citas_repetidas > 3:
                 # Convertimos la fecha del formato yyyy-mm-dd al formato dd/mm/YYYY
                 anio = str(fecha)[0:str(fecha).find('-')]
                 aux = str(fecha)[str(fecha).find('-')+1:]
@@ -501,9 +498,11 @@ class CitaCreate(LoginRequiredMixin, CreateView):
                 messages.add_message(request, level=messages.WARNING, message="El médico "+str(medico.username)+" no puede atender más citas para el "+str(fecha_repetida))
                 return redirect(self.error_url)
             else:
-                if form.is_valid():
-                    messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(request.user)+" añadida correctamente")
-                    return super().post(request, *args, **kwargs)
+                # Pedimos la cita para el paciente logueado
+                cita = Cita(idPaciente=paciente, idMedico=medico, fecha=fecha, observaciones=observaciones)
+                cita.save()
+                messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(paciente.username)+" añadida correctamente")
+                return redirect(self.success_url)
 
 
 # Clases para que los médicos puedan realizar sus consultas

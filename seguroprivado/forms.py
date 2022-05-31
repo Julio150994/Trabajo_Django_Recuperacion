@@ -252,7 +252,6 @@ class CitaForm(forms.ModelForm):
         }
         
         widgets = {
-            'idPaciente': forms.Select(attrs={'class':'form-control form-control-sm mx-auto', 'disabled':'true', 'style':'visibility: hidden', 'required':'true'}),
             'idMedico': forms.Select(attrs={'class':'form-control form-control-sm mx-auto', 'required':'true'}),
             'fecha': forms.DateInput(format = ('%d/%m/%Y'), attrs={'class':'form-control form-control-sm row mx-auto', 'placeholder':'Fecha de cita', 'type':'date', 'required':'true'}),
             'observaciones': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'style': 'height: 100px', 'placeholder':'Escriba las observaciones', 'required':'true'})
