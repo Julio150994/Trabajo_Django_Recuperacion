@@ -550,10 +550,19 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
         context['fecha_actual'] = formato_fecha_actual
         context['citas_hoy'] = citas_fecha_actual
         
+        # Para el select de medicamentos
         context['medicamentos'] = Medicamento.objects.all()
         
         citas_realizadas = CompraMedicamento.objects.all()
-        context['citas_realizadas'] = citas_realizadas
+        lista_citas_realizadas = list()
+        
+        for tratamiento in citas_realizadas:
+            dic_citas = {tratamiento.idMedicamento.nombre: tratamiento.idCompra.idPaciente.username}
+            lista_citas_realizadas.append(dic_citas)
+        
+        if lista_citas_realizadas:
+            context['citas_realizadas'] = citas_realizadas
+        
         return context
 
 @method_decorator(login_required, name='dispatch')
