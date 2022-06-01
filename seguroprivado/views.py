@@ -543,7 +543,9 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
         dict_citas_realizadas = dict()
         list_realizadas = list()
         dict_citas_pendientes = dict()
-        list_pendientes = list()
+        aux_citas_pendientes = list()
+        aux_realizadas = dict()
+        aux_citas_realizadas = list()
         
         medico = Medico.objects.get(username=self.request.user)
         fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
@@ -555,30 +557,51 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
         context['citas_hoy'] = citas_fecha_actual
         
         for cita in citas_fecha_actual:
-            dict_citas_pendientes = {str(cita.fecha): str(cita.idPaciente.username)}
-            list_pendientes.append(dict_citas_pendientes)
-        print("\nCitas pendientes: "+str(list_pendientes))
+            dict_citas_pendientes = {cita.id: cita.idPaciente.username}
+            aux_citas_pendientes.append(dict_citas_pendientes)
         
         # Para el select de medicamentos
         context['medicamentos'] = Medicamento.objects.all()
         
         citas_realizadas = CompraMedicamento.objects.all()
-        
         context['citas_realizadas'] = citas_realizadas
         
         for tratamiento in citas_realizadas:
             dict_citas_realizadas = {tratamiento.idMedicamento.nombre:tratamiento.idCompra.idPaciente.username}
             list_realizadas.append(dict_citas_realizadas)
         
-        print("\nCitas realizadas: "+str(list_realizadas))
-        
         for tratamiento, paciente in dict_citas_realizadas.items():
             set_paciente = Paciente.objects.get(username=paciente)
             cita_paciente = Cita.objects.get(idPaciente=set_paciente)
             
+            aux_realizadas = {cita_paciente.id: cita_paciente.idPaciente.username}
+            aux_citas_realizadas.append(aux_realizadas)
+            
+            # Establecemos los campos del paciente con la cita realizada
+            context['nombre'] = set_paciente.nombre
+            context['apellidos'] = set_paciente.apellidos
+            context['edad'] = set_paciente.edad
+            context['direccion'] = set_paciente.direccion
+            context['foto'] = set_paciente.foto
+            context['username'] = set_paciente.username
             context['observaciones'] = cita_paciente.observaciones
             context['tratamiento'] = tratamiento
+            
+        # Determinamos las citas realizadas y pendientes existentes
+        realizadas = [cita for cita in aux_citas_pendientes if cita in aux_citas_realizadas]
+        pendientes = [cita for cita in aux_citas_pendientes if cita not in aux_citas_realizadas]
         
+        for dic_cita in pendientes:
+            for id, paciente in dic_cita.items():
+                context['usuario_paciente_pendiente'] = paciente
+        
+        for dic_cita in realizadas:
+            for id, paciente in dic_cita.items():
+                context['usuario_paciente_realizada'] = paciente
+        
+        context['realizada'] = realizadas
+        context['pendiente'] = pendientes
+                
         return context
 
 @method_decorator(login_required, name='dispatch')
