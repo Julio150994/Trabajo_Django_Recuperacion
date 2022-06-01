@@ -143,7 +143,7 @@ class MedicamentoForm(forms.ModelForm):
         labels = {
             'nombre': 'Nombre',
             'descripcion': 'Descripción',
-            'receta': 'Receta',
+            'receta': 'Seleccione Receta',
             'precio': 'Precio',
             'stock': 'Stock'
         }

@@ -355,25 +355,28 @@ class MedicamentoUpdate(LoginRequiredMixin, UpdateView):
     
     def post(self, request, *args, **kwargs):
         medicamento_anterior = self.get_object()# recibimos el medicamento anterior
-        medicamento = MedicamentoForm(request.POST)
+        #form_medicamento = MedicamentoForm(request.POST)
         
         nombre = request.POST.get("nombre")
+        print("Nombre de medicamento: "+str(nombre))
         descripcion = request.POST.get("descripcion")
         receta = request.POST.get("receta")
         precio = request.POST.get("precio")
         stock = request.POST.get("stock")
         
+        medicamento_actual = Medicamento.objects.get(id=medicamento_anterior.id)
+        medicamento_actual.nombre = nombre
+        medicamento_actual.descripcion = descripcion
+        medicamento_actual.receta = receta
+        medicamento_actual.precio = float(precio)
+        
         if stock == None:
-            messages.add_message(request,level=messages.INFO, message="Medicamento "+str(nombre)+" editado correctamente (sin aumentar el stock)")
+            medicamento_actual.save()
+            messages.add_message(request, level=messages.INFO, message="Medicamento "+str(nombre)+" editado correctamente (sin aumentar el stock)")
         else:
-            medicamento_actual = Medicamento.objects.get(id=medicamento_anterior.id)
-            medicamento_actual.nombre = nombre
-            medicamento_actual.descripcion = descripcion
-            medicamento_actual.receta = receta
-            medicamento_actual.precio = float(precio)
             medicamento_actual.stock += int(stock)
             medicamento_actual.save()
-            messages.add_message(request,level=messages.INFO, message="Se ha aumentado el stock correctamente")
+            messages.add_message(request, level=messages.INFO, message="Se ha aumentado el stock correctamente")
         return redirect(self.success_url)
         
 @method_decorator(login_required, name='dispatch')
