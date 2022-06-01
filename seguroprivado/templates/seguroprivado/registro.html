@@ -184,12 +184,5 @@
 
 <script src="{% static 'assets/js/theme.js' %}"></script>
 
-{% if request.user.is_authenticated %}
-  {# Código del copyright #}
-  {% block copyright %} 
-  {% include "seguroprivado/footer.html" %}
-  {% endblock %}
-{% endif %}
-
 </body>
 </html>

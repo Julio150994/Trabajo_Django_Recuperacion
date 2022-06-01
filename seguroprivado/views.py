@@ -552,6 +552,7 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
             aux_citas_realizadas.append(aux_realizadas)
             
             # Establecemos los campos del paciente con la cita realizada
+            context['id_cita'] = cita_paciente.id
             context['nombre'] = set_paciente.nombre
             context['apellidos'] = set_paciente.apellidos
             context['edad'] = set_paciente.edad
@@ -562,51 +563,20 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
             context['tratamiento'] = tratamiento
             
         # Determinamos las citas realizadas y pendientes existentes
-        """realizadas = [cita for cita in aux_citas_pendientes if cita in aux_citas_realizadas]
+        realizadas = [cita for cita in aux_citas_pendientes if cita in aux_citas_realizadas]
         pendientes = [cita for cita in aux_citas_pendientes if cita not in aux_citas_realizadas]
         
         for dic_cita in pendientes:
             for id, paciente in dic_cita.items():
                 context['usuario_paciente_pendiente'] = paciente
-        
+                
         for dic_cita in realizadas:
             for id, paciente in dic_cita.items():
                 context['usuario_paciente_realizada'] = paciente
         
         context['realizada'] = realizadas
-        context['pendiente'] = pendientes"""
+        context['pendiente'] = pendientes
         return context
-
-
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
-class RealizaCitasView(LoginRequiredMixin, UpdateView):
-    model = Cita
-    success_url = reverse_lazy('citas_actuales')
-    
-    def dispatch(self, request, *args, **kwargs):    
-        return super().dispatch(request, *args, **kwargs)
-    
-    def post(self, request, *args, **kwargs):
-        paciente_cita = self.get_object() # para obtener el paciente al cual se le realiza la cita
-        
-        id_tratamiento = request.POST.get("medicamentos[]")
-        medicamento = Medicamento.objects.get(id=id_tratamiento)
-        
-        # Realizamos la cita a través de añadir datos a los modelos Compra y CompraMedicamento en relación al Medicamento y al Paciente de la cita actual
-        fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
-        fecha_tratamiento = datetime.strftime(fecha_actual, '%Y-%m-%d')
-           
-        medicamento_paciente = Medicamento.objects.get(nombre=medicamento.nombre)            
-            
-        compra_paciente = Compra(fecha=fecha_tratamiento, precio=medicamento.precio, idPaciente=paciente_cita.idPaciente)
-        compra_paciente.save()
-        
-        tratamiento_paciente = CompraMedicamento(idMedicamento=medicamento_paciente, idCompra=compra_paciente)
-        tratamiento_paciente.save()
-            
-        messages.success(request, message="Cita de "+str(paciente_cita.idPaciente.username)+" realizada correctamente")
-        return redirect(self.success_url)
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
