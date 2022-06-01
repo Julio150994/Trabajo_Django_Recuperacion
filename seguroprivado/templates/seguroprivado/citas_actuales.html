@@ -41,7 +41,6 @@
                     </thead>
                     <tbody class="table table-light">
                     {% for cita in citas_medico %}
-                        {# Condiciones para determinar si se ha realizado o no la cita #}
                         {% if cita.idMedico.username == request.user.username and cita.fecha|date:"Y-m-d" == fecha_actual %}
                         {# Color rojo de fondo para cuando la cita no se ha realizado #}
                         <tr style="background-color: #FFD9D9;">
@@ -53,6 +52,7 @@
                         <td class="text-danger">Sin tratamiento disponible</td>
                         <td>{{ cita.observaciones }}</td>
                         </tr>
+                        {# Color verde de fondo para cuando la cita se haya realizado #}
                         {% endif %}
                     {% endfor %}
                     </tbody>
