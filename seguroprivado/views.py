@@ -355,10 +355,8 @@ class MedicamentoUpdate(LoginRequiredMixin, UpdateView):
     
     def post(self, request, *args, **kwargs):
         medicamento_anterior = self.get_object()# recibimos el medicamento anterior
-        #form_medicamento = MedicamentoForm(request.POST)
         
         nombre = request.POST.get("nombre")
-        print("Nombre de medicamento: "+str(nombre))
         descripcion = request.POST.get("descripcion")
         receta = request.POST.get("receta")
         precio = request.POST.get("precio")
@@ -369,13 +367,9 @@ class MedicamentoUpdate(LoginRequiredMixin, UpdateView):
         medicamento_actual.descripcion = descripcion
         medicamento_actual.receta = receta
         medicamento_actual.precio = float(precio)
+        medicamento_actual.stock += int(stock) # para aumentar el stock
         
-        if stock == None:
-            messages.add_message(request, level=messages.INFO, message="Medicamento "+str(nombre)+" editado correctamente (sin aumentar el stock)")
-        else:
-            medicamento_actual.stock += int(stock)
-            messages.add_message(request, level=messages.INFO, message="Se ha aumentado el stock correctamente")
-        
+        messages.add_message(request, level=messages.INFO, message="Medicamento "+str(nombre)+" editado correctamente")
         medicamento_actual.save()
         return redirect(self.success_url)
         

@@ -55,7 +55,7 @@
     {{ form.precio.of_field_errors }}
 
     
-    {% comment %}<label for="stock" class="text-primary" style="margin-left: -0.9em;">Stock a aumentar</label>
+    <label for="stock" class="text-primary" style="margin-left: -0.9em;">Stock a aumentar</label>
 
     <div class="input-group input-navbar mb-4">
       <div class="input-group-prepend row">
@@ -63,7 +63,7 @@
       </div>
       {{ form.stock }}
     </div>
-    {{ form.stock.of_field_errors }}{% endcomment %}
+    {{ form.stock.of_field_errors }}
 
     {# Mensajes de errores de validación en el formulario #}
     {% if messages %}
