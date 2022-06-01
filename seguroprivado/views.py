@@ -395,28 +395,11 @@ class MedicamentoDelete(LoginRequiredMixin, DeleteView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
-class CitaList(LoginRequiredMixin, ListView):
-    model = Cita
-    template_name = "seguroprivado/citas_paciente.html"
-    
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(CitaList, self).get_context_data(**kwargs)
-        
-        paciente = Paciente.objects.get(username=self.request.user)
-        citas_paciente = Cita.objects.filter(idPaciente=paciente)
-        context['citas_paciente'] = citas_paciente    
-        return context
-
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
 class CitaCreate(LoginRequiredMixin, CreateView):
     model = Cita
     form_class = CitaForm
     template_name = "seguroprivado/form_cita.html"
-    success_url = reverse_lazy('citas_paciente')
+    success_url = reverse_lazy('inicio')
     error_url = reverse_lazy('form_cita')
     
     def dispatch(self, request, *args, **kwargs):

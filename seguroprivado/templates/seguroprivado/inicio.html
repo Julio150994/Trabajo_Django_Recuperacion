@@ -96,9 +96,9 @@
                     <span>Editar perfil</span>
                   </a>
 
-                  <a href="{% url 'citas_paciente' %}" class="btn btn-primary text-white ml-lg-5">
-                    <span class="fas fa-solid fa-clipboard-list"></span>
-                    <span>Citas de {{ request.user }}</span>
+                  <a href="{% url 'form_cita' %}" class="btn btn-primary ml-lg-5">
+                    <span class="fas fa-user-plus"></span>
+                    <span>Pedir cita</span>
                   </a>
 
                   {# Para usuarios logueados como médicos #}
