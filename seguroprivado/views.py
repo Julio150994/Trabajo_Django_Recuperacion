@@ -405,23 +405,9 @@ class CitaList(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(CitaList, self).get_context_data(**kwargs)
         
-        # Pasamos los pacientes al template #
-        #pacientes = Paciente.objects.all()
-        #context['pacientes'] = pacientes
-        
         paciente = Paciente.objects.get(username=self.request.user)
-        
         citas_paciente = Cita.objects.filter(idPaciente=paciente)
-        #print("Citas del paciente: "+str(citas_paciente))
-        context['citas_paciente'] = citas_paciente
-        
-        # Para determinar si el paciente tiene o no citas pendientes
-        #fecha_cita_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
-        #fecha_actual = datetime.strftime(fecha_cita_actual,'%Y-%m-%d')
-
-        # fecha__gte: para buscar valores de fecha mayores o iguales en la consulta
-        #citas_pendientes = Cita.objects.filter(idPaciente=paciente).filter(fecha__gte=fecha_actual)
-        #context['citas_pendientes'] = citas_pendientes    
+        context['citas_paciente'] = citas_paciente    
         return context
 
 @method_decorator(login_required, name='dispatch')
@@ -574,7 +560,7 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
             context['tratamiento'] = tratamiento
             
         # Determinamos las citas realizadas y pendientes existentes
-        realizadas = [cita for cita in aux_citas_pendientes if cita in aux_citas_realizadas]
+        """realizadas = [cita for cita in aux_citas_pendientes if cita in aux_citas_realizadas]
         pendientes = [cita for cita in aux_citas_pendientes if cita not in aux_citas_realizadas]
         
         for dic_cita in pendientes:
@@ -586,7 +572,7 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
                 context['usuario_paciente_realizada'] = paciente
         
         context['realizada'] = realizadas
-        context['pendiente'] = pendientes
+        context['pendiente'] = pendientes"""
         return context
 
 
