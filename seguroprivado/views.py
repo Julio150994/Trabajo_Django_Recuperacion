@@ -501,7 +501,7 @@ class CitaCreate(LoginRequiredMixin, CreateView):
                 # Pedimos la cita para el paciente logueado
                 cita = Cita(idPaciente=paciente, idMedico=medico, fecha=fecha, observaciones=observaciones)
                 cita.save()
-                messages.add_message(request, level=messages.SUCCESS, message="Cita para "+str(paciente.username)+" añadida correctamente")
+                messages.add_message(request, level=messages.SUCCESS, message="Su cita ha sido añadida correctamente")
                 return redirect(self.success_url)
 
 
