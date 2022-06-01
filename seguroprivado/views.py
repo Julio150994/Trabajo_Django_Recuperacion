@@ -371,12 +371,12 @@ class MedicamentoUpdate(LoginRequiredMixin, UpdateView):
         medicamento_actual.precio = float(precio)
         
         if stock == None:
-            medicamento_actual.save()
             messages.add_message(request, level=messages.INFO, message="Medicamento "+str(nombre)+" editado correctamente (sin aumentar el stock)")
         else:
             medicamento_actual.stock += int(stock)
-            medicamento_actual.save()
             messages.add_message(request, level=messages.INFO, message="Se ha aumentado el stock correctamente")
+        
+        medicamento_actual.save()
         return redirect(self.success_url)
         
 @method_decorator(login_required, name='dispatch')
@@ -594,6 +594,7 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
         context['realizada'] = realizadas
         context['pendiente'] = pendientes
         return context
+
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico

@@ -60,15 +60,15 @@
                         <td>
                             <form action="{% url 'editar_medicamento' medicamento.id %}" method="POST">
                                 {% csrf_token %}
-                                <input type="hidden" value="{{ medicamento.nombre }}">
-                                <input type="hidden" value="{{ medicamento.descripcion }}">
-                                <input type="hidden" value="{{ medicamento.receta }}">
-                                <input type="hidden" value="{{ medicamento.precio }}">
-
+                                {{ form.nombre }}
+                                {{ form.descripcion }}
+                                {{ form.receta }}
+                                {{ form.precio }}
+                                
                                 <nav class="navbar justify-content-center">
-                                    <input class="form-control col-sm-2 text-center text-white bg-primary ml-5" type="number" value="{{ medicamento.stock }}" required>
+                                    <input class="form-control col-sm-2 text-center text-white bg-primary btn-sm ml-5" type="number" value="{{ medicamento.stock }}" required>
                                     {# Botón para aumentar el stock #}
-                                    <button class="btn btn-secondary text-white ml-3" type="submit">
+                                    <button class="btn btn-secondary btn-sm text-white ml-3" type="submit">
                                         <span class="fas fa-plus"></span>
                                     </button>
                                 </nav>
