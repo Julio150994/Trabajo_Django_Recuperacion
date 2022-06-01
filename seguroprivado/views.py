@@ -540,6 +540,11 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
     def get_context_data(self, **kwargs):
         context = super(CitaActualView, self).get_context_data(**kwargs)
         
+        dict_citas_realizadas = dict()
+        list_realizadas = list()
+        dict_citas_pendientes = dict()
+        list_pendientes = list()
+        
         medico = Medico.objects.get(username=self.request.user)
         fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
         formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
@@ -549,22 +554,30 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
         context['fecha_actual'] = formato_fecha_actual
         context['citas_hoy'] = citas_fecha_actual
         
+        for cita in citas_fecha_actual:
+            dict_citas_pendientes = {str(cita.fecha): str(cita.idPaciente.username)}
+            list_pendientes.append(dict_citas_pendientes)
+        print("\nCitas pendientes: "+str(list_pendientes))
+        
         # Para el select de medicamentos
         context['medicamentos'] = Medicamento.objects.all()
         
         citas_realizadas = CompraMedicamento.objects.all()
+        
         context['citas_realizadas'] = citas_realizadas
         
-        context['tratamiento'] = "El paciente necesita dosis de vacuna"
-        
-        """lista_citas_realizadas = list()
-        
         for tratamiento in citas_realizadas:
-            dic_citas = {tratamiento.idMedicamento.nombre: tratamiento.idCompra.idPaciente.username}
-            lista_citas_realizadas.append(dic_citas)
+            dict_citas_realizadas = {tratamiento.idMedicamento.nombre:tratamiento.idCompra.idPaciente.username}
+            list_realizadas.append(dict_citas_realizadas)
         
-        if lista_citas_realizadas:
-            context['citas_realizadas'] = citas_realizadas"""
+        print("\nCitas realizadas: "+str(list_realizadas))
+        
+        for tratamiento, paciente in dict_citas_realizadas.items():
+            set_paciente = Paciente.objects.get(username=paciente)
+            cita_paciente = Cita.objects.get(idPaciente=set_paciente)
+            
+            context['observaciones'] = cita_paciente.observaciones
+            context['tratamiento'] = tratamiento
         
         return context
 
@@ -572,8 +585,6 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
 class RealizaCitasView(LoginRequiredMixin, UpdateView):
     model = Cita
-    form_class = CitaForm
-    template_name = "seguroprivado/form_realizar_citas.html"
     success_url = reverse_lazy('citas_actuales')
     
     def dispatch(self, request, *args, **kwargs):    

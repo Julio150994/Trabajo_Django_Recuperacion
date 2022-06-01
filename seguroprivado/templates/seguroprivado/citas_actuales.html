@@ -15,7 +15,7 @@
 
             <h1 class="text-primary text-center mb-5 p-md-3">Lista de citas de hoy</h1>
 
-            {# Mensaje cuando se haya realizado una cita #}
+            {# Mensaje para cuando se haya realizado una cita #}
             {% if messages %}
             {% for cita_realizada in messages %}
             <div class="container-fluid pr-1">
@@ -26,7 +26,6 @@
             {% endfor %}
             {% endif %}
 
-            {# Contenedor para poner un scroll a la tabla #}
             <div class="container-fluid mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
                 <table class="table table-bordered text-center">
                     <thead class="table table-dark text-white">
@@ -42,51 +41,51 @@
                         </tr>
                     </thead>
                     <tbody class="table table-light">
-                        {% for cita in citas_medico %}
-                        {# Condiciones para determinar si se ha realizado o no la cita #}
-                        {% if cita.idMedico.username == request.user.username and cita.fecha|date:"Y-m-d" == fecha_actual %}
-                            {# Color rojo de fondo para cuando la cita no se ha realizado #}
-                            <tr style="background-color: #FFD9D9;">
-                                <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
-                                <td>{{ cita.idPaciente.edad }}</td>
-                                <td>{{ cita.idPaciente.direccion }}</td>
-                                <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
-                                <td>{{ cita.idPaciente.username }}</td>
-                                <td class="text-danger">Sin tratamiento disponible</td>
-                                <td>{{ cita.observaciones }}</td>
-                                <td>
-                                    <form action="{% url 'realizar_citas' cita.id %}" method="POST">
-                                        {% csrf_token %}
-                                        <nav class="navbar navbar-expand-lg">
-                                            <select class="p-2 border-0 bg-info text-white" name="medicamentos[]" id="tratamiento" required>
-                                                <option selected>Seleccione medicamento</option>
-                                                {% for medicamento in medicamentos %}
-                                                    <option value="{{ medicamento.id }}">{{ medicamento.nombre }}</option>
-                                                {% endfor %}
-                                            </select>
-                                            
-                                            <button type="submit" class="btn btn-secondary ml-3 pl-3 pr-3">
-                                                <span class="fas fa-save"></span>
-                                            </button>
-                                        </nav>
-                                    </form>
-                                </td>
-                            </tr>
-                        {% endif %}
-                        {% endfor %}
-
-                        {# Color verde de fondo para cuando la cita se ha realizado #}
-                        {% for cita in citas_realizadas %}
-                        <tr style="background-color: #D3FFD9;">
-                            <td>{{ cita.idCompra.idPaciente.nombre }} {{ cita.idCompra.idPaciente.apellidos }}</td>
-                            <td>{{ cita.idCompra.idPaciente.edad }}</td>
-                            <td>{{ cita.idCompra.idPaciente.direccion }}</td>
-                            <td><img src="{{ cita.idCompra.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
-                            <td>{{ cita.idCompra.idPaciente.username }}</td>
-                            <td>{{ cita.idMedicamento.nombre }}</td>
-                            <td>{{ tratamiento }}</td>
+                    {% for cita in citas_medico %}
+                    {# Condiciones para determinar si se ha realizado o no la cita #}
+                    {% if cita.idMedico.username == request.user.username and cita.fecha|date:"Y-m-d" == fecha_actual %}
+                        {# Color rojo de fondo para cuando la cita no se ha realizado #}
+                        <tr style="background-color: #FFD9D9;">
+                            <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
+                            <td>{{ cita.idPaciente.edad }}</td>
+                            <td>{{ cita.idPaciente.direccion }}</td>
+                            <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="70" height="70"></td>
+                            <td>{{ cita.idPaciente.username }}</td>
+                            <td class="text-danger">Sin tratamiento disponible</td>
+                            <td>{{ cita.observaciones }}</td>
                             <td>
-                                <div class="rounded bg-info text-white p-2 ml-5 mr-5">
+                                <form action="{% url 'realizar_citas' cita.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <nav class="navbar navbar-expand-lg">
+                                        <select class="p-2 border-0 bg-info text-white" name="medicamentos[]" id="tratamiento" required>
+                                            <option selected>Seleccione medicamento</option>
+                                            {% for medicamento in medicamentos %}
+                                                <option value="{{ medicamento.id }}">{{ medicamento.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        
+                                        <button type="submit" class="btn btn-secondary ml-3 pl-3 pr-3">
+                                            <span class="fas fa-save"></span>
+                                        </button>
+                                    </nav>
+                                </form>
+                            </td>
+                        </tr>                        
+                    {% endif %}
+                    {% endfor %}
+                    
+                    {% for paciente in citas_realizadas %}
+                        {# Color verde de fondo para cuando la cita se ha realizado #}
+                        <tr style="background-color: #D3FFD9;">
+                            <td>{{ paciente.idCompra.idPaciente.nombre }} {{ paciente.idCompra.idPaciente.apellidos }}</td>
+                            <td>{{ paciente.idCompra.idPaciente.edad }}</td>
+                            <td>{{ paciente.idCompra.idPaciente.direccion }}</td>
+                            <td><img src="{{ paciente.idCompra.idPaciente.foto.url }}" class="img-circle" width="70" height="70"></td>
+                            <td>{{ paciente.idCompra.idPaciente.username }}</td>
+                            <td>{{ tratamiento }}</td>
+                            <td>{{ observaciones }}</td>
+                            <td>
+                                <div class="rounded bg-success text-white p-2 ml-5 mr-5">
                                     <span class="fas fa-user-check"></span>
                                     <span>Cita realizada</span>
                                 </div>
