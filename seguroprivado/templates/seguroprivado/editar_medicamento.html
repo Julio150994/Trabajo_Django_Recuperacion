@@ -55,7 +55,7 @@
     {{ form.precio.of_field_errors }}
 
     
-    <label for="stock" class="text-primary" style="margin-left: -0.9em;">Stock a aumentar</label>
+    {% comment %}<label for="stock" class="text-primary" style="margin-left: -0.9em;">Stock a aumentar</label>
 
     <div class="input-group input-navbar mb-4">
       <div class="input-group-prepend row">
@@ -63,7 +63,7 @@
       </div>
       {{ form.stock }}
     </div>
-    {{ form.stock.of_field_errors }}
+    {{ form.stock.of_field_errors }}{% endcomment %}
 
     {# Mensajes de errores de validación en el formulario #}
     {% if messages %}
@@ -76,12 +76,12 @@
     {% endfor %}
     {% endif %}
     
-    <a href="{% url 'medicamentos' %}" class="row btn btn-danger mr-4 mt-2 mb-4">
+    <a href="{% url 'medicamentos' %}" class="row btn btn-danger mr-4 mt-5 mb-4">
       <span class="fas fa-arrow-left"></span>
       <span>Cancelar</span>
     </a>
     
-    <button class="row btn btn-info text-center pr-4 pl-4 ml-3 mt-2 mb-4">
+    <button class="row btn btn-info text-center pr-4 pl-4 ml-3 mt-5 mb-4">
       <span class="fas fa-user-plus"></span>
       <span>Editar</span>
     </button>

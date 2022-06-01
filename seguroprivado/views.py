@@ -51,7 +51,6 @@ class TemplateInicioView(TemplateView):
                     context['nombre_especialidad'] = busqueda
         return context
     
-    
 class RegistroPacientesView(CreateView):
     model = Paciente
     form_class = PacienteForm
@@ -78,7 +77,6 @@ class RegistroPacientesView(CreateView):
         else:
             messages.add_message(request, level=messages.WARNING, message="Error al registrar paciente")
             return redirect('registro')
-
 
 class LoginSegPrivadoView(LoginView):
     template_name = "seguroprivado/login.html"
@@ -170,7 +168,6 @@ class EditarPerfilView(LoginRequiredMixin, UpdateView):
         
         messages.add_message(request,level=messages.INFO, message="Perfil de paciente "+str(get_paciente.username)+" editado correctamente")
         return super().post(request, *args, **kwargs)  
-    
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
@@ -203,14 +200,12 @@ class PacienteActived(LoginRequiredMixin, UpdateView):
         
         if paciente is not None:
             return redirect('pacientes')
-  
-  
+
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class MedicoList(LoginRequiredMixin, ListView):
     model = Medico
     template_name = "seguroprivado/medicos.html"
-
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
@@ -251,7 +246,6 @@ class MedicoCreate(LoginRequiredMixin, CreateView):
             else:
                 messages.add_message(request,level=messages.WARNING, message="La fecha de alta es errónea.")
                 return redirect('form_medico')
-
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
@@ -295,8 +289,7 @@ class MedicoUpdate(LoginRequiredMixin, UpdateView):
             else:
                 messages.add_message(request,level=messages.WARNING, message="La fecha de alta es errónea.")
                 return redirect('editar_medico/'+str(get_medico.id)+'/')    
-    
-    
+      
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class MedicoDelete(LoginRequiredMixin, DeleteView):
@@ -324,13 +317,11 @@ class MedicoDelete(LoginRequiredMixin, DeleteView):
             messages.add_message(self.request,level=messages.WARNING, message="Médico "+str(obj_medico.username)+" eliminado correctamente")
             return redirect('medicos')
 
-      
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
 class MedicamentoList(LoginRequiredMixin, ListView):
     model = Medicamento
     template_name = "seguroprivado/medicamentos.html"
-
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: user.is_superuser), name='dispatch')# Administrador
@@ -372,15 +363,17 @@ class MedicamentoUpdate(LoginRequiredMixin, UpdateView):
         precio = request.POST.get("precio")
         stock = request.POST.get("stock")
         
-        medicamento_actual = Medicamento.objects.get(id=medicamento_anterior.id)
-        medicamento_actual.nombre = nombre
-        medicamento_actual.descripcion = descripcion
-        medicamento_actual.receta = receta
-        medicamento_actual.precio = float(precio)
-        medicamento_actual.stock += int(stock)                        
-        
-        medicamento_actual.save()
-        messages.add_message(request,level=messages.INFO, message="Medicamento "+str(nombre)+" editado correctamente")
+        if stock == None:
+            messages.add_message(request,level=messages.INFO, message="Medicamento "+str(nombre)+" editado correctamente (sin aumentar el stock)")
+        else:
+            medicamento_actual = Medicamento.objects.get(id=medicamento_anterior.id)
+            medicamento_actual.nombre = nombre
+            medicamento_actual.descripcion = descripcion
+            medicamento_actual.receta = receta
+            medicamento_actual.precio = float(precio)
+            medicamento_actual.stock += int(stock)
+            medicamento_actual.save()
+            messages.add_message(request,level=messages.INFO, message="Se ha aumentado el stock correctamente")
         return redirect(self.success_url)
         
 @method_decorator(login_required, name='dispatch')
@@ -402,7 +395,6 @@ class MedicamentoDelete(LoginRequiredMixin, DeleteView):
             
             messages.add_message(self.request,level=messages.WARNING, message="Medicamento "+str(obj_medicamento.nombre)+" eliminado correctamente")
             return redirect('medicamentos')
-
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
@@ -434,7 +426,6 @@ class CitaList(LoginRequiredMixin, ListView):
         #citas_pendientes = Cita.objects.filter(idPaciente=paciente).filter(fecha__gte=fecha_actual)
         #context['citas_pendientes'] = citas_pendientes    
         return context
-    
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
@@ -504,7 +495,6 @@ class CitaCreate(LoginRequiredMixin, CreateView):
                 messages.add_message(request, level=messages.SUCCESS, message="Su cita ha sido añadida correctamente")
                 return redirect(self.success_url)
 
-
 # Clases para que los médicos puedan realizar sus consultas
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
@@ -527,7 +517,6 @@ class CitaMedicoList(LoginRequiredMixin, ListView):
         if citas_medico.exists():
             context['filtro_fechas'] = citas_medico
         return context
-        
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
@@ -601,7 +590,6 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
         
         context['realizada'] = realizadas
         context['pendiente'] = pendientes
-                
         return context
 
 @method_decorator(login_required, name='dispatch')
@@ -633,7 +621,6 @@ class RealizaCitasView(LoginRequiredMixin, UpdateView):
             
         messages.success(request, message="Cita de "+str(paciente_cita.idPaciente.username)+" realizada correctamente")
         return redirect(self.success_url)
-
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico

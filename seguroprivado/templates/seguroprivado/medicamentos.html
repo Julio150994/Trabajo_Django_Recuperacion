@@ -14,17 +14,6 @@
             <span>Añadir</span>
         </a>
     </div>
-
-    {# Mensajes para el CRUD de medicamentos #}
-    {% if messages %}
-    {% for medicamento in messages %}
-        {% if medicamento.tags %}
-        <div class="container-fluid alert alert-{{ medicamento.tags }} mt-3 mr-5 rounded text-center">
-            {{ medicamento }}
-        </div>
-        {% endif %}
-    {% endfor %}
-    {% endif %}
     
     <div class="container-fluid mx-auto bg-light rounded mt-2">
         {% if not medicamento_list %}
@@ -32,6 +21,17 @@
         {% else %}
         <h1 class="text-primary text-center mb-5 p-md-3">Lista de Medicamentos</h1>
         
+        {# Mensajes para el CRUD de medicamentos #}
+        {% if messages %}
+        {% for medicamento in messages %}
+            {% if medicamento.tags %}
+            <div class="container-fluid alert alert-{{ medicamento.tags }} mt-3 mr-5 rounded text-center">
+                {{ medicamento }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        {% endif %}
+
         <div class="container-fluid mt-3 mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
             <table class="table table-bordered text-center">
                 <thead class="table table-dark text-white">
@@ -57,7 +57,23 @@
                             <td class="text-danger"><span class="fas fa-solid fa-prescription-bottle"></span></td>
                         {% endif %}
                         <td>{{ medicamento.precio|floatformat:2 }} €</td>
-                        <td>{{ medicamento.stock }}</td>
+                        <td>
+                            <form action="{% url 'editar_medicamento' medicamento.id %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ medicamento.nombre }}">
+                                <input type="hidden" value="{{ medicamento.descripcion }}">
+                                <input type="hidden" value="{{ medicamento.receta }}">
+                                <input type="hidden" value="{{ medicamento.precio }}">
+
+                                <nav class="navbar justify-content-center">
+                                    <input class="form-control col-sm-2 text-center text-white bg-primary ml-5" type="number" value="{{ medicamento.stock }}" required>
+                                    {# Botón para aumentar el stock #}
+                                    <button class="btn btn-secondary text-white ml-3" type="submit">
+                                        <span class="fas fa-plus"></span>
+                                    </button>
+                                </nav>
+                            </form>
+                        </td>
                         <td>
                             <a href="{% url 'editar_medicamento' medicamento.id %}" class="btn btn-info btn-sm">
                                 <span class="fas fa-edit"></span>

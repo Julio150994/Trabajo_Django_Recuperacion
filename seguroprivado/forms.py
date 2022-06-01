@@ -168,8 +168,8 @@ class MedicamentoForm(forms.ModelForm):
             'nombre': forms.TextInput(attrs={'class':'form-control form-control-sm mx-auto', 'placeholder':'Escriba nombre de medicamento', 'required':'required'}),
             'descripcion': forms.Textarea(attrs={'class':'form-control form-control-sm mx-auto', 'style': 'height: 100px', 'placeholder':'Escriba una descripción', 'required':'required'}),
             'receta': forms.Select(choices=recetas ,attrs={'class':'form-control form-control-sm mx-auto', 'required':'required'}),
-            'precio': forms.NumberInput(attrs={'class':'form-control form-control-sm mx-auto','placeholder':'Escriba precio de medicamento', 'type':'float', 'required':'required'}),
-            'stock': forms.NumberInput(attrs={'class':'form-control form-control-sm mx-auto', 'value':0, 'required':'required'})
+            'precio': forms.NumberInput(attrs={'class':'form-control form-control-sm mx-auto','placeholder':'Escriba precio de medicamento', 'pattern': '^[0-9]+([,][0-9]{2})?$', 'step': '.01', 'required':'required'}),
+            'stock': forms.NumberInput(attrs={'class':'form-control form-control-sm mx-auto', 'value': 0, 'required':'required'})
         }
         
         error_messages = {
