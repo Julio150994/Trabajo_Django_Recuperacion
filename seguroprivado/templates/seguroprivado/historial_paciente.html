@@ -1,0 +1,89 @@
+{# Extendido de registro.html #}
+{% extends 'seguroprivado/registro.html' %}
+
+{% block title %} Historial de citas {% endblock %}
+
+{% block historial_paciente %}
+
+<div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4 pb-5 pt-5">    
+    <div class="container-fluid mx-auto bg-light rounded mt-2">
+        {% if request.user.is_authenticated %}     
+            {% if not historial_citas %}
+            <div class="container-fluid">
+                <div class="alert alert-warning text-center">El paciente {{ request.user }} no tiene citas anteriores</div>
+            </div>
+            {% else %}
+            <nav class="navbar navbar-white bg-white mb-4 ml-5 mb-5 wow fadeInUp">
+                <span class="navbar-brand"></span>
+
+                <form class="d-flex" action="" method="GET">
+                    <input class="form-control form-control-sm me-5 pr-5" name="fecha" type="search"
+                    placeholder="Filtrar por fecha (formato dd/mm/yyyy)" aria-label="Filtrar por fecha" size="34"/>
+                    
+                    <button class="btn btn-secondary ml-2" type="submit">
+                        <span class="fas fa-solid fa-search"></span>
+                    </button>
+                </form>
+            </nav>
+
+            {# Filtrado por fechas #}
+            {% if not fecha_historial %}
+            <div class="container-fluid alert alert-warning text-center">
+                Citas con la fecha {{ fecha_anterior }} no encontradas en el historial
+            </div>
+            {% else %}
+            <h1 class="text-primary text-center mb-5 p-md-3">Historial de {{ request.user }}</h1>
+
+            <div class="container-fluid mb-5" style="max-height: 200px; overflow: auto; display: inline-block;">
+                <table class="table table-bordered text-center">
+                    <thead class="table table-dark text-white">
+                        <tr>
+                            <th>Nombre y apellidos del médico</th>
+                            <th>Edad del médico</th>
+                            <th>Fecha de alta del médico</th>
+                            <th>Especialidad</th>
+                            <th>Nombre de usuario del médico</th>
+                            <th>Fecha de cita de paciente</th>
+                            <th>Observaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table table-light">
+                        {# Para mostrar el historial de las citas #}
+                        {% if not fecha_historial %}
+                        {% for cita in historial_citas %}
+                        <tr>
+                            <td>{{ cita.idMedico.nombre }} {{ cita.idMedico.apellidos }}</td>
+                            <td>{{ cita.idMedico.edad }}</td>
+                            <td>{{ cita.idMedico.fechaalta|date:"d/m/Y" }}</td>
+                            <td>{{ cita.idMedico.especialidad }}</td>
+                            <td>{{ cita.idMedico.username }}</td>
+                            <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                            <td>{{ cita.observaciones }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        {% for cita in fecha_historial %}
+                        <tr>
+                            <td>{{ cita.idMedico.nombre }} {{ cita.idMedico.apellidos }}</td>
+                            <td>{{ cita.idMedico.edad }}</td>
+                            <td>{{ cita.idMedico.fechaalta|date:"d/m/Y" }}</td>
+                            <td>{{ cita.idMedico.especialidad }}</td>
+                            <td>{{ cita.idMedico.username }}</td>
+                            <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                            <td>{{ cita.observaciones }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+            {% endif %}  
+        {% endif %}
+        <a href="{% url 'inicio' %}" class="btn btn-dark ml-3 mt-5 mb-5">
+            <span class="fas fa-arrow-left"></span>
+            <span>Volver al menú</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

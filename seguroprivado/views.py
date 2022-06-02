@@ -570,3 +570,45 @@ class FiltroCitaView(LoginRequiredMixin, TemplateView):
                         
                 return render(request, "seguroprivado/citas_medico.html", context)
         return super().get(request, *args, **kwargs)
+    
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
+class HistorialPacienteView(LoginRequiredMixin, ListView):
+    model = Cita
+    template_name = "seguroprivado/historial_paciente.html"
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super(HistorialPacienteView, self).get_context_data(**kwargs)
+        
+        fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
+        formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
+        
+        paciente = Paciente.objects.get(username=self.request.user)
+        historial = Cita.objects.filter(idPaciente=paciente).filter(fecha__lte=formato_fecha_actual)
+        
+        context['historial_citas'] = historial
+        
+        if historial.exists():
+            # Filtramos por fecha de citas anteriores del paciente actual
+            fecha_cita_anterior = self.request.GET.get("fecha")
+            
+            if fecha_cita_anterior is None:
+                context['fecha_historial'] = historial
+            else:
+                aux_fecha_cita = datetime.strptime(str(fecha_cita_anterior),"%d/%m/%Y")
+                fecha = aux_fecha_cita.strftime('%Y-%m-%d')
+                
+                filtrar_fecha = Cita.objects.filter(
+                    Q(fecha__icontains = fecha)
+                ).distinct()
+                
+                if filtrar_fecha.exists():
+                    context['fecha_historial'] = filtrar_fecha
+                else:
+                    context['fecha_anterior'] = fecha_cita_anterior
+        
+        return context
