@@ -100,6 +100,17 @@
                     <span class="fas fa-solid fa-clipboard-list"></span>
                     <span>Citas de {{ request.user }}</span>
                   </a>
+                  
+                  <a href="#" class="btn btn-primary text-white ml-lg-5">
+                    <span class="fas fa-book-medical"></span>
+                    <span>Historial de citas</span>
+                  </a>
+
+                  <a href="#" class="btn btn-primary text-white ml-lg-5">
+                    <span class="fas fa-shopping-cart"></span>
+                    <span>Comprar medicamentos</span>
+                  </a>
+
 
                   {# Para usuarios logueados como médicos #}
                   {% else %}
@@ -107,6 +118,12 @@
                     <span class="fas fa-user-md"></span>
                     <span>Citas del médico</span>
                   </a>
+
+                  <a href="#" class="btn btn-primary text-white ml-lg-5">
+                    <span class="fas fa-user-md"></span>
+                    <span>Historial de los pacientes</span>
+                  </a>
+
                   {% endif %}
                 {% endif %}
                 
