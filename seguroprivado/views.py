@@ -592,7 +592,7 @@ class HistorialPacienteView(LoginRequiredMixin, ListView):
         formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
         
         paciente = Paciente.objects.get(username=self.request.user)
-        historial = Cita.objects.filter(idPaciente=paciente).filter(fecha__lte=formato_fecha_actual)
+        historial = Cita.objects.filter(idPaciente=paciente).filter(fecha__lte=formato_fecha_actual).order_by('-fecha')
         
         context['historial_citas'] = historial
         
