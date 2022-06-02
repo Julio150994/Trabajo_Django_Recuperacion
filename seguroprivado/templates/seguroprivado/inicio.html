@@ -24,7 +24,7 @@
 
   {# Código CSS para el botón dropdown #}
   <link rel="stylesheet" href="{% static 'assets/css/inicio.css' %}">
-
+  
   {# Font Awesome icons (free version) #}
   <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
 </head>
@@ -144,30 +144,27 @@
                       </li>
                       <li><hr class="dropdown-divider"></li>
                       <li class="dropdown-item">
-                        <a href="{% url 'historial_pacientes_medico' %}" class="text-white">
+                        <a href="#" class="text-white">
                           <span class="fas fa-user-clock"></span>
-                          <span>Ver historial de paciente</span>
+                          <span>Ver historial de pacientes</span>
                         </a>
                       </li>
                       <li><hr class="dropdown-divider"></li>
-                      <li class="dropdown dropdown-submenu">
-                        <a className="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {# Para la creación del submenú para mostrar los pacientes #}
+                      {% for paciente in pacientes %}
+                      <li class="dropdown-item">
+                        <a href="{% url 'historial_pacientes_medico' paciente.id %}" class="text-white">
                           <span class="fas fa-user-clock"></span>
-                          <span>Prueba</span>
+                          <span>Historial de {{ paciente.username }}</span>
                         </a>
-                        {# Para la creación del submenú para mostrar los pacientes #}
-                        <div className="dropdown-menu" aria-labelly="navbarDropdown">
-                          {% for paciente in pacientes %}
-                          <a href="{% url 'historial_pacientes_medico' %}" class="text-white">
-                            <span class="fas fa-user-clock"></span>
-                            <span>Historial de {{ paciente.username }}</span>
-                          </a>
-                          <hr class="dropdown-divider">
-                          {% endfor %}
-                        </div>
+                      </li>
+                      <hr class="dropdown-divider">
+                    {% endfor %}
                       </li>
                     </ul>
                   </div>
+                </div>
+
                   {% endif %}
                 {% endif %}
                 

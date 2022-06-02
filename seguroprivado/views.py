@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.views.generic import RedirectView, TemplateView, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import RedirectView, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
@@ -619,14 +619,18 @@ class HistorialPacienteView(LoginRequiredMixin, ListView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
-class HistorialPacientesMedicoView(CitaMedicoList):
+class HistorialPacientesMedicoView(LoginRequiredMixin, DetailView):
+    model = Paciente
     template_name = "seguroprivado/historial_paciente_medico.html"
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs):
-        context = super(HistorialPacientesMedicoView, self).get_context_data(**kwargs)
+        context = super(HistorialPacientesMedicoView, self).get_context_data(**kwargs)        
+        paciente = self.get_object()
+        
+        context['nombre_usuario_paciente'] = paciente.username # mostramos el nombre del paciente obtenido
         
         # Mostramos las citas anteriores que tiene el médico
         medico = Medico.objects.get(username=self.request.user)
@@ -635,6 +639,6 @@ class HistorialPacientesMedicoView(CitaMedicoList):
         fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
         formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
         
-        historial_medico = Cita.objects.filter(idMedico=medico).filter(fecha__lte=formato_fecha_actual)
+        historial_medico = Cita.objects.filter(idMedico=medico).filter(idPaciente=paciente).filter(fecha__lte=formato_fecha_actual)
         context['historial_pacientes_medico'] = historial_medico
         return context

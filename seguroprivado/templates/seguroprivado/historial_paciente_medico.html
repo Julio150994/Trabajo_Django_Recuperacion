@@ -11,20 +11,20 @@
             {# Lanzamos mensaje para cuando no se han encontrado citas de los pacientes del médico #}
             {% if not historial_pacientes_medico %}
             <div class="container-fluid">
-                <div class="alert alert-warning text-center">El médico {{ request.user }} no tiene citas de pacientes anteriores</div>
+                <div class="alert alert-warning text-center">El médico {{ request.user }} no tiene citas anteriores del paciente {{ nombre_usuario_paciente }}</div>
             </div>
             {% else %}
-                <h1 class="text-primary text-center p-md-3">Historial de pacientes de {{ request.user }}</h1>
+                <h1 class="text-primary text-center p-md-3">Historial de citas de {{ nombre_usuario_paciente }}</h1>
 
                 <div class="container-fluid mt-2 mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
                     <table class="table table-bordered text-center">
                         <thead class="table table-dark text-white">
                             <tr>
-                                <th>Nombre y apellidos del paciente</th>
-                                <th>Dirección del paciente</th>
-                                <th>Edad del paciente</th>
-                                <th>Foto de paciente</th>
-                                <th>Nombre de usuario del paciente</th>
+                                <th>Nombre y apellidos</th>
+                                <th>Dirección</th>
+                                <th>Edad</th>
+                                <th>Foto</th>
+                                <th>Nombre de usuario</th>
                                 <th>Fecha de cita</th>
                                 <th>Observaciones</th>
                             </tr>
