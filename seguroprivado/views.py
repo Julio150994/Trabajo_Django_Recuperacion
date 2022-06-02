@@ -639,6 +639,6 @@ class HistorialPacientesMedicoView(LoginRequiredMixin, DetailView):
         fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
         formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
         
-        historial_medico = Cita.objects.filter(idMedico=medico).filter(idPaciente=paciente).filter(fecha__lte=formato_fecha_actual)
+        historial_medico = Cita.objects.filter(idMedico=medico).filter(idPaciente=paciente).filter(fecha__lte=formato_fecha_actual).order_by('-fecha')
         context['historial_pacientes_medico'] = historial_medico
         return context
