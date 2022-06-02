@@ -75,11 +75,15 @@
       {% block cita_actual %}{% endblock %}
       {% block filtro_medico %}{% endblock %}
 
+      {# Para ver el historial de los pacientes del médico logueado #}
+      {% block historial_citas_medico %}{% endblock %}
+
     {% elif request.user.is_authenticated and not request.user.is_staff %}
       {# Bloques donde el paciente puede pedir sus citas #}
       {% block citas_paciente %}{% endblock %}
       {% block pedir_cita %}{% endblock %}
 
+      {# Para ver el historial del paciente logueado #}
       {% block historial_paciente %}{% endblock %}
 
     {% else %}

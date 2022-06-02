@@ -1,0 +1,56 @@
+{# Aquí visualizamos el historial de las citas de sus pacientes #}
+{# Extendido de registro.html #}
+{% extends 'seguroprivado/registro.html' %}
+
+{% block title %} Historial del médico {{ request.user }} {% endblock %}
+
+{% block historial_citas_medico %}
+<div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4 pb-5 pt-5">
+    <div class="container-fluid mx-auto bg-light rounded mt-2">
+        {% if request.user.is_authenticated and request.user.is_staff %}
+            {# Lanzamos mensaje para cuando no se han encontrado citas de los pacientes del médico #}
+            {% if not historial_pacientes_medico %}
+            <div class="container-fluid">
+                <div class="alert alert-warning text-center">El médico {{ request.user }} no tiene citas de pacientes anteriores</div>
+            </div>
+            {% else %}
+                <h1 class="text-primary text-center p-md-3">Historial de pacientes de {{ request.user }}</h1>
+
+                <div class="container-fluid mt-2 mb-5" style="max-height: 268px; overflow: auto; display: inline-block;">
+                    <table class="table table-bordered text-center">
+                        <thead class="table table-dark text-white">
+                            <tr>
+                                <th>Nombre y apellidos del paciente</th>
+                                <th>Dirección del paciente</th>
+                                <th>Edad del paciente</th>
+                                <th>Foto de paciente</th>
+                                <th>Nombre de usuario del paciente</th>
+                                <th>Fecha de cita</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table table-light">
+                        {% for cita in historial_pacientes_medico %}
+                        <tr>
+                            <td>{{ cita.idPaciente.nombre }} {{ cita.idPaciente.apellidos }}</td>
+                            <td>{{ cita.idPaciente.direccion }}</td>
+                            <td>{{ cita.idPaciente.edad }}</td>
+                            <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
+                            <td>{{ cita.idPaciente.username }}</td>
+                            <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                            <td>{{ cita.observaciones }}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <a href="{% url 'inicio' %}" class="btn btn-dark ml-3">
+            <span class="fas fa-arrow-left"></span>
+            <span>Volver al menú</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

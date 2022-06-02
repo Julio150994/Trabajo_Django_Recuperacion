@@ -46,7 +46,8 @@ urlpatterns = [
     path('citas_medico/actuales/',views.CitaActualView.as_view(), name="citas_actuales"),
     path('citas_medico/filtrar/',views.FiltroCitaView.as_view(),name="filtro_citas"),
     
-    path('historial_paciente/',views.HistorialPacienteView.as_view(), name="historial_paciente")
+    path('historial_paciente/',views.HistorialPacienteView.as_view(), name="historial_paciente"),
+    path('historial_medico/',views.HistorialPacientesMedicoView.as_view(), name="historial_pacientes_medico")
     
 ]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

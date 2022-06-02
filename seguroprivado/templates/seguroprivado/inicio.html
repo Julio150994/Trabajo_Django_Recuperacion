@@ -130,16 +130,44 @@
 
                   {# Para usuarios logueados como médicos #}
                   {% else %}
-                  <a href="{% url 'citas_medico' %}" class="btn btn-primary text-white ml-lg-5">
-                    <span class="fas fa-user-md"></span>
-                    <span>Citas del médico</span>
-                  </a>
-
-                  <a href="#" class="btn btn-primary text-white ml-lg-5">
-                    <span class="fas fa-user-md"></span>
-                    <span>Historial de los pacientes</span>
-                  </a>
-
+                  <div class="btn-group ml-5">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                      <span class="fas fa-user"></span>
+                      <span>Opciones del médico</span>
+                    </button>
+                    <ul class="dropdown-menu pl-2 bg-primary">
+                      <li class="dropdown-item">
+                        <a href="{% url 'citas_medico' %}" class="text-white">
+                          <span class="fas fa-user-md"></span>
+                          <span>Citas del médico</span>
+                        </a>
+                      </li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li class="dropdown-item">
+                        <a href="{% url 'historial_pacientes_medico' %}" class="text-white">
+                          <span class="fas fa-user-clock"></span>
+                          <span>Ver historial de paciente</span>
+                        </a>
+                      </li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li class="dropdown dropdown-submenu">
+                        <a className="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <span class="fas fa-user-clock"></span>
+                          <span>Prueba</span>
+                        </a>
+                        {# Para la creación del submenú para mostrar los pacientes #}
+                        <div className="dropdown-menu" aria-labelly="navbarDropdown">
+                          {% for paciente in pacientes %}
+                          <a href="{% url 'historial_pacientes_medico' %}" class="text-white">
+                            <span class="fas fa-user-clock"></span>
+                            <span>Historial de {{ paciente.username }}</span>
+                          </a>
+                          <hr class="dropdown-divider">
+                          {% endfor %}
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
                   {% endif %}
                 {% endif %}
                 

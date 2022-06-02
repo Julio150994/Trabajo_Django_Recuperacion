@@ -49,6 +49,10 @@ class TemplateInicioView(TemplateView):
                     context['especialidad'] = consulta_especialidad
                 else:
                     context['nombre_especialidad'] = busqueda
+        
+        # Para poder acceder al historial de los pacientes del médico
+        pacientes = Paciente.objects.all()            
+        context['pacientes'] = pacientes
         return context
     
 class RegistroPacientesView(CreateView):
@@ -610,5 +614,27 @@ class HistorialPacienteView(LoginRequiredMixin, ListView):
                     context['fecha_historial'] = filtrar_fecha
                 else:
                     context['fecha_anterior'] = fecha_cita_anterior
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
+class HistorialPacientesMedicoView(CitaMedicoList):
+    template_name = "seguroprivado/historial_paciente_medico.html"
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super(HistorialPacientesMedicoView, self).get_context_data(**kwargs)
         
+        # Mostramos las citas anteriores que tiene el médico
+        medico = Medico.objects.get(username=self.request.user)
+        
+        # Buscamos si el médico tiene pacientes en sus citas anteriores
+        fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
+        formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
+        
+        historial_medico = Cita.objects.filter(idMedico=medico).filter(fecha__lte=formato_fecha_actual)
+        context['historial_pacientes_medico'] = historial_medico
         return context
