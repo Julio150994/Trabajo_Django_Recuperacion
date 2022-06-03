@@ -533,7 +533,7 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
-class RealizarCita(LoginRequiredMixin, UpdateView):
+class RealizarCitaView(LoginRequiredMixin, UpdateView):
     model = Cita
     success_url = reverse_lazy('citas_actuales')
     
