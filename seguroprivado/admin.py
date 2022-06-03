@@ -336,9 +336,9 @@ class CitaAdmin(admin.ModelAdmin):
     def fecha_cita(self, obj):
         return obj.fecha.strftime("%d/%m/%Y")
     
-    list_display = ["idPaciente","idMedico","fecha_cita","observaciones"]
-    search_fields = ["idPaciente","idMedico",]
-    list_filter = ["idPaciente","idMedico",]
+    list_display = ["idPaciente","idMedico","fecha_cita","tratamiento","observaciones","realizada"]
+    search_fields = ["idPaciente","idMedico","tratamiento","realizada"]
+    list_filter = ["idPaciente","idMedico","realizada"]
     ordering = ["-id",]
     list_per_page = 3
     
