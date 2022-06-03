@@ -12,7 +12,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from seguroprivado.models import Cita, CompraMedicamento, Compra, Medicamento, Paciente, Medico
-from seguroprivado.forms import CitaForm, CompraMedicamentoForm, MedicamentoForm, MedicoForm, PacienteForm
+from seguroprivado.forms import CitaForm, MedicamentoForm, MedicoForm, PacienteForm
 from django.db.models import Q
 
 # Create your views here.
@@ -668,46 +668,37 @@ class HistorialPacientesMedicoView(LoginRequiredMixin, DetailView):
         context['historial_pacientes_medico'] = historial_medico
         return context
 
-# Clases para realizar el carrito de la compra
+# Clases para la parte del carrito de la compra simulado
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
-class CompraMedicamentosView(LoginRequiredMixin, CreateView):
-    model = Compra
-    form_class = CompraMedicamentoForm
-    template_name = "seguroprivado/compra_medicamento.html"
-    success_url = reverse_lazy('inicio')
-    
-    # Para iniciar sesiones de compra del paciente    
-    """def __init__(self):
-        super().__init__(self)        
-        self.request = self.request
-        self.session = self.request.session
-        carrito_compra = self.session["carrito"]
-        
-        if not carrito_compra:
-            carrito_compra = {}
-            self.carrito_compra = self.session["carrito"]
-        else:
-            self.carrito_compra = carrito_compra"""
+class MedicamentosPacienteView(LoginRequiredMixin, ListView):
+    model = CompraMedicamento
+    template_name = "seguroprivado/tienda_medicamentos.html"
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs):
-        context = super(CompraMedicamentosView, self).get_context_data(**kwargs)     
+        context = super(MedicamentosPacienteView, self).get_context_data(**kwargs)     
+        context['medicamentos'] = Medicamento.objects.all().order_by('id')
+        return context
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
+class CompraMedicamentoView(LoginRequiredMixin, CreateView):
+    model = Compra
+    template_name = "seguroprivado/carrito_compra.html"
+    success_url = reverse_lazy('tienda')
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super(CompraMedicamentoView, self).get_context_data(**kwargs)     
         context['medicamentos'] = Medicamento.objects.all().order_by('id')
         return context
     
-    def post(self, request, *args, **kwargs):
-         #form = CompraMedicamentoForm(request.POST)
-        
-        """if form.is_valid():
-            if id_paciente not in self.carrito_compra.keys():
-                self.carrito_compra[id_paciente] = {
-                    "fecha": compra.fecha,
-                    "precio": compra.precio
-                }"""
-        
+    def post(self, request, *args, **kwargs):        
         # Agregamos la compra del medicamento
         paciente_compra = Paciente.objects.get(username=self.request.user)
         #id_paciente = paciente_compra.id
@@ -727,5 +718,3 @@ class CompraMedicamentosView(LoginRequiredMixin, CreateView):
         messages.add_message(request, level=messages.SUCCESS, message="Su compra ha sido realizada correctamente")
         return redirect(self.success_url)
         #return super().post(request, *args, **kwargs)
-        
-    

@@ -1,0 +1,88 @@
+{# Extendido de registro.html #}
+{% extends 'seguroprivado/registro.html' %}
+
+{% block title %} Tienda de medicamentos {% endblock %}
+
+{% block tienda_medicamentos %}
+<div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4 pb-5 pt-5">
+    <div class="container-fluid mx-auto bg-light rounded mt-2">
+        {% if request.user.is_authenticated %}
+            <div class="container ml-3">
+                <h1 class="text-primary text-center text-left mb-3 p-md-3">Lista de Medicamentos</h1>
+            </div>
+
+            {# Mensaje para cuando el paciente gestiona sus medicamentos meintras realiza su compra #}
+            {% if messages %}
+            {% for compra_realizada in messages %}
+            <div class="container-fluid pr-1">
+                <div class="alert alert-success mx-auto mt-auto text-center">
+                    {{ compra_realizada }}
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            
+            {# Para mostrar los medicamentos de la tienda #}
+            <div class="row">
+                <div class="col-8">
+                    <div class="row">
+                        <div class="col-11">
+                            <div class="row">
+                                {# Para el scroll vertical de la tabla #}
+                                <div class="container-fluid" style="max-height: 260px; overflow: auto; display: inline-block;">
+                                    <table class="table table-bordered text-center">
+                                        <thead class="table table-dark text-white">
+                                            <tr>
+                                                <th>Nombre de medicamento</th>
+                                                <th>Descripción</th>
+                                                <th>Receta</th>
+                                                <th>Precio (por unidad)</th>
+                                                <th>Stock</th>
+                                                <th>Compra</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="table table-light">
+                                        {% for medicamento in medicamentos %}
+                                        <tr>
+                                            <td>{{ medicamento.nombre }}</td>
+                                            <td>{{ medicamento.descripcion }}</td>
+                                            {% if medicamento.receta == 's' %}
+                                                {# Icono azul si tiene receta #}
+                                                <td class="text-info"><span class="fas fa-solid fa-prescription-bottle"></span></td>
+                                            {% else %}
+                                                {# Icono color rojo si es de venta libre #}
+                                                <td class="text-danger"><span class="fas fa-solid fa-prescription-bottle"></span></td>
+                                            {% endif %}
+                                            <td>{{ medicamento.precio|floatformat:2 }} €</td>
+                                            <td>{{ medicamento.stock }}</td>
+                                            <td>
+                                                <a href="#" class="btn btn-primary btn-sm">
+                                                    <span class="fas fa-cart-plus"></span>
+                                                    <span>Añadir al carrito</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {# Para operar con el carrito de la compra #}
+                <div class="container-fluid col-sm-4">
+                    {% include "seguroprivado/carrito_compra.html" %}
+                </div>
+            </div>
+
+            <div class="justify-content-lg-start">
+                <a href="{% url 'inicio' %}" class="btn btn-dark ml-2 mb-3">
+                    <span class="fas fa-arrow-left"></span>
+                    <span>Volver al menú</span>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
