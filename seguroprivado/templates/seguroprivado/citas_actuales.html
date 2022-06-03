@@ -13,7 +13,7 @@
             </div>
             {% else %}
 
-            <h1 class="text-primary text-center mb-5 p-md-3">Lista de citas de hoy</h1>
+            <h1 class="text-primary text-center mb-3 p-md-3">Lista de citas de hoy</h1>
 
             {# Mensaje para cuando se haya realizado una cita #}
             {% if messages %}
@@ -57,7 +57,7 @@
                                     <form action="{% url 'realizar_citas' cita.id %}" method="POST">
                                         {% csrf_token %}
                                         <nav class="navbar navbar-expand-lg">
-                                            <select class="p-2 border-0 bg-info text-white" name="medicamentos[]" id="tratamiento" required>
+                                            <select class="p-2 border-0 bg-info text-white" name="tratamiento" id="tratamiento" required>
                                                 <option selected>Seleccione medicamento</option>
                                                 {% for medicamento in medicamentos %}
                                                     <option value="{{ medicamento.id }}">{{ medicamento.nombre }}</option>

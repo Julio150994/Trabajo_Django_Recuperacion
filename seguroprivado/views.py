@@ -543,25 +543,15 @@ class RealizarCita(LoginRequiredMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         paciente_cita = self.get_object() # para obtener el paciente al cual se le realiza la cita
         
-        id_tratamiento = request.POST.get("medicamentos[]")
-        set_tratamiento = Medicamento.objects.get(id=id_tratamiento)
+        id_tratamiento = request.POST.get("tratamiento")
+        aux_id = int(id_tratamiento)
+        set_medicamento = Medicamento.objects.get(id=aux_id) 
         
         if paciente_cita.realizada == False:
-            idMedico = request.POST.get('idMedico')
-            medico = Medico.objects.get(id=idMedico)
-            observaciones = request.POST.get('observaciones')
+            paciente_cita.tratamiento = set_medicamento.nombre
             paciente_cita.realizada = True
-            
-            cita_realizada = Cita(idPaciente=paciente_cita, idMedico=medico, tratamiento=set_tratamiento,
-                observaciones=observaciones, realizada=paciente_cita.realizada)
-            messages.add_message(self.request,level=messages.INFO, message="Cita de "+str(paciente_cita.username)+" realizada correctamente")
-            cita_realizada.save()
-    
-    def render_to_response(self, context, **response_kwargs):
-        # Método para redireccionar a la misma página
-        cita_paciente = self.get_object()
-        
-        if cita_paciente is not None:
+            paciente_cita.save()
+            messages.add_message(self.request,level=messages.INFO, message="Cita de "+str(paciente_cita.idPaciente.username)+" realizada correctamente")
             return redirect(self.success_url)
 
 @method_decorator(login_required, name='dispatch')
