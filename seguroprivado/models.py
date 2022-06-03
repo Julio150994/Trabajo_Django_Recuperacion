@@ -83,7 +83,7 @@ class Cita(models.Model):
     idPaciente = models.ForeignKey(Paciente, verbose_name="Paciente", default=0, on_delete=models.CASCADE)
     idMedico = models.ForeignKey(Medico, verbose_name="Médico", default="Seleccione un médico", on_delete=models.CASCADE)
     fecha = models.DateField(null=False, blank=False, verbose_name="Fecha")
-    tratamiento = models.CharField(verbose_name="Tratamiento")
+    tratamiento = models.CharField(max_length=50, null=True, blank=True, verbose_name="Tratamiento")
     observaciones = models.TextField(null=False, blank=False, verbose_name="Observaciones")
     realizada = models.BooleanField(default=False)
     
