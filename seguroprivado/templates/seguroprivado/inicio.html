@@ -24,7 +24,7 @@
 
   {# Código CSS para el botón dropdown #}
   <link rel="stylesheet" href="{% static 'assets/css/inicio.css' %}">
-  
+
   {# Font Awesome icons (free version) #}
   <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" crossorigin="anonymous"></script>
 </head>
@@ -163,7 +163,22 @@
                       </li>
                     </ul>
                   </div>
-                </div>
+
+                  <div class="btn-group ml-5">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                      <span class="fas fa-user"></span>
+                      <span>Prueba</span>
+                    </button>
+                    <ul class="dropdown-menu pl-2 bg-primary">
+                      <li class="dropdown-item">
+                        <a href="#" class="text-white">
+                          <span class="fas fa-user-md"></span>
+                          <span>Prueba 1</span>
+                        </a>
+                      </li>
+                      <li><hr class="dropdown-divider"></li>
+                    </ul>
+                  </div>
 
                   {% endif %}
                 {% endif %}

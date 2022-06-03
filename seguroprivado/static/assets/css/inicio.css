@@ -6,3 +6,11 @@
 .dropdown-item a {
     text-decoration: none;
 }
+
+
+/* Para el submenú desplegable del botón */
+
+.dropdown-hover-all .dropdown-menu,
+.dropdown-hover>.dropdown-menu.dropend {
+    margin-left: -1px !important
+}
