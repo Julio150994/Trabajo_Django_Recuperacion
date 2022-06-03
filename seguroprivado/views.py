@@ -699,19 +699,33 @@ class CompraMedicamentosView(LoginRequiredMixin, CreateView):
         return context
     
     def post(self, request, *args, **kwargs):
-        # Agregamos la compra del medicamento
-        paciente_compra = Paciente.objects.get(username=self.request.user)
-        print("Paciente actual: "+str(paciente_compra))
-        id_paciente = paciente_compra.id
+         #form = CompraMedicamentoForm(request.POST)
         
-        compra = Compra.objects.get(idPaciente=paciente_compra)
-        form_class = CompraMedicamentoForm(request.POST)
-        
-        if form_class.is_valid():
+        """if form.is_valid():
             if id_paciente not in self.carrito_compra.keys():
                 self.carrito_compra[id_paciente] = {
                     "fecha": compra.fecha,
                     "precio": compra.precio
-                }
+                }"""
         
-        return super().post(request, *args, **kwargs)
+        # Agregamos la compra del medicamento
+        paciente_compra = Paciente.objects.get(username=self.request.user)
+        #id_paciente = paciente_compra.id
+        
+        fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
+        fecha_compra = datetime.strftime(fecha_actual,'%Y-%m-%d')
+        
+        id_medicamento = request.POST.get("medicamento[]")
+        medicamento = Medicamento.objects.get(id=id_medicamento)
+        
+        compra = Compra(fecha=fecha_compra, precio=medicamento.precio, idPaciente=paciente_compra)
+        compra.save()
+        
+        compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
+        compra_medicamento.save()
+        
+        messages.add_message(request, level=messages.SUCCESS, message="Su compra ha sido realizada correctamente")
+        return redirect(self.success_url)
+        #return super().post(request, *args, **kwargs)
+        
+    
