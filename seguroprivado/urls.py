@@ -44,6 +44,7 @@ urlpatterns = [
     
     path('citas_medico/',views.CitaMedicoList.as_view(), name="citas_medico"),
     path('citas_medico/actuales/',views.CitaActualView.as_view(), name="citas_actuales"),
+    path('citas_medico/actuales/<int:pk>/',views.RealizarCita.as_view(), name="realizar_citas"),
     path('citas_medico/filtrar/',views.FiltroCitaView.as_view(),name="filtro_citas"),
     
     path('historial_paciente/',views.HistorialPacienteView.as_view(), name="historial_paciente"),

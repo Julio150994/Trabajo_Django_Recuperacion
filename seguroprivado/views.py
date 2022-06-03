@@ -447,6 +447,7 @@ class CitaCreate(LoginRequiredMixin, CreateView):
         fecha_cita = datetime.strptime(fecha, '%Y-%m-%d')
         fecha_actual = datetime(int(datetime.now().year),int(datetime.now().month),int(datetime.now().day))
         
+        tratamiento = request.POST.get('tratamiento')
         observaciones = request.POST.get('observaciones')# fecha de cita enviada
         
         if fecha_cita < fecha_actual:
@@ -479,7 +480,7 @@ class CitaCreate(LoginRequiredMixin, CreateView):
                 return redirect(self.error_url)
             else:
                 # Pedimos la cita para el paciente logueado
-                cita = Cita(idPaciente=paciente, idMedico=medico, fecha=fecha, observaciones=observaciones)
+                cita = Cita(idPaciente=paciente, idMedico=medico, fecha=fecha, tratamiento=tratamiento, observaciones=observaciones, realizada=False)
                 cita.save()
                 messages.add_message(request, level=messages.SUCCESS, message="Su cita ha sido añadida correctamente")
                 return redirect(self.success_url)
@@ -525,7 +526,43 @@ class CitaActualView(CitaMedicoList): # utilización de herencia de clase
         citas_fecha_actual = Cita.objects.filter(idMedico=medico).filter(fecha=str(formato_fecha_actual))
         context['fecha_actual'] = formato_fecha_actual
         context['citas_hoy'] = citas_fecha_actual
+        
+        # Para el select de medicamentos
+        context['medicamentos'] = Medicamento.objects.all()
         return context
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
+class RealizarCita(LoginRequiredMixin, UpdateView):
+    model = Cita
+    success_url = reverse_lazy('citas_actuales')
+    
+    def dispatch(self, request, *args, **kwargs):    
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        paciente_cita = self.get_object() # para obtener el paciente al cual se le realiza la cita
+        
+        id_tratamiento = request.POST.get("medicamentos[]")
+        set_tratamiento = Medicamento.objects.get(id=id_tratamiento)
+        
+        if paciente_cita.realizada == False:
+            idMedico = request.POST.get('idMedico')
+            medico = Medico.objects.get(id=idMedico)
+            observaciones = request.POST.get('observaciones')
+            paciente_cita.realizada = True
+            
+            cita_realizada = Cita(idPaciente=paciente_cita, idMedico=medico, tratamiento=set_tratamiento,
+                observaciones=observaciones, realizada=paciente_cita.realizada)
+            messages.add_message(self.request,level=messages.INFO, message="Cita de "+str(paciente_cita.username)+" realizada correctamente")
+            cita_realizada.save()
+    
+    def render_to_response(self, context, **response_kwargs):
+        # Método para redireccionar a la misma página
+        cita_paciente = self.get_object()
+        
+        if cita_paciente is not None:
+            return redirect(self.success_url)
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
