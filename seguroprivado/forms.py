@@ -1,5 +1,5 @@
 from django import forms
-from seguroprivado.models import Cita, Paciente, Medico, Medicamento
+from seguroprivado.models import Cita, Compra, Paciente, Medico, Medicamento
 from datetime import datetime
 
 # Create your forms here.
@@ -282,3 +282,24 @@ class CitaForm(forms.ModelForm):
             raise forms.ValidationError('Las observaciones deben contener 100 caracteres como máximo')
         else:
             return observaciones
+        
+class CompraMedicamentoForm(forms.ModelForm):
+    class Meta:
+        model = Medicamento
+        fields = '__all__'
+        
+        labels = {
+            'nombre': 'Medicamento',
+        }
+            
+        help_texts = {
+            'nombre': 'Debe seleccionar medicamento',
+        }
+        
+        widgets = {
+            'nombre': forms.Select(attrs={'class':'form-control form-control-sm mx-auto', 'required':'true'})
+        }
+            
+        error_messages = {
+            'nombre': {'required': 'Debe seleccionar un medicamento'},
+        }

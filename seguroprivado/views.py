@@ -12,7 +12,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from seguroprivado.models import Cita, CompraMedicamento, Compra, Medicamento, Paciente, Medico
-from seguroprivado.forms import CitaForm, MedicamentoForm, MedicoForm, PacienteForm
+from seguroprivado.forms import CitaForm, CompraMedicamentoForm, MedicamentoForm, MedicoForm, PacienteForm
 from django.db.models import Q
 
 # Create your views here.
@@ -600,8 +600,7 @@ class FiltroCitaView(LoginRequiredMixin, TemplateView):
                         context['fecha_final'] = mensaje_fecha_final
                         
                 return render(request, "seguroprivado/citas_medico.html", context)
-        return super().get(request, *args, **kwargs)
-    
+        return super().get(request, *args, **kwargs)   
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
@@ -643,7 +642,6 @@ class HistorialPacienteView(LoginRequiredMixin, ListView):
                     context['fecha_anterior'] = fecha_cita_anterior
         return context
 
-
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and user.is_staff), name='dispatch')# Médico
 class HistorialPacientesMedicoView(LoginRequiredMixin, DetailView):
@@ -669,3 +667,51 @@ class HistorialPacientesMedicoView(LoginRequiredMixin, DetailView):
         historial_medico = Cita.objects.filter(idMedico=medico).filter(idPaciente=paciente).filter(fecha__lte=formato_fecha_actual).order_by('-fecha')
         context['historial_pacientes_medico'] = historial_medico
         return context
+
+# Clases para realizar el carrito de la compra
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
+class CompraMedicamentosView(LoginRequiredMixin, CreateView):
+    model = Compra
+    form_class = CompraMedicamentoForm
+    template_name = "seguroprivado/compra_medicamento.html"
+    success_url = reverse_lazy('inicio')
+    
+    # Para iniciar sesiones de compra del paciente    
+    """def __init__(self):
+        super().__init__(self)        
+        self.request = self.request
+        self.session = self.request.session
+        carrito_compra = self.session["carrito"]
+        
+        if not carrito_compra:
+            carrito_compra = {}
+            self.carrito_compra = self.session["carrito"]
+        else:
+            self.carrito_compra = carrito_compra"""
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super(CompraMedicamentosView, self).get_context_data(**kwargs)     
+        context['medicamentos'] = Medicamento.objects.all().order_by('id')
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        # Agregamos la compra del medicamento
+        paciente_compra = Paciente.objects.get(username=self.request.user)
+        print("Paciente actual: "+str(paciente_compra))
+        id_paciente = paciente_compra.id
+        
+        compra = Compra.objects.get(idPaciente=paciente_compra)
+        form_class = CompraMedicamentoForm(request.POST)
+        
+        if form_class.is_valid():
+            if id_paciente not in self.carrito_compra.keys():
+                self.carrito_compra[id_paciente] = {
+                    "fecha": compra.fecha,
+                    "precio": compra.precio
+                }
+        
+        return super().post(request, *args, **kwargs)
