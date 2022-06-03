@@ -83,7 +83,9 @@ class Cita(models.Model):
     idPaciente = models.ForeignKey(Paciente, verbose_name="Paciente", default=0, on_delete=models.CASCADE)
     idMedico = models.ForeignKey(Medico, verbose_name="Médico", default="Seleccione un médico", on_delete=models.CASCADE)
     fecha = models.DateField(null=False, blank=False, verbose_name="Fecha")
+    tratamiento = models.CharField(verbose_name="Tratamiento")
     observaciones = models.TextField(null=False, blank=False, verbose_name="Observaciones")
+    realizada = models.BooleanField(default=False)
     
     class Meta:
         verbose_name="cita"
@@ -91,7 +93,7 @@ class Cita(models.Model):
         ordering = ["-id"]
 
     def __str__(self):
-        return str(self.idPaciente)+" "+str(self.idMedico)+" "+str(self.fecha)+" "+self.observaciones
+        return str(self.idPaciente)+" "+str(self.idMedico)+" "+str(self.fecha)+" "+str(self.tratamiento)+" "+str(self.observaciones)
 
 
 class Compra(models.Model):
