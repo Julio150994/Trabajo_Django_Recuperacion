@@ -5,19 +5,21 @@
         <thead class="text-white text-center">
             <tr>
                 <th>Medicamento</th>
-                <th class="pl-4">Precio</th>
-                <th>Cantidad</th>
+                <th class="pl-4">Precio (unidad)</th>
+                <th class="pl-4">Cantidad</th>
             </tr>
         </thead>
         <tbody class="table table-light">
         {% if request.session %}
         <tr>
-          <td>{{ value.nombre }}</td>
-          <td>{{ value.precio }}</td>
+          {# Para utlizar en sesión {{ value.nombre }} {{ value.precio }} #}
+          <td>{{ nombre_medicamento }}</td>
+          <td>{{ precio_medicamento }} €</td>
           <td>
             {{ value.cantidad }}
-            <a href="#" class="badge btn btn-dark badge-dark ml-5">+</a>
-            <a href="#" class="badge btn btn-dark badge-dark ml-2">-</a>
+            <a href="#" class="badge btn btn-dark badge-dark ml-5 pl-2 pr-2">+</a>
+            <a href="#" class="badge btn btn-dark badge-dark ml-2 mr-2 pl-2 pr-2">-</a>
+            <span>0</span>
           </td>
         </tr>
         {% else %}

@@ -14,6 +14,7 @@ from django.utils.decorators import method_decorator
 from seguroprivado.models import Cita, CompraMedicamento, Compra, Medicamento, Paciente, Medico
 from seguroprivado.forms import CitaForm, MedicamentoForm, MedicoForm, PacienteForm
 from django.db.models import Q
+from seguroprivado.carrito import CarritoCompra # reutilizamos la clase con las funciones del carrito
 
 # Create your views here.
 
@@ -681,6 +682,14 @@ class MedicamentosPacienteView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(MedicamentosPacienteView, self).get_context_data(**kwargs)     
         context['medicamentos'] = Medicamento.objects.all().order_by('id')
+        
+        paciente_logueado = Paciente.objects.get(username=self.request.user)
+        compras_paciente = Compra.objects.get(idPaciente=paciente_logueado)
+        compra_medicamento = CompraMedicamento.objects.get(idCompra=compras_paciente)
+        
+        context['nombre_medicamento'] = compra_medicamento.idMedicamento.nombre
+        context['precio_medicamento'] = compra_medicamento.idMedicamento.precio
+        
         return context
 
 @method_decorator(login_required, name='dispatch')
@@ -694,11 +703,12 @@ class CompraMedicamentoView(LoginRequiredMixin, CreateView):
     
     def get_context_data(self, **kwargs):
         context = super(CompraMedicamentoView, self).get_context_data(**kwargs)                
-        context['medicamentos'] = Medicamento.objects.all().order_by('id')
+        context['medicamentos'] = Medicamento.objects.all().order_by('id')          
         return context
     
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):        
         nombre_medicamento = self.get_object()# para obtener el medicamento agregado a la compra
+        carrito = CarritoCompra
         
         # Obtenemos el paciente actual
         paciente_compra = Paciente.objects.get(username=self.request.user)
@@ -713,7 +723,6 @@ class CompraMedicamentoView(LoginRequiredMixin, CreateView):
         compra.save()
         
         compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
-        compra_medicamento.save()
-        
+        compra_medicamento.save()        
         messages.add_message(request, level=messages.SUCCESS, message="Medicamento añadido a su carrito correctamente")
         return redirect(self.success_url)
