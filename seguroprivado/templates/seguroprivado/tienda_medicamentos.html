@@ -7,10 +7,6 @@
 <div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4 pb-5 pt-5">
     <div class="container-fluid mx-auto bg-light rounded mt-2">
         {% if request.user.is_authenticated %}
-            <div class="container ml-3">
-                <h1 class="text-primary text-center text-left mb-3 p-md-3">Lista de Medicamentos</h1>
-            </div>
-
             {# Mensaje para cuando el paciente gestiona sus medicamentos meintras realiza su compra #}
             {% if messages %}
             {% for compra_realizada in messages %}
@@ -21,7 +17,12 @@
             </div>
             {% endfor %}
             {% endif %}
-            
+                
+
+            <div class="container ml-3">
+                <h1 class="text-primary text-center text-left mb-3 p-md-3">Lista de Medicamentos</h1>
+            </div>
+
             {# Para mostrar los medicamentos de la tienda #}
             <div class="row">
                 <div class="col-8">
@@ -56,10 +57,14 @@
                                             <td>{{ medicamento.precio|floatformat:2 }} €</td>
                                             <td>{{ medicamento.stock }}</td>
                                             <td>
-                                                <a href="#" class="btn btn-primary btn-sm">
-                                                    <span class="fas fa-cart-plus"></span>
-                                                    <span>Añadir al carrito</span>
-                                                </a>
+                                                <form action="{% url 'compra_medicamento' medicamento.id %}" method="POST">
+                                                    {% csrf_token %}
+
+                                                    <button name="id" type="submit" class="btn btn-primary btn-sm">
+                                                        <span class="fas fa-cart-plus"></span>
+                                                        <span>Añadir al carrito</span>
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
                                         {% endfor %}

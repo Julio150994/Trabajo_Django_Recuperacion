@@ -1,11 +1,11 @@
-<div class="rounded ml-2 text-center" style="background-color: #8DC9F1; margin-top: -5.6%;">
+<div class="rounded ml-2 text-center" style="background-color: #8DC9F1; margin-top: -10%;">
     <span class="navbar-brand text-white mt-2 mb-4 ml-3">Carrito de compra</span>
-    <div class="container-fluid">
-      <table class="container-lg">
+    <div class="container-fluid" style="max-height: 300px; overflow: auto; display: inline-block;">
+      <table class="container">
         <thead class="text-white text-center">
             <tr>
                 <th>Medicamento</th>
-                <th></th>
+                <th class="pl-4">Precio</th>
                 <th>Cantidad</th>
             </tr>
         </thead>
@@ -16,8 +16,8 @@
           <td>{{ value.precio }}</td>
           <td>
             {{ value.cantidad }}
-            <a href="#" class="badge btn btn-dark badge-dark">+</a>
-            <a href="#" class="badge btn btn-dark badge-dark">-</a>
+            <a href="#" class="badge btn btn-dark badge-dark ml-5">+</a>
+            <a href="#" class="badge btn btn-dark badge-dark ml-2">-</a>
           </td>
         </tr>
         {% else %}
@@ -28,8 +28,8 @@
         </tr>
         {% endif %}
         <tr>
-          <td scope="row"><strong>Precio total:</strong></td>
-          <td colspan="2">€</td>
+          <td scope="row" class="pt-5"><strong>Precio total:</strong></td>
+          <td colspan="2" class="pl-5 pt-5">€</td>
         </tr>
         </tbody>
       </table>

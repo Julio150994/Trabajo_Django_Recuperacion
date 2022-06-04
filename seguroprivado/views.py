@@ -686,28 +686,28 @@ class MedicamentosPacienteView(LoginRequiredMixin, ListView):
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
 class CompraMedicamentoView(LoginRequiredMixin, CreateView):
-    model = Compra
-    template_name = "seguroprivado/carrito_compra.html"
+    model = Medicamento
     success_url = reverse_lazy('tienda')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs):
-        context = super(CompraMedicamentoView, self).get_context_data(**kwargs)     
+        context = super(CompraMedicamentoView, self).get_context_data(**kwargs)                
         context['medicamentos'] = Medicamento.objects.all().order_by('id')
         return context
     
-    def post(self, request, *args, **kwargs):        
-        # Agregamos la compra del medicamento
+    def post(self, request, *args, **kwargs):
+        nombre_medicamento = self.get_object()# para obtener el medicamento agregado a la compra
+        
+        # Obtenemos el paciente actual
         paciente_compra = Paciente.objects.get(username=self.request.user)
-        #id_paciente = paciente_compra.id
+        
+        # Agregamos la compra del medicamento        
+        medicamento = Medicamento.objects.get(nombre=nombre_medicamento)
         
         fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
         fecha_compra = datetime.strftime(fecha_actual,'%Y-%m-%d')
-        
-        id_medicamento = request.POST.get("medicamento[]")
-        medicamento = Medicamento.objects.get(id=id_medicamento)
         
         compra = Compra(fecha=fecha_compra, precio=medicamento.precio, idPaciente=paciente_compra)
         compra.save()
@@ -715,6 +715,5 @@ class CompraMedicamentoView(LoginRequiredMixin, CreateView):
         compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
         compra_medicamento.save()
         
-        messages.add_message(request, level=messages.SUCCESS, message="Su compra ha sido realizada correctamente")
+        messages.add_message(request, level=messages.SUCCESS, message="Medicamento añadido a su carrito correctamente")
         return redirect(self.success_url)
-        #return super().post(request, *args, **kwargs)
