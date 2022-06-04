@@ -50,7 +50,8 @@ urlpatterns = [
     path('historial_paciente/',views.HistorialPacienteView.as_view(), name="historial_paciente"),
     path('historial_paciente_medico/<int:pk>/',views.HistorialPacientesMedicoView.as_view(), name="historial_pacientes_medico"),
     path('tienda_medicamentos/',views.MedicamentosPacienteView.as_view(), name="tienda"),
-    path('compra_medicamento/<int:pk>/', views.CompraMedicamentoView.as_view(), name="compra_medicamento")
+    path('compra_medicamento/<int:pk>/', views.CompraMedicamentoView.as_view(), name="compra_medicamento"),
+    path('elimina_compra/<int:pk>/', views.CompraMedicamentoDelete.as_view(), name="eliminar_compra")
     
 ]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

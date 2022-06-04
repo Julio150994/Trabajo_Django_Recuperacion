@@ -680,16 +680,15 @@ class MedicamentosPacienteView(LoginRequiredMixin, ListView):
         return super().dispatch(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs):
-        context = super(MedicamentosPacienteView, self).get_context_data(**kwargs)     
+        context = super(MedicamentosPacienteView, self).get_context_data(**kwargs)
         context['medicamentos'] = Medicamento.objects.all().order_by('id')
         
         paciente_logueado = Paciente.objects.get(username=self.request.user)
-        compras_paciente = Compra.objects.get(idPaciente=paciente_logueado)
-        compra_medicamento = CompraMedicamento.objects.get(idCompra=compras_paciente)
+        context['paciente_actual'] = paciente_logueado
         
-        context['nombre_medicamento'] = compra_medicamento.idMedicamento.nombre
-        context['precio_medicamento'] = compra_medicamento.idMedicamento.precio
-        
+        compra_paciente = Compra.objects.filter(idPaciente=paciente_logueado).all()
+        medicamentos_paciente = CompraMedicamento.objects.all()
+        context['medicamentos_paciente'] = medicamentos_paciente
         return context
 
 @method_decorator(login_required, name='dispatch')
@@ -723,6 +722,28 @@ class CompraMedicamentoView(LoginRequiredMixin, CreateView):
         compra.save()
         
         compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
-        compra_medicamento.save()        
-        messages.add_message(request, level=messages.SUCCESS, message="Medicamento añadido a su carrito correctamente")
+        compra_medicamento.save()
         return redirect(self.success_url)
+
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
+class CompraMedicamentoDelete(LoginRequiredMixin, DeleteView):
+    model = CompraMedicamento
+    success_url = reverse_lazy('tienda')
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        medicamento_carrito = self.get_object()
+        print("Medicamento seleccionado: "+str(medicamento_carrito))
+        
+        medicamento_carrito.delete()# del modelo CompraMedicamento
+        
+        paciente = Paciente.objects.get(username=self.request.user)
+        medicamento = Compra.objects.get(idPaciente=paciente)
+        medicamento.delete()
+        
+        messages.add_message(request, level=messages.WARNING, message="Medicamento eliminado de su carrito correctamente")
+        return super().post(request, *args, **kwargs)

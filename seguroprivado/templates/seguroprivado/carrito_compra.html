@@ -1,4 +1,4 @@
-<div class="rounded ml-2 text-center" style="background-color: #8DC9F1; margin-top: -10%;">
+<div class="rounded ml-2 text-center" style="background-color: #8DC9F1; margin-top: -13%;">
     <span class="navbar-brand text-white mt-2 mb-4 ml-3">Carrito de compra</span>
     <div class="container-fluid" style="max-height: 300px; overflow: auto; display: inline-block;">
       <table class="container">
@@ -7,44 +7,60 @@
                 <th>Medicamento</th>
                 <th class="pl-4">Precio (unidad)</th>
                 <th class="pl-4">Cantidad</th>
+                <th class="pl-1">Eliminar</th>
             </tr>
         </thead>
         <tbody class="table table-light">
-        {% if request.session %}
-        <tr>
-          {# Para utlizar en sesión {{ value.nombre }} {{ value.precio }} #}
-          <td>{{ nombre_medicamento }}</td>
-          <td>{{ precio_medicamento }} €</td>
-          <td>
-            {{ value.cantidad }}
-            <a href="#" class="badge btn btn-dark badge-dark ml-5 pl-2 pr-2">+</a>
-            <a href="#" class="badge btn btn-dark badge-dark ml-2 mr-2 pl-2 pr-2">-</a>
-            <span>0</span>
-          </td>
-        </tr>
-        {% else %}
-        <tr>
-          <td colspan="3">
-            <div class="alert alert-danger text-center">No tiene productos en el carrito</div>
-          </td>
-        </tr>
-        {% endif %}
-        <tr>
-          <td scope="row" class="pt-5"><strong>Precio total:</strong></td>
-          <td colspan="2" class="pl-5 pt-5">€</td>
-        </tr>
+          {# Después hacer con las sesiones para cada paciente #}
+          {% for compra_realizada in medicamentos_paciente %}
+            {% if not paciente_logueado %}
+            <tr>
+              {# Para utlizar en sesión {{ value.nombre }} {{ value.precio }} #}
+              <td>{{ compra_realizada.idMedicamento.nombre }}</td>
+              <td>{{ compra_realizada.idMedicamento.precio }} €</td>
+              <td>
+                  <a href="#" class="badge btn btn-dark badge-dark ml-5 pl-2 pr-2">+</a>
+                  <a href="#" class="badge btn btn-dark badge-dark ml-2 mr-2 pl-2 pr-2">-</a>
+                  <span>{{ value.cantidad }}</span>
+              </td>
+              <td>
+                {# Para eliminar un medicamento del carrito #}
+                <form action="{% url 'eliminar_compra' compra_realizada.id %}" method="POST">
+                  {% csrf_token %}
+
+                  <button type="submit" class="btn btn-danger btn-sm p-2">
+                    <span class="fas fa-trash"></span>
+                  </button>
+                </form>
+              </td>
+            </tr>
+          {% endif %}
+          {% endfor %}
+
+           {# Para cuando el paciente no tiene medicamentos en su carrito #}
+           {% if paciente_logueado %}
+           <tr>
+             <td colspan="4">
+               <div class="alert alert-danger text-center mt-2 mb-2">No tiene productos en el carrito</div>
+             </td>
+           </tr>
+           {% endif %}
+          <tr>
+            <td scope="row" class="pt-5"><strong>Precio total:</strong></td>
+            <td class="pt-5 mr-5">{{ precio_total }} €</td>
+          </tr>
         </tbody>
       </table>
     </div>
 
     {# Almacenar las sesiones de compra del paciente #}
     <div class="text-left ml-3">
-      <a href="#" class="btn btn-danger mt-5 mb-3">
-        <span class="fas fa-trash"></span>
+      <a href="#" class="btn btn-warning mt-5 mb-3">
+        <span class="fas fa-recycle"></span>
         <span>Limpiar</span>
       </a>
       
-      <a href="#" class="btn btn-primary text-center mt-5 ml-3 mb-3">
+      <a href="#" class="btn btn-secondary text-center mt-5 ml-3 mb-3">
           <span class="fas fa-save"></span>
           <span>Guardar</span>
       </a>
