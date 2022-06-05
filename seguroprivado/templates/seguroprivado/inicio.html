@@ -130,25 +130,17 @@
 
                   {# Para usuarios logueados como médicos #}
                   {% else %}
+                  <a href="{% url 'citas_medico' %}" class="btn btn-primary ml-5 text-white">
+                    <span class="fas fa-user-md"></span>
+                    <span>Citas del médico</span>
+                  </a>
+
                   <div class="btn-group ml-5">
                     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                      <span class="fas fa-user"></span>
-                      <span>Opciones del médico</span>
+                      <span class="fas fa-user-clock"></span>
+                      <span>Historial de paciente</span>
                     </button>
-                    <ul class="dropdown-menu pl-2 bg-primary">
-                      <li class="dropdown-item">
-                        <a href="{% url 'citas_medico' %}" class="text-white">
-                          <span class="fas fa-user-md"></span>
-                          <span>Citas del médico</span>
-                        </a>
-                      </li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li class="dropdown-item">
-                        <a href="#" class="text-white">
-                          <span class="fas fa-user-clock"></span>
-                          <span>Ver historial de pacientes</span>
-                        </a>
-                      </li>
+                    <ul class="dropdown-menu pl-2 bg-primary" aria-labelledby="dropdownMenuLink">
                       <li><hr class="dropdown-divider"></li>
                       {# Para la creación del submenú para mostrar los pacientes #}
                       {% for paciente in pacientes %}
@@ -159,8 +151,7 @@
                         </a>
                       </li>
                       <hr class="dropdown-divider">
-                    {% endfor %}
-                      </li>
+                      {% endfor %}
                     </ul>
                   </div>
                   {% endif %}
