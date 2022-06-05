@@ -681,13 +681,29 @@ class MedicamentosPacienteView(LoginRequiredMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context = super(MedicamentosPacienteView, self).get_context_data(**kwargs)
-        context['medicamentos'] = Medicamento.objects.all().order_by('id')
+        medicamentos = Medicamento.objects.all().order_by('id')
+        context['medicamentos'] = medicamentos
         
         paciente_logueado = Paciente.objects.get(username=self.request.user)
         context['paciente_actual'] = paciente_logueado
         
         compra_paciente = Compra.objects.filter(idPaciente=paciente_logueado).all()
+        precios_compra = list()
+        lista_compra = list()
+        
+        for compra in compra_paciente:
+            precios_compra.append(compra.precio)
+        
+        context['precio_total'] = round(sum(precios_compra),2)
         medicamentos_paciente = CompraMedicamento.objects.all()
+        
+        # Validamos los medicamentos que han sido comprados por el paciente
+        for compra in medicamentos_paciente:
+            lista_compra.append(compra.idMedicamento.nombre)
+        
+        for medicamento in lista_compra:
+            context['medicamento_aniadido'] = lista_compra[lista_compra.index(medicamento)]
+        
         context['medicamentos_paciente'] = medicamentos_paciente
         return context
 
@@ -747,3 +763,26 @@ class CompraMedicamentoDelete(LoginRequiredMixin, DeleteView):
         
         messages.add_message(request, level=messages.WARNING, message="Medicamento eliminado de su carrito correctamente")
         return super().post(request, *args, **kwargs)
+
+
+# Para limpiar las compras que ha realizado el paciente a la vez
+@method_decorator(login_required, name='dispatch')
+@method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
+class CompraMedicamentoClearView(LoginRequiredMixin, ListView):
+    model = CompraMedicamento
+    template_name = "seguroprivado/tienda_medicamentos.html"
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super(CompraMedicamentoClearView, self).get_context_data(**kwargs)
+        
+        compra_medicamento = CompraMedicamento.objects.all()
+        compra_medicamento.delete()
+        
+        compras_paciente = Compra.objects.all()
+        compras_paciente.delete()
+        
+        context['medicamentos'] = Medicamento.objects.all()
+        return context

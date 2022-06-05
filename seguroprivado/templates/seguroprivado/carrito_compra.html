@@ -34,7 +34,7 @@
                 </form>
               </td>
             </tr>
-          {% endif %}
+            {% endif %}
           {% endfor %}
 
            {# Para cuando el paciente no tiene medicamentos en su carrito #}
@@ -48,6 +48,8 @@
           <tr>
             <td scope="row" class="pt-5"><strong>Precio total:</strong></td>
             <td class="pt-5 mr-5">{{ precio_total }} €</td>
+            <td></td>
+            <td></td>
           </tr>
         </tbody>
       </table>
@@ -55,11 +57,12 @@
 
     {# Almacenar las sesiones de compra del paciente #}
     <div class="text-left ml-3">
-      <a href="#" class="btn btn-warning mt-5 mb-3">
+      <a href="{% url 'limpiar_compra' %}" class="btn btn-warning mt-5 mb-3">
         <span class="fas fa-recycle"></span>
         <span>Limpiar</span>
       </a>
       
+      {# Esta función la hacemos en sesión #}
       <a href="#" class="btn btn-secondary text-center mt-5 ml-3 mb-3">
           <span class="fas fa-save"></span>
           <span>Guardar</span>

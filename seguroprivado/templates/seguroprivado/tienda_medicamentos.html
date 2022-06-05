@@ -56,6 +56,16 @@
                                             <td>{{ medicamento.precio|floatformat:2 }} €</td>
                                             <td>{{ medicamento.stock }}</td>
                                             <td>
+                                                {% if medicamento_aniadido == medicamento.nombre %}
+                                                <form action="{% url 'compra_medicamento' medicamento.id %}" method="POST">
+                                                    {% csrf_token %}
+
+                                                    <button name="id" type="submit" class="btn btn-info btn-sm" disabled>
+                                                        <span class="fas fa-check-square"></span>
+                                                        <span>Añadido</span>
+                                                    </button>
+                                                </form>
+                                                {% else %}
                                                 <form action="{% url 'compra_medicamento' medicamento.id %}" method="POST">
                                                     {% csrf_token %}
 
@@ -64,6 +74,7 @@
                                                         <span>Añadir al carrito</span>
                                                     </button>
                                                 </form>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                         {% endfor %}
