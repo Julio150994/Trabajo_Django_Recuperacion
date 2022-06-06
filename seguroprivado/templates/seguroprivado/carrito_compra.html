@@ -21,17 +21,21 @@
               <td>
                   <a href="#" class="badge btn btn-dark badge-dark ml-5 pl-2 pr-2">+</a>
                   <a href="#" class="badge btn btn-dark badge-dark ml-2 mr-2 pl-2 pr-2">-</a>
-                  <span>0</span>
+                  <span>{{ cantidad }}</span>
               </td>
               <td>
                 {# Para eliminar un medicamento del carrito #}
-                <form action="{% url 'eliminar_compra' compra_realizada.id %}" method="POST">
+                <button type="submit" class="btn btn-danger btn-sm p-2">
+                  <span class="fas fa-trash"></span>
+                </button>
+
+                {% comment %}<form action="#" method="POST">
                   {% csrf_token %}
 
                   <button type="submit" class="btn btn-danger btn-sm p-2">
                     <span class="fas fa-trash"></span>
                   </button>
-                </form>
+                </form>{% endcomment %}
               </td>
             </tr>
             {% endif %}
@@ -57,7 +61,7 @@
 
     {# Almacenar las sesiones de compra del paciente #}
     <div class="text-left ml-3">
-      <a href="{% url 'limpiar_compra' %}" class="btn btn-warning mt-5 mb-3">
+      <a href="#" class="btn btn-warning mt-5 mb-3">
         <span class="fas fa-recycle"></span>
         <span>Limpiar</span>
       </a>

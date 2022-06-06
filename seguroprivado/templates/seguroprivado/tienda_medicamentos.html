@@ -18,6 +18,9 @@
             {% endfor %}
             {% endif %}
 
+            {% if not medicamentos %}
+            <div class="alert alert-warning text-center">No se han encontrado medicamentos en el sistema</div>
+            {% else %}
             <div class="container ml-3">
                 <h1 class="text-primary text-center text-left mb-3 p-md-3">Medicamentos de la tienda</h1>
             </div>
@@ -56,12 +59,11 @@
                                             <td>{{ medicamento.precio|floatformat:2 }} €</td>
                                             <td>{{ medicamento.stock }}</td>
                                             <td>
-                                                {% if medicamentos_aniadidos == medicamento.nombre %}
-                                                <button name="id" type="submit" class="btn btn-info btn-sm" disabled>
+                                                {% comment %}<button name="id" type="submit" class="btn btn-info btn-sm" disabled>
                                                     <span class="fas fa-check-square"></span>
                                                     <span>Añadido</span>
-                                                </button>
-                                                {% else %}
+                                                </button>{% endcomment %}
+
                                                 <form action="{% url 'compra_medicamento' medicamento.id %}" method="POST">
                                                     {% csrf_token %}
 
@@ -70,20 +72,9 @@
                                                         <span>Añadir al carrito</span>
                                                     </button>
                                                 </form>
-                                                {% endif %}
                                             </td>
                                         </tr>
                                         {% endfor %}
-                                        <tr>
-                                            {% for medicamento in medicamentos_comprados|slice:"1" %}
-                                            <td>
-                                                <button name="id" type="submit" class="btn btn-info btn-sm" disabled>
-                                                    <span class="fas fa-check-square"></span>
-                                                    <span>Añadido</span>
-                                                </button>
-                                            </td>
-                                            {% endfor %}
-                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -96,6 +87,7 @@
                     {% include "seguroprivado/carrito_compra.html" %}
                 </div>
             </div>
+            {% endif %}
 
             <div class="justify-content-lg-start">
                 <a href="{% url 'inicio' %}" class="btn btn-dark ml-2 mb-3">

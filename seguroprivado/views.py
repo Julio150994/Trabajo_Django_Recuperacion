@@ -689,29 +689,17 @@ class MedicamentosPacienteView(LoginRequiredMixin, ListView):
         
         compra_paciente = Compra.objects.filter(idPaciente=paciente_logueado).all()
         precios_compra = list()
-        lista_compras = list()
-        lista_medicamentos = list()
         
         for compra in compra_paciente:
             precios_compra.append(compra.precio)
         
         context['precio_total'] = round(sum(precios_compra),2)
         medicamentos_paciente = CompraMedicamento.objects.all()
-        medicamentos = Medicamento.objects.all()
         
-        # Almacenamos en una lista todos los medicamentos y en otra
-        # los que han comprado los pacientes
-        for compra in medicamentos_paciente:
-            lista_compras.append(compra.idMedicamento.nombre)
-        
-        for medicamento in medicamentos:
-            lista_medicamentos.append(medicamento)
-        
-        # Validamos los medicamentos que han sido comprados por el paciente
-        aux_compras = list(set(medicamentos).intersection(set(medicamentos_paciente)))
-          
-        context['medicamentos_comprados'] = aux_compras
-        context['medicamentos_paciente'] = medicamentos_paciente
+        if not medicamentos_paciente.exists():
+            context['medicamentos_tienda'] = medicamentos_paciente
+        else:
+            context['medicamentos_paciente'] = medicamentos_paciente
         return context
 
 @method_decorator(login_required, name='dispatch')
@@ -730,7 +718,7 @@ class CompraMedicamentoView(LoginRequiredMixin, CreateView):
     
     def post(self, request, *args, **kwargs):        
         nombre_medicamento = self.get_object()# para obtener el medicamento agregado a la compra
-        carrito = CarritoCompra
+        carrito = Carrito
         
         # Obtenemos el paciente actual
         paciente_compra = Paciente.objects.get(username=self.request.user)
@@ -747,47 +735,3 @@ class CompraMedicamentoView(LoginRequiredMixin, CreateView):
         compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
         compra_medicamento.save()
         return redirect(self.success_url)
-
-
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
-class CompraMedicamentoDelete(LoginRequiredMixin, DeleteView):
-    model = CompraMedicamento
-    success_url = reverse_lazy('tienda')
-    
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-    
-    def post(self, request, *args, **kwargs):
-        medicamento_carrito = self.get_object()
-        medicamento_carrito.delete()# del modelo CompraMedicamento
-        
-        paciente = Paciente.objects.get(username=self.request.user)
-        medicamento = Compra.objects.get(idPaciente=paciente)
-        medicamento.delete()
-        
-        messages.add_message(request, level=messages.WARNING, message="Medicamento eliminado de su carrito correctamente")
-        return super().post(request, *args, **kwargs)
-
-
-# Para limpiar las compras que ha realizado el paciente a la vez
-@method_decorator(login_required, name='dispatch')
-@method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
-class CompraMedicamentoClearView(LoginRequiredMixin, ListView):
-    model = CompraMedicamento
-    template_name = "seguroprivado/tienda_medicamentos.html"
-    
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-    
-    def get_context_data(self, **kwargs):
-        context = super(CompraMedicamentoClearView, self).get_context_data(**kwargs)
-        
-        compra_medicamento = CompraMedicamento.objects.all()
-        compra_medicamento.delete()
-        
-        compras_paciente = Compra.objects.all()
-        compras_paciente.delete()
-        
-        context['medicamentos'] = Medicamento.objects.all()
-        return context
