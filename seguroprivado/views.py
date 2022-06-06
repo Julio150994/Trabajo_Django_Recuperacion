@@ -718,7 +718,7 @@ class CompraMedicamentoView(LoginRequiredMixin, CreateView):
     
     def post(self, request, *args, **kwargs):        
         nombre_medicamento = self.get_object()# para obtener el medicamento agregado a la compra
-        carrito = Carrito
+        carrito = CarritoCompra
         
         # Obtenemos el paciente actual
         paciente_compra = Paciente.objects.get(username=self.request.user)
