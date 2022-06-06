@@ -689,21 +689,28 @@ class MedicamentosPacienteView(LoginRequiredMixin, ListView):
         
         compra_paciente = Compra.objects.filter(idPaciente=paciente_logueado).all()
         precios_compra = list()
-        lista_compra = list()
+        lista_compras = list()
+        lista_medicamentos = list()
         
         for compra in compra_paciente:
             precios_compra.append(compra.precio)
         
         context['precio_total'] = round(sum(precios_compra),2)
         medicamentos_paciente = CompraMedicamento.objects.all()
+        medicamentos = Medicamento.objects.all()
+        
+        # Almacenamos en una lista todos los medicamentos y en otra
+        # los que han comprado los pacientes
+        for compra in medicamentos_paciente:
+            lista_compras.append(compra.idMedicamento.nombre)
+        
+        for medicamento in medicamentos:
+            lista_medicamentos.append(medicamento)
         
         # Validamos los medicamentos que han sido comprados por el paciente
-        for compra in medicamentos_paciente:
-            lista_compra.append(compra.idMedicamento.nombre)
-        
-        for medicamento in lista_compra:
-            context['medicamento_aniadido'] = lista_compra[lista_compra.index(medicamento)]
-        
+        aux_compras = list(set(medicamentos).intersection(set(medicamentos_paciente)))
+          
+        context['medicamentos_comprados'] = aux_compras
         context['medicamentos_paciente'] = medicamentos_paciente
         return context
 
@@ -753,8 +760,6 @@ class CompraMedicamentoDelete(LoginRequiredMixin, DeleteView):
     
     def post(self, request, *args, **kwargs):
         medicamento_carrito = self.get_object()
-        print("Medicamento seleccionado: "+str(medicamento_carrito))
-        
         medicamento_carrito.delete()# del modelo CompraMedicamento
         
         paciente = Paciente.objects.get(username=self.request.user)

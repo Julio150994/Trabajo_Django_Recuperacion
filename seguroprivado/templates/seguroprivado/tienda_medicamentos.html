@@ -56,15 +56,11 @@
                                             <td>{{ medicamento.precio|floatformat:2 }} €</td>
                                             <td>{{ medicamento.stock }}</td>
                                             <td>
-                                                {% if medicamento_aniadido == medicamento.nombre %}
-                                                <form action="{% url 'compra_medicamento' medicamento.id %}" method="POST">
-                                                    {% csrf_token %}
-
-                                                    <button name="id" type="submit" class="btn btn-info btn-sm" disabled>
-                                                        <span class="fas fa-check-square"></span>
-                                                        <span>Añadido</span>
-                                                    </button>
-                                                </form>
+                                                {% if medicamentos_aniadidos == medicamento.nombre %}
+                                                <button name="id" type="submit" class="btn btn-info btn-sm" disabled>
+                                                    <span class="fas fa-check-square"></span>
+                                                    <span>Añadido</span>
+                                                </button>
                                                 {% else %}
                                                 <form action="{% url 'compra_medicamento' medicamento.id %}" method="POST">
                                                     {% csrf_token %}
@@ -78,6 +74,16 @@
                                             </td>
                                         </tr>
                                         {% endfor %}
+                                        <tr>
+                                            {% for medicamento in medicamentos_comprados|slice:"1" %}
+                                            <td>
+                                                <button name="id" type="submit" class="btn btn-info btn-sm" disabled>
+                                                    <span class="fas fa-check-square"></span>
+                                                    <span>Añadido</span>
+                                                </button>
+                                            </td>
+                                            {% endfor %}
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>

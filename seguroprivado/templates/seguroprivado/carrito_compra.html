@@ -15,13 +15,13 @@
           {% for compra_realizada in medicamentos_paciente %}
             {% if not paciente_logueado %}
             <tr>
-              {# Para utlizar en sesión {{ value.nombre }} {{ value.precio }} #}
+              {# Para utlizar en sesión {{ value.nombre }} {{ value.precio }} {{ value.cantidad }} #}
               <td>{{ compra_realizada.idMedicamento.nombre }}</td>
               <td>{{ compra_realizada.idMedicamento.precio }} €</td>
               <td>
                   <a href="#" class="badge btn btn-dark badge-dark ml-5 pl-2 pr-2">+</a>
                   <a href="#" class="badge btn btn-dark badge-dark ml-2 mr-2 pl-2 pr-2">-</a>
-                  <span>{{ value.cantidad }}</span>
+                  <span>0</span>
               </td>
               <td>
                 {# Para eliminar un medicamento del carrito #}
