@@ -704,7 +704,7 @@ class MedicamentosPacienteView(LoginRequiredMixin, ListView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
-class CompraMedicamentoView(LoginRequiredMixin, CreateView):
+class GestionaMedicamentoView(LoginRequiredMixin, CreateView):
     model = Medicamento
     success_url = reverse_lazy('tienda')
     
@@ -712,26 +712,36 @@ class CompraMedicamentoView(LoginRequiredMixin, CreateView):
         return super().dispatch(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs):
-        context = super(CompraMedicamentoView, self).get_context_data(**kwargs)                
+        context = super(GestionaMedicamentoView, self).get_context_data(**kwargs)                
         context['medicamentos'] = Medicamento.objects.all().order_by('id')          
         return context
+
+    # Ponemos nuestros métodos para el carrito
+    def aniadir(self, request, id_medicamento):
+        carrito_compra = CarritoCompra(request)
+        medicamento = Medicamento.objects.get(id=id_medicamento)
+        
+        compra_medicamento = CompraMedicamento.objects.get(idMedicamento=medicamento)
+        carrito_compra.aniadir_medicamento(compra_medicamento)
+        return redirect(self.success_url)
+        
+    def eliminar(self, request, id_medicamento):
+        carrito_compra = CarritoCompra(request)
+        medicamento = Medicamento.objects.get(id=id_medicamento)
+            
+        compra_medicamento = CompraMedicamento.objects.get(idMedicamento=medicamento)
+        carrito_compra.eliminar_medicamento(compra_medicamento)
+        return redirect(self.success_url)
     
-    def post(self, request, *args, **kwargs):        
-        nombre_medicamento = self.get_object()# para obtener el medicamento agregado a la compra
-        carrito = CarritoCompra
-        
-        # Obtenemos el paciente actual
-        paciente_compra = Paciente.objects.get(username=self.request.user)
-        
-        # Agregamos la compra del medicamento        
-        medicamento = Medicamento.objects.get(nombre=nombre_medicamento)
-        
-        fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
-        fecha_compra = datetime.strftime(fecha_actual,'%Y-%m-%d')
-        
-        compra = Compra(fecha=fecha_compra, precio=medicamento.precio, idPaciente=paciente_compra)
-        compra.save()
-        
-        compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
-        compra_medicamento.save()
+    def restar(self, request, id_medicamento):
+        carrito_compra = CarritoCompra(request)
+        medicamento = Medicamento.objects.get(id=id_medicamento)
+            
+        compra_medicamento = CompraMedicamento.objects.get(idMedicamento=medicamento) 
+        carrito_compra.restar(compra_medicamento)
+        return redirect(self.success_url)
+    
+    def limpiar(self, request):
+        carrito_compra = CarritoCompra(request)
+        carrito_compra.limpiar_compra()
         return redirect(self.success_url)
