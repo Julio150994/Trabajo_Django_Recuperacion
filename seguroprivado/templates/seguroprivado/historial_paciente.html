@@ -1,7 +1,7 @@
 {# Extendido de registro.html #}
 {% extends 'seguroprivado/registro.html' %}
 
-{% block title %} Historial de citas {% endblock %}
+{% block title %} Historial de citas de paciente {% endblock %}
 
 {% block historial_paciente %}
 
@@ -29,7 +29,7 @@
             {# Filtrado por fechas #}
             {% if not fecha_historial %}
             <div class="container-fluid alert alert-warning text-center">
-                Citas con la fecha {{ fecha_anterior }} no encontradas en el historial de {{ request.user }}
+                Citas con la fecha {{ fecha_anterior }} no encontradas en su historial
             </div>
             {% else %}
             <h1 class="text-primary text-center mb-5 p-md-3">Historial de {{ request.user }}</h1>
