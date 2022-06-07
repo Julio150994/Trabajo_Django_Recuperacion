@@ -13,7 +13,7 @@
                 <div class="alert alert-warning text-center">El paciente {{ request.user }} no tiene citas anteriores</div>
             </div>
             {% else %}
-            <nav class="navbar navbar-white bg-white mb-4 ml-5 mb-5 wow fadeInUp">
+            <nav class="navbar navbar-white bg-white mb-4 ml-5 mb-5">
                 <span class="navbar-brand"></span>
 
                 <form class="d-flex" action="" method="GET">
@@ -29,7 +29,7 @@
             {# Filtrado por fechas #}
             {% if not fecha_historial %}
             <div class="container-fluid alert alert-warning text-center">
-                Citas con la fecha {{ fecha_anterior }} no encontradas en el historial
+                Citas con la fecha {{ fecha_anterior }} no encontradas en el historial de {{ request.user }}
             </div>
             {% else %}
             <h1 class="text-primary text-center mb-5 p-md-3">Historial de {{ request.user }}</h1>
@@ -42,7 +42,6 @@
                             <th>Edad del médico</th>
                             <th>Fecha de alta del médico</th>
                             <th>Especialidad</th>
-                            <th>Nombre de usuario del médico</th>
                             <th>Fecha de cita de paciente</th>
                             <th>Observaciones</th>
                         </tr>
@@ -50,29 +49,27 @@
                     <tbody class="table table-light">
                         {# Para mostrar el historial de las citas #}
                         {% if not fecha_historial %}
-                        {% for cita in historial_citas %}
-                        <tr>
-                            <td>{{ cita.idMedico.nombre }} {{ cita.idMedico.apellidos }}</td>
-                            <td>{{ cita.idMedico.edad }}</td>
-                            <td>{{ cita.idMedico.fechaalta|date:"d/m/Y" }}</td>
-                            <td>{{ cita.idMedico.especialidad }}</td>
-                            <td>{{ cita.idMedico.username }}</td>
-                            <td>{{ cita.fecha|date:"d/m/Y" }}</td>
-                            <td>{{ cita.observaciones }}</td>
-                        </tr>
-                        {% endfor %}
+                            {% for cita in historial_citas %}
+                            <tr>
+                                <td>{{ cita.idMedico.nombre }} {{ cita.idMedico.apellidos }}</td>
+                                <td>{{ cita.idMedico.edad }}</td>
+                                <td>{{ cita.idMedico.fechaalta|date:"d/m/Y" }}</td>
+                                <td>{{ cita.idMedico.especialidad }}</td>
+                                <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                                <td>{{ cita.observaciones }}</td>
+                            </tr>
+                            {% endfor %}
                         {% else %}
-                        {% for cita in fecha_historial %}
-                        <tr>
-                            <td>{{ cita.idMedico.nombre }} {{ cita.idMedico.apellidos }}</td>
-                            <td>{{ cita.idMedico.edad }}</td>
-                            <td>{{ cita.idMedico.fechaalta|date:"d/m/Y" }}</td>
-                            <td>{{ cita.idMedico.especialidad }}</td>
-                            <td>{{ cita.idMedico.username }}</td>
-                            <td>{{ cita.fecha|date:"d/m/Y" }}</td>
-                            <td>{{ cita.observaciones }}</td>
-                        </tr>
-                        {% endfor %}
+                            {% for cita in fecha_historial %}
+                            <tr>
+                                <td>{{ cita.idMedico.nombre }} {{ cita.idMedico.apellidos }}</td>
+                                <td>{{ cita.idMedico.edad }}</td>
+                                <td>{{ cita.idMedico.fechaalta|date:"d/m/Y" }}</td>
+                                <td>{{ cita.idMedico.especialidad }}</td>
+                                <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                                <td>{{ cita.observaciones }}</td>
+                            </tr>
+                            {% endfor %}
                         {% endif %}
                     </tbody>
                 </table>

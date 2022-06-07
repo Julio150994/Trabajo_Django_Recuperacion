@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.views.generic import RedirectView, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import RedirectView, TemplateView, FormView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
@@ -12,7 +12,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from seguroprivado.models import Cita, CompraMedicamento, Compra, Medicamento, Paciente, Medico
-from seguroprivado.forms import CitaForm, MedicamentoForm, MedicoForm, PacienteForm
+from seguroprivado.forms import CarritoForm, CitaForm, MedicamentoForm, MedicoForm, PacienteForm
 from django.db.models import Q
 from seguroprivado.carrito import CarritoCompra # reutilizamos la clase con las funciones del carrito
 
@@ -633,9 +633,7 @@ class HistorialPacienteView(LoginRequiredMixin, ListView):
                 aux_fecha_cita = datetime.strptime(str(fecha_cita_anterior),"%d/%m/%Y")
                 fecha = aux_fecha_cita.strftime('%Y-%m-%d')
                 
-                filtrar_fecha = Cita.objects.filter(
-                    Q(fecha__icontains = fecha)
-                ).distinct()
+                filtrar_fecha = Cita.objects.filter(idPaciente=paciente).filter(fecha=fecha)
                 
                 if filtrar_fecha.exists():
                     context['fecha_historial'] = filtrar_fecha
@@ -704,17 +702,66 @@ class MedicamentosPacienteView(LoginRequiredMixin, ListView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
-class GestionaMedicamentoView(LoginRequiredMixin, CreateView):
-    model = Medicamento
+class GestionaMedicamentoView(LoginRequiredMixin, FormView):
+    model = CompraMedicamento
     success_url = reverse_lazy('tienda')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
+    def get(self, request, *args, **kwargs):
+        form = CarritoForm(self.request.GET)# llamamos a nuestro formulario
+        return self.render_to_response(self.get_context_data(form=form))
+    
     def get_context_data(self, **kwargs):
         context = super(GestionaMedicamentoView, self).get_context_data(**kwargs)                
-        context['medicamentos'] = Medicamento.objects.all().order_by('id')          
+        context['medicamentos'] = Medicamento.objects.all().order_by('id')
+        
+        # Obtenemos el medicamento agregado al carrito
+        set_medicamento = self.object
+        print("Traza: "+str(set_medicamento))
+        
+        # self.request.session["nombre"] =
+        # self.request.session["precio_acumulado"] = 
+        
+        nombre_medicamento = self.request.session.get('nombre')
+        precio = self.request.session.get('precio')
+        cantidad_medicamentos = self.request.session.get('cantidad',0)
+        self.request.session['cantidad'] = cantidad_medicamentos + 1
+        
+        context = {
+            'nombre_medicamento': nombre_medicamento,
+            'precio': precio,
+            'cantidad': cantidad_medicamentos
+        }
+        
+        self.request.session.modified = True
         return context
+    
+    """def get(self, request):
+        # Obtenemos el medicamento agregado al carrito
+        #form = CarritoForm()
+        nombre_medicamento = self.request.session.get('nombre')
+        precio = self.request.session.get('precio')
+        cantidad_medicamentos = self.request.session.get('cantidad',0)
+        self.request.session['cantidad'] = cantidad_medicamentos + 1
+        
+        context = {
+            'nombre_medicamento': nombre_medicamento,
+            'precio': precio,
+            'cantidad': cantidad_medicamentos
+        }"""
+        
+    """def post(self, request, *args, **kwargs):
+        medicamento = ""
+        print("\nHola: "+str(medicamento))
+        
+        form = CarritoForm(request.POST)
+        if form.is_valid():
+            self.request.session["nombre"] = "Medicamento 1"
+            self.request.session["precio_acumulado"] = "Precio 1"
+            self.request.session.modified = True
+        return redirect(self.success_url)"""
 
     # Ponemos nuestros métodos para el carrito
     def aniadir(self, request, id_medicamento):
@@ -723,15 +770,16 @@ class GestionaMedicamentoView(LoginRequiredMixin, CreateView):
         
         compra_medicamento = CompraMedicamento.objects.get(idMedicamento=medicamento)
         carrito_compra.aniadir_medicamento(compra_medicamento)
+        #request.session.set_test_cookie()
         return redirect(self.success_url)
         
-    def eliminar(self, request, id_medicamento):
+    """def eliminar(self, request, id_medicamento):
         carrito_compra = CarritoCompra(request)
         medicamento = Medicamento.objects.get(id=id_medicamento)
             
         compra_medicamento = CompraMedicamento.objects.get(idMedicamento=medicamento)
         carrito_compra.eliminar_medicamento(compra_medicamento)
-        return redirect(self.success_url)
+        return redirect(self.success_url)"""
     
     def restar(self, request, id_medicamento):
         carrito_compra = CarritoCompra(request)

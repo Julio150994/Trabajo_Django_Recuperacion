@@ -282,3 +282,8 @@ class CitaForm(forms.ModelForm):
             raise forms.ValidationError('Las observaciones deben contener 100 caracteres como máximo')
         else:
             return observaciones
+        
+# Para el carrito de la compra
+class CarritoForm(forms.Form):
+    nombre_medicamento = forms.CharField(max_length=50)
+    precio_medicamento = forms.FloatField()

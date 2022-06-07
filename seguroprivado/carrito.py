@@ -33,6 +33,7 @@ class CarritoCompra:
     def guardar_compra(self):
         self.session["carrito"] = self.carrito_compra
         self.session.modified = True
+        messages.add_message(self.request, level=messages.INFO, message="Su compra ha sido realizada correctamente")
         
     def eliminar_medicamento(self, medicamento):
         id_medicamento = str(medicamento.id)
@@ -61,7 +62,7 @@ class CarritoCompra:
         total = 0
         
         if request.user.is_authenticated:
-            if request.session["carrito_compra"]:
+            if "carrito_compra" in request.session.keys():   
                 for clave, valor in request.session["carrito_compra"].items():
                     total += int(valor["precio_acumulado"])
         

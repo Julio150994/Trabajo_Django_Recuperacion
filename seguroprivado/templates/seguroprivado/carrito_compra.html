@@ -12,16 +12,15 @@
         </thead>
         <tbody class="table table-light">
           {# Después hacer con las sesiones para cada paciente #}
-          {% for compra_realizada in medicamentos_paciente %}
-            {% if not paciente_logueado %}
+          {% if not paciente_logueado %}
+            {% for compra_realizada in request.session.carrito.items %}
             <tr>
-              {# Para utlizar en sesión {{ value.nombre }} {{ value.precio }} {{ value.cantidad }} #}
-              <td>{{ compra_realizada.idMedicamento.nombre }}</td>
-              <td>{{ compra_realizada.idMedicamento.precio }} €</td>
+              <td>{{ compra_realizada.nombre }}</td>
+              <td>{{ compra_realizada.precio_acumulado }} €</td>
               <td>
-                  <a href="#" class="badge btn btn-dark badge-dark ml-5 pl-2 pr-2">+</a>
-                  <a href="#" class="badge btn btn-dark badge-dark ml-2 mr-2 pl-2 pr-2">-</a>
-                  <span>{{ cantidad }}</span>
+                  <a href="#" class="badge btn btn-dark badge-dark ml-5 pl-2 pr-2" value="{{ compra_realizada.cantidad }}">+</a>
+                  <a href="#" class="badge btn btn-dark badge-dark ml-2 mr-2 pl-2 pr-2" value="{{ compra_realizada.cantidad }}">-</a>
+                  <span>{{ compra_realizada.cantidad }}</span>
               </td>
               <td>
                 {# Para eliminar un medicamento del carrito #}
@@ -38,10 +37,11 @@
                 </form>{% endcomment %}
               </td>
             </tr>
-            {% endif %}
-          {% endfor %}
+            {% endfor %}
+          {% endif %}
 
            {# Para cuando el paciente no tiene medicamentos en su carrito #}
+           {% for compra_realizada in request.session.carrito.items %}
            {% if paciente_logueado %}
            <tr>
              <td colspan="4">
@@ -49,6 +49,7 @@
              </td>
            </tr>
            {% endif %}
+           {% endfor %}
           <tr>
             <td scope="row" class="pt-5"><strong>Precio total:</strong></td>
             <td class="pt-5 mr-5">{{ precio_total }} €</td>
@@ -67,9 +68,10 @@
       </a>
       
       {# Esta función la hacemos en sesión #}
+      {# {% url 'compra_medicamento' medicamento.id %} #}
       <a href="#" class="btn btn-secondary text-center mt-5 ml-3 mb-3">
-          <span class="fas fa-save"></span>
-          <span>Guardar</span>
+          <span class="fas fa-shopping-bag"></span>
+          <span>Comprar</span>
       </a>
     </div>
   </div>
