@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from seguroprivado import views
+from seguroprivado import views, carrito
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -50,7 +50,13 @@ urlpatterns = [
     path('historial_paciente/',views.HistorialPacienteView.as_view(), name="historial_paciente"),
     path('historial_paciente_medico/<int:pk>/',views.HistorialPacientesMedicoView.as_view(), name="historial_pacientes_medico"),
     path('tienda_medicamentos/',views.MedicamentosPacienteView.as_view(), name="tienda"),
-    path('compra_medicamento/<int:pk>/', views.GestionaMedicamentoView.as_view(), name="compra_medicamento"),
+    
+    # Enlaces para nuestro carrito de la compra
+    path('compra_medicamento/<int:pk>/', views.GestionaCarritoView.as_view(), name="compra_medicamento"),
+    path('aniadir_carrito/<int:pk>/', views.CarritoCompra.aniadir_medicamento, name="aniadir_cantidad"),
+    path('eliminar_carrito/<int:pk>/', views.CarritoCompra.eliminar_medicamento, name="eliminar_carrito"),
+    path('restar_carrito/<int:pk>', views.CarritoCompra.restar, name="restar_cantidad"),
+    path('limpiar/', views.CarritoCompra.limpiar_compra, name="limpiar_compra"),
     
 ]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

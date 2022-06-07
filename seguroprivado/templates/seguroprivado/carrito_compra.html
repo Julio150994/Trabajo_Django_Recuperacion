@@ -13,31 +13,33 @@
         <tbody class="table table-light">
           {# Después hacer con las sesiones para cada paciente #}
           {% if not paciente_logueado %}
-            {% for compra_realizada in request.session.carrito.items %}
-            <tr>
-              <td>{{ compra_realizada.nombre }}</td>
-              <td>{{ compra_realizada.precio_acumulado }} €</td>
-              <td>
-                  <a href="#" class="badge btn btn-dark badge-dark ml-5 pl-2 pr-2" value="{{ compra_realizada.cantidad }}">+</a>
-                  <a href="#" class="badge btn btn-dark badge-dark ml-2 mr-2 pl-2 pr-2" value="{{ compra_realizada.cantidad }}">-</a>
-                  <span>{{ compra_realizada.cantidad }}</span>
-              </td>
-              <td>
-                {# Para eliminar un medicamento del carrito #}
-                <button type="submit" class="btn btn-danger btn-sm p-2">
-                  <span class="fas fa-trash"></span>
-                </button>
-
-                {% comment %}<form action="#" method="POST">
-                  {% csrf_token %}
-
+            {% if request.session.carrito.items %}
+              {% for clave, valor in request.session.carrito.items %}
+              <tr>
+                <td>{{ valor.nombre }}</td>
+                <td>{{ valor.precio_acumulado }} €</td>
+                <td>
+                    <a href="{% url 'aniadir_cantidad' valor.medicamento.id %}" class="badge btn btn-dark badge-dark ml-5 pl-2 pr-2">+</a>
+                    <a href="{% url 'restar_cantidad' valor.medicamento.id %}" class="badge btn btn-dark badge-dark ml-2 mr-2 pl-2 pr-2">-</a>
+                    <span>{{ valor.cantidad }}</span>
+                </td>
+                <td>
+                  {# Para eliminar un medicamento del carrito #}
                   <button type="submit" class="btn btn-danger btn-sm p-2">
                     <span class="fas fa-trash"></span>
                   </button>
-                </form>{% endcomment %}
-              </td>
-            </tr>
-            {% endfor %}
+
+                  {% comment %}<form action="#" method="POST">
+                    {% csrf_token %}
+
+                    <button type="submit" class="btn btn-danger btn-sm p-2">
+                      <span class="fas fa-trash"></span>
+                    </button>
+                  </form>{% endcomment %}
+                </td>
+              </tr>
+              {% endfor %}
+            {% endif %}
           {% endif %}
 
            {# Para cuando el paciente no tiene medicamentos en su carrito #}
@@ -62,7 +64,7 @@
 
     {# Almacenar las sesiones de compra del paciente #}
     <div class="text-left ml-3">
-      <a href="#" class="btn btn-warning mt-5 mb-3">
+      <a href="{% url 'limpiar_compra' %}" class="btn btn-warning mt-5 mb-3">
         <span class="fas fa-recycle"></span>
         <span>Limpiar</span>
       </a>

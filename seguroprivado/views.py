@@ -702,94 +702,13 @@ class MedicamentosPacienteView(LoginRequiredMixin, ListView):
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
-class GestionaMedicamentoView(LoginRequiredMixin, FormView):
+class GestionaCarritoView(LoginRequiredMixin, FormView):
     model = CompraMedicamento
     success_url = reverse_lazy('tienda')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
-    def get(self, request, *args, **kwargs):
-        form = CarritoForm(self.request.GET)# llamamos a nuestro formulario
-        return self.render_to_response(self.get_context_data(form=form))
-    
     def get_context_data(self, **kwargs):
-        context = super(GestionaMedicamentoView, self).get_context_data(**kwargs)                
-        context['medicamentos'] = Medicamento.objects.all().order_by('id')
-        
-        # Obtenemos el medicamento agregado al carrito
-        set_medicamento = self.object
-        print("Traza: "+str(set_medicamento))
-        
-        # self.request.session["nombre"] =
-        # self.request.session["precio_acumulado"] = 
-        
-        nombre_medicamento = self.request.session.get('nombre')
-        precio = self.request.session.get('precio')
-        cantidad_medicamentos = self.request.session.get('cantidad',0)
-        self.request.session['cantidad'] = cantidad_medicamentos + 1
-        
-        context = {
-            'nombre_medicamento': nombre_medicamento,
-            'precio': precio,
-            'cantidad': cantidad_medicamentos
-        }
-        
-        self.request.session.modified = True
+        context = super(GestionaCarritoView, self).get_context_data(**kwargs)
         return context
-    
-    """def get(self, request):
-        # Obtenemos el medicamento agregado al carrito
-        #form = CarritoForm()
-        nombre_medicamento = self.request.session.get('nombre')
-        precio = self.request.session.get('precio')
-        cantidad_medicamentos = self.request.session.get('cantidad',0)
-        self.request.session['cantidad'] = cantidad_medicamentos + 1
-        
-        context = {
-            'nombre_medicamento': nombre_medicamento,
-            'precio': precio,
-            'cantidad': cantidad_medicamentos
-        }"""
-        
-    """def post(self, request, *args, **kwargs):
-        medicamento = ""
-        print("\nHola: "+str(medicamento))
-        
-        form = CarritoForm(request.POST)
-        if form.is_valid():
-            self.request.session["nombre"] = "Medicamento 1"
-            self.request.session["precio_acumulado"] = "Precio 1"
-            self.request.session.modified = True
-        return redirect(self.success_url)"""
-
-    # Ponemos nuestros métodos para el carrito
-    def aniadir(self, request, id_medicamento):
-        carrito_compra = CarritoCompra(request)
-        medicamento = Medicamento.objects.get(id=id_medicamento)
-        
-        compra_medicamento = CompraMedicamento.objects.get(idMedicamento=medicamento)
-        carrito_compra.aniadir_medicamento(compra_medicamento)
-        #request.session.set_test_cookie()
-        return redirect(self.success_url)
-        
-    """def eliminar(self, request, id_medicamento):
-        carrito_compra = CarritoCompra(request)
-        medicamento = Medicamento.objects.get(id=id_medicamento)
-            
-        compra_medicamento = CompraMedicamento.objects.get(idMedicamento=medicamento)
-        carrito_compra.eliminar_medicamento(compra_medicamento)
-        return redirect(self.success_url)"""
-    
-    def restar(self, request, id_medicamento):
-        carrito_compra = CarritoCompra(request)
-        medicamento = Medicamento.objects.get(id=id_medicamento)
-            
-        compra_medicamento = CompraMedicamento.objects.get(idMedicamento=medicamento) 
-        carrito_compra.restar(compra_medicamento)
-        return redirect(self.success_url)
-    
-    def limpiar(self, request):
-        carrito_compra = CarritoCompra(request)
-        carrito_compra.limpiar_compra()
-        return redirect(self.success_url)
