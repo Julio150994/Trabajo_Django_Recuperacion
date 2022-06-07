@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.views.generic import RedirectView, TemplateView, FormView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import RedirectView, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
@@ -12,9 +12,9 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from seguroprivado.models import Cita, CompraMedicamento, Compra, Medicamento, Paciente, Medico
-from seguroprivado.forms import CarritoForm, CitaForm, MedicamentoForm, MedicoForm, PacienteForm
+from seguroprivado.forms import CitaForm, MedicamentoForm, MedicoForm, PacienteForm
 from django.db.models import Q
-from seguroprivado.carrito import CarritoCompra # reutilizamos la clase con las funciones del carrito
+#from seguroprivado.carrito import CarritoCompra # reutilizamos la clase con las funciones del carrito
 
 # Create your views here.
 
@@ -681,34 +681,28 @@ class MedicamentosPacienteView(LoginRequiredMixin, ListView):
         context = super(MedicamentosPacienteView, self).get_context_data(**kwargs)
         medicamentos = Medicamento.objects.all().order_by('id')
         context['medicamentos'] = medicamentos
-        
-        paciente_logueado = Paciente.objects.get(username=self.request.user)
-        context['paciente_actual'] = paciente_logueado
-        
-        compra_paciente = Compra.objects.filter(idPaciente=paciente_logueado).all()
-        precios_compra = list()
-        
-        for compra in compra_paciente:
-            precios_compra.append(compra.precio)
-        
-        context['precio_total'] = round(sum(precios_compra),2)
-        medicamentos_paciente = CompraMedicamento.objects.all()
-        
-        if not medicamentos_paciente.exists():
-            context['medicamentos_tienda'] = medicamentos_paciente
-        else:
-            context['medicamentos_paciente'] = medicamentos_paciente
         return context
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
-class GestionaCarritoView(LoginRequiredMixin, FormView):
-    model = CompraMedicamento
+class GestionaCarritoView(LoginRequiredMixin, ListView):
+    model = Medicamento
+    #template_name = "seguroprivado/carrito_compra.html"
     success_url = reverse_lazy('tienda')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
-    def get_context_data(self, **kwargs):
-        context = super(GestionaCarritoView, self).get_context_data(**kwargs)
-        return context
+    def get_queryset(self):
+        print("Sesiones del carrito: "+str(self.request.session.items()))
+        
+        medicamento = self.get_context_data()
+        print("Nombre de medicamento seleccionado: "+str(medicamento.nombre))
+        print("Precio de medicamento: "+str(medicamento.precio)+"€")
+        
+    """def render_to_response(self, context, **response_kwargs):
+        medicamento_tienda = self.get_object()# obtenemos medicamento de la tienda
+        
+        if medicamento_tienda is not None:
+            return redirect(self.success_url)
+        return super().render_to_response(context, **response_kwargs)"""

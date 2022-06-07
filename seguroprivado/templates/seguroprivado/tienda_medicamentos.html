@@ -64,7 +64,7 @@
                                                     <span>Añadido</span>
                                                 </button>{% endcomment %}
 
-                                                <form action="{% url 'aniadir_cantidad' medicamento.id %}" method="POST">
+                                                <form action="{% url 'compra_medicamento' medicamento.id %}" method="POST">
                                                     {% csrf_token %}
 
                                                     <button name="id" type="submit" class="btn btn-primary btn-sm">
@@ -90,7 +90,7 @@
             {% endif %}
 
             <div class="justify-content-lg-start">
-                <a href="{% url 'inicio' %}" class="btn btn-dark ml-2 mb-3">
+                <a href="{% url 'inicio' %}" class="btn btn-dark mb-3 mt-4">
                     <span class="fas fa-arrow-left"></span>
                     <span>Volver al menú</span>
                 </a>
