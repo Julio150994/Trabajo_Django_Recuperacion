@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.contrib import messages
 
-# Utilizamos sesiones para las funcionalidades del carrito de compra
+# Nuestro fichero para el carrito de compra con la utilización de sesiones
 
 class CarritoCompra(object):
     def __init__(self, request):
@@ -17,8 +17,6 @@ class CarritoCompra(object):
             
     def aniadir_medicamento(self, medicamento):
         id = str(medicamento)
-        print("Id de medicamento: "+str(id))
-        print("Nombre: "+str())
         
         if id not in self.carrito_compra.keys():
             self.carrito_compra[id] = {
@@ -61,14 +59,3 @@ class CarritoCompra(object):
     def limpiar_compra(self):
         self.session["carrito"] = {}
         self.session.modified = True
-        
-    # Para realizar el proceso del total de carrito de compra
-    def precio_total(request):
-        total = 0.0
-        
-        if request.user.is_authenticated:
-            if "carrito_compra" in request.session.keys():   
-                for clave, valor in request.session["carrito_compra"].items():
-                    total += int(valor["precio_acumulado"])
-        
-        return {"precio_total": total}
