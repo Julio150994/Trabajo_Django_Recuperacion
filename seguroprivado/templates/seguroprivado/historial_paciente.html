@@ -14,13 +14,21 @@
             </div>
             {% else %}
             <nav class="navbar navbar-white bg-white mb-4 ml-5 mb-5">
+                {# Mostramos este botón cuando hemos buscado por una fecha #}
+                {% if not fecha_historial %}
+                <a href="{% url 'historial_paciente' %}" class="btn btn-info ml-2">
+                    <span class="fas fa-list-ul"></span>
+                    <span>Volver a mostrar todo</span>
+                </a>
+                {% endif %}
+
                 <span class="navbar-brand"></span>
 
                 <form class="d-flex" action="" method="GET">
-                    <input class="form-control form-control-sm me-5 pr-5" name="fecha" type="search"
+                    <input class="form-control form-control-sm me-5 pr-5" name="fecha" id="fecha" type="search"
                     placeholder="Filtrar por fecha (formato dd/mm/yyyy)" aria-label="Filtrar por fecha" size="34"/>
                     
-                    <button class="btn btn-secondary ml-2" type="submit">
+                    <button class="btn btn-secondary ml-2" type="submit" name="boton" id="boton" disabled>
                         <span class="fas fa-solid fa-search"></span>
                     </button>
                 </form>
@@ -29,7 +37,7 @@
             {# Filtrado por fechas #}
             {% if not fecha_historial %}
             <div class="container-fluid alert alert-warning text-center">
-                Citas con la fecha {{ fecha_anterior }} no encontradas en su historial
+                Citas con la fecha {{ fecha_sin_cita }} no encontradas en su historial
             </div>
             {% else %}
             <h1 class="text-primary text-center mb-5 p-md-3">Historial de {{ request.user }}</h1>

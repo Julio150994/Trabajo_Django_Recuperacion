@@ -624,21 +624,25 @@ class HistorialPacienteView(LoginRequiredMixin, ListView):
         context['historial_citas'] = historial
         
         if historial.exists():
-            # Filtramos por fecha de citas anteriores del paciente actual
+            # Filtramos por fecha de citas anteriores a la fecha actual del paciente logueado
             fecha_cita_anterior = self.request.GET.get("fecha")
             
             if fecha_cita_anterior is None:
                 context['fecha_historial'] = historial
             else:
+                # Para volver a mostrar todo el historial del paciente
+                context['mostrar_historial'] = fecha_cita_anterior
+                
                 aux_fecha_cita = datetime.strptime(str(fecha_cita_anterior),"%d/%m/%Y")
                 fecha = aux_fecha_cita.strftime('%Y-%m-%d')
                 
                 filtrar_fecha = Cita.objects.filter(idPaciente=paciente).filter(fecha=fecha)
                 
-                if filtrar_fecha.exists():
+                if filtrar_fecha.exists():                    
                     context['fecha_historial'] = filtrar_fecha
                 else:
-                    context['fecha_anterior'] = fecha_cita_anterior
+                    # Para cuando no se haya encontrado una fecha de cita para el paciente
+                    context['fecha_sin_cita'] = fecha_cita_anterior
         return context
 
 @method_decorator(login_required, name='dispatch')
