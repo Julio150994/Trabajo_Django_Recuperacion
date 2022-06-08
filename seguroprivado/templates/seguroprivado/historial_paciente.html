@@ -15,10 +15,10 @@
             {% else %}
             <nav class="navbar navbar-white bg-white mb-4 ml-5 mb-5">
                 {# Mostramos este botón cuando hemos buscado por una fecha #}
-                {% if not fecha_historial %}
+                {% if not fecha_historial or mostrar_historial %}
                 <a href="{% url 'historial_paciente' %}" class="btn btn-info ml-2">
                     <span class="fas fa-list-ul"></span>
-                    <span>Volver a mostrar todo</span>
+                    <span>Volver a mostrar el historial</span>
                 </a>
                 {% endif %}
 

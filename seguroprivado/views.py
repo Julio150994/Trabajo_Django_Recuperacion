@@ -626,12 +626,14 @@ class HistorialPacienteView(LoginRequiredMixin, ListView):
         if historial.exists():
             # Filtramos por fecha de citas anteriores a la fecha actual del paciente logueado
             fecha_cita_anterior = self.request.GET.get("fecha")
+            print("Busqueda: "+str(fecha_cita_anterior))
             
             if fecha_cita_anterior is None:
                 context['fecha_historial'] = historial
             else:
-                # Para volver a mostrar todo el historial del paciente
-                context['mostrar_historial'] = fecha_cita_anterior
+                if fecha_cita_anterior is not None:
+                    # Para volver a mostrar todo el historial del paciente
+                    context['mostrar_historial'] = fecha_cita_anterior
                 
                 aux_fecha_cita = datetime.strptime(str(fecha_cita_anterior),"%d/%m/%Y")
                 fecha = aux_fecha_cita.strftime('%Y-%m-%d')
