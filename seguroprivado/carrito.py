@@ -64,7 +64,7 @@ class CarritoCompra(object):
         
     # Para realizar el proceso del total de carrito de compra
     def precio_total(request):
-        total = 0
+        total = 0.0
         
         if request.user.is_authenticated:
             if "carrito_compra" in request.session.keys():   

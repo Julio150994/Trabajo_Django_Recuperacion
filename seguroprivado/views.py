@@ -693,18 +693,27 @@ class MedicamentosPacienteView(LoginRequiredMixin, ListView):
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
 class GestionaCarritoView(LoginRequiredMixin, ListView):
     model = Medicamento
-    #template_name = "seguroprivado/carrito_compra.html"
-    success_url = reverse_lazy('tienda')
+    template_name = "seguroprivado/carrito_compra.html"
+    #success_url = reverse_lazy('tienda')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
-    def get_queryset(self):
-        print("Sesiones del carrito: "+str(self.request.session.items()))
+    def get_queryset(self, **kwargs):
+        return super().get_queryset(**kwargs).filter(id=self.kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super(GestionaCarritoView, self).get_context_data(**kwargs)
+        paciente = Paciente.objects.get(username=self.request.user)
+        print("Paciente actual: "+str(paciente))
         
-        medicamento = self.get_context_data()
+        context['paciente_logueado'] = paciente
+        
+        medicamento = self.object_list
         print("Nombre de medicamento seleccionado: "+str(medicamento.nombre))
         print("Precio de medicamento: "+str(medicamento.precio)+"€")
+        
+        return super().get_context_data(**kwargs)
         
     """def render_to_response(self, context, **response_kwargs):
         medicamento_tienda = self.get_object()# obtenemos medicamento de la tienda

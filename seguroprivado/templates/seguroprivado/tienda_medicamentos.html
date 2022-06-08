@@ -59,19 +59,21 @@
                                             <td>{{ medicamento.precio|floatformat:2 }} €</td>
                                             <td>{{ medicamento.stock }}</td>
                                             <td>
-                                                {% comment %}<button name="id" type="submit" class="btn btn-info btn-sm" disabled>
-                                                    <span class="fas fa-check-square"></span>
-                                                    <span>Añadido</span>
-                                                </button>{% endcomment %}
-
-                                                <form action="{% url 'compra_medicamento' medicamento.id %}" method="POST">
-                                                    {% csrf_token %}
-
-                                                    <button name="id" type="submit" class="btn btn-primary btn-sm">
-                                                        <span class="fas fa-cart-plus"></span>
-                                                        <span>Añadir al carrito</span>
-                                                    </button>
-                                                </form>
+                                                {% if not request.session.carrito.items %}
+                                                <a href="{% url 'compra_medicamento' medicamento.id %}" name="carrito" id="carrito" class="btn btn-primary">
+                                                    <span class="fas fa-cart-plus"></span>
+                                                    <span>Añadir al carrito</span>
+                                                </a>
+                                                {% else %}
+                                                    {% for key, value in request.session.carrito.items %}
+                                                        {% if value.medicamento_id == medicamento.id %}
+                                                        <button class="btn btn-secondary" disabled>
+                                                            <span class="fas fa-plus"></span>
+                                                            <span>Añadido</span>
+                                                        </button>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
                                             </td>
                                         </tr>
                                         {% endfor %}

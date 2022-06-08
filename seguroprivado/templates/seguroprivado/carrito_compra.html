@@ -11,50 +11,41 @@
             </tr>
         </thead>
         <tbody class="table table-light">
-          {# Después hacer con las sesiones para cada paciente #}
-          {% comment %}{% for clave, valor in request.session.carrito.items %}  {% if request.session.carrito.items %} {% endif %} {% endfor %} {% endcomment %}
+          {# Mostramos mediante sesiones lo que está comprando el paciente logueado #}
           {% if not paciente_logueado %}
+            {% if request.session.carrito.items %}
+              {% for clave, valor in request.session.carrito.items %}
               <tr>
-                <td>{{ nombre_medicamento }}</td>
-                <td>{{ precio_acumulado }} €</td>
+                <td>{{valor.nombre}}</td>
+                <td>{{valor.precio}}</td>
                 <td>
-                    <span>{{ cantidad }}</span>
-                    {# {% url 'aniadir_cantidad' valor.medicamento_id %} #}
-                    <a href="#" class="badge btn btn-dark badge-dark ml-5 pl-2 pr-2">+</a>
-                    {# {% url 'restar_cantidad' valor.medicamento_id %} #}
-                    <a href="#" class="badge btn btn-dark badge-dark ml-2 mr-2 pl-2 pr-2">-</a>
-                </td>
-                <td>
-                  {# Para eliminar un medicamento del carrito #}
-                  <button type="submit" class="btn btn-danger btn-sm p-2">
-                    <span class="fas fa-trash"></span>
-                  </button>
+                  {{valor.cantidad}}
+                  <a href="#" class="badge btn btn-dark badge-dark">+</a>
+                  <a href="#" class="badge btn btn-dark badge-dark">-</a>
                 </td>
               </tr>
-          {% endif %}
-
-           {# Para cuando el paciente no tiene medicamentos en su carrito #}
-           {% for compra_realizada in request.session.carrito.items %}
-           {% if paciente_logueado %}
-           <tr>
-             <td colspan="4">
-               <div class="alert alert-danger text-center mt-2 mb-2">Su carrito no tiene medicamentos</div>
-             </td>
-           </tr>
-           {% endif %}
-           {% endfor %}
-          <tr>
-            <td scope="row" class="pt-5"><strong>Precio total:</strong></td>
-            <td class="pt-5 mr-5">{{ precio_total }} €</td>
-            <td></td>
-            <td></td>
-          </tr>
+              {% endfor %}
+            {% else %}
+            <tr>
+              <td colspan="4">
+                  <div class="alert alert-danger text-center"> No tiene medicamentos en su carrito </div>
+              </td>
+            </tr>
+            {% endif %}
+            <tr>
+              <td scope="row" class="pt-5"><strong>Precio total:</strong></td>
+              <td class="pt-5 mr-5">{{ precio_total }} €</td>
+              <td></td>
+              <td></td>
+            </tr>
+            {% endif %}
         </tbody>
       </table>
     </div>
 
     {# Almacenamos las sesiones de compra del paciente #}
     <div class="text-left ml-3">
+      {% if precio_total != 0.0 %}
       {# {% url 'limpiar_compra' %} #}
       <a href="#" class="btn btn-warning mt-5 mb-4">
         <span class="fas fa-recycle"></span>
@@ -67,5 +58,6 @@
           <span class="fas fa-shopping-bag"></span>
           <span>Comprar</span>
       </a>
+      {% endif %}
     </div>
   </div>
