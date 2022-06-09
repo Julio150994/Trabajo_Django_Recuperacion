@@ -53,8 +53,7 @@
       </a>
       
       {# Esta función la hacemos en sesión #}
-      {# {% url 'compra_medicamento' medicamento.id %} #}
-      <a href="#" class="btn btn-secondary text-center mt-5 ml-3 mb-4">
+      <a href="{% url 'compra_medicamento' medicamento.id %}" class="btn btn-secondary text-center mt-5 ml-3 mb-4">
           <span class="fas fa-shopping-bag"></span>
           <span>Comprar</span>
       </a>

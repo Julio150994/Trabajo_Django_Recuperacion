@@ -11,7 +11,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
-from seguroprivado.models import Cita, CompraMedicamento, Compra, Medicamento, Paciente, Medico
+from seguroprivado.carrito import CarritoCompra
+from seguroprivado.models import Cita, CompraMedicamento, Medicamento, Paciente, Medico
 from seguroprivado.forms import CitaForm, MedicamentoForm, MedicoForm, PacienteForm
 from django.db.models import Q
 #from seguroprivado.carrito import CarritoCompra # reutilizamos la clase con las funciones del carrito
@@ -693,31 +694,37 @@ class MedicamentosPacienteView(LoginRequiredMixin, ListView):
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
 class GestionaCarritoView(LoginRequiredMixin, ListView):
     model = Medicamento
-    template_name = "seguroprivado/carrito_compra.html"
-    #success_url = reverse_lazy('tienda')
+    success_url = reverse_lazy('tienda')
     
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
-    def get_queryset(self, **kwargs):
-        return super().get_queryset(**kwargs).filter(id=self.kwargs)
-    
     def get_context_data(self, **kwargs):
         context = super(GestionaCarritoView, self).get_context_data(**kwargs)
         paciente = Paciente.objects.get(username=self.request.user)
-        print("Paciente actual: "+str(paciente))
-        
         context['paciente_logueado'] = paciente
-        
-        medicamento = self.object_list
-        print("Nombre de medicamento seleccionado: "+str(medicamento.nombre))
-        print("Precio de medicamento: "+str(medicamento.precio)+"€")
-        
         return super().get_context_data(**kwargs)
-        
-    """def render_to_response(self, context, **response_kwargs):
-        medicamento_tienda = self.get_object()# obtenemos medicamento de la tienda
-        
-        if medicamento_tienda is not None:
-            return redirect(self.success_url)
-        return super().render_to_response(context, **response_kwargs)"""
+    
+    #---------- Reutilizamos en la vista los métodos del carrito de compra -------------
+    def aniadir_medicamento(request, medicamento_id):
+        carrito = CarritoCompra(request)
+        medicamento = Medicamento.objects.get(id=medicamento_id)
+        carrito.aniadir(medicamento)
+        return redirect('tienda')
+
+    def eliminar_medicamento(request, medicamento_id):
+        carrito = CarritoCompra(request)
+        medicamento = Medicamento.objects.get(id=medicamento_id)
+        carrito.eliminar(medicamento)
+        return redirect('tienda')
+
+    def restar_medicamento(request, medicamento_id):
+        carrito = CarritoCompra(request)
+        medicamento = Medicamento.objects.get(id=medicamento_id)
+        carrito.restar(medicamento)
+        return redirect('tienda')
+
+    def limpiar_carrito(request):
+        carrito = CarritoCompra(request)
+        carrito.limpiar()
+        return redirect('tienda')
