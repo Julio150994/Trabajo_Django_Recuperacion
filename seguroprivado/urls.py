@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from seguroprivado import views, serializers
+from seguroprivado import views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -52,6 +52,8 @@ urlpatterns = [
     path('tienda_medicamentos/',views.MedicamentosPacienteView.as_view(), name="tienda"),
     path('aniadir_carrito/<int:medicamento_id>/',views.GestionaCarritoView.aniadir_medicamento, name="aniadir_carrito"),
     path('compra_medicamento/<int:pk>/',views.GestionaCarritoView.as_view(), name="compra_medicamento"),
+    
+    path('tienda_medicamentos/factura',views.InformeFacturaPDF.as_view(), name="factura"),
     
     path('api/token/',views.TokenRestView.as_view(), name="api_token"),
     

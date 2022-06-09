@@ -7,20 +7,28 @@
 <div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4 pb-5 pt-5">
     <div class="container-fluid mx-auto bg-light rounded mt-2">
         {% if request.user.is_authenticated %}
-            {# Mensaje para cuando el paciente gestiona sus medicamentos meintras realiza su compra #}
-            {% if messages %}
-            {% for compra_realizada in messages %}
-            <div class="container-fluid pr-1">
-                <div class="alert alert-success mx-auto mt-auto text-center">
-                    {{ compra_realizada }}
-                </div>
-            </div>
-            {% endfor %}
-            {% endif %}
-
             {% if not medicamentos %}
             <div class="alert alert-warning text-center">No se han encontrado medicamentos en el sistema</div>
             {% else %}
+            {# Para mostrar el informe PDF de la factura #}
+            <nav class="navbar navbar-white bg-white ml-5 mb-4 justify-content-md-start">
+                <a href="{% url 'factura' %}" class="btn btn-info ml-2">
+                    <span class="fas fa-file-pdf"></span>
+                    <span>Factura de compra</span>
+                </a>
+            </nav>
+
+             {# Mensaje para cuando el paciente realiza su compra #}
+             {% if messages %}
+             {% for compra_realizada in messages %}
+             <div class="container-fluid pr-1">
+                 <div class="alert alert-success mx-auto mt-auto text-center">
+                     {{ compra_realizada }}
+                 </div>
+             </div>
+             {% endfor %}
+             {% endif %}
+
             <div class="container ml-3">
                 <h1 class="text-primary text-center text-left mb-3 p-md-3">Medicamentos de la tienda</h1>
             </div>
