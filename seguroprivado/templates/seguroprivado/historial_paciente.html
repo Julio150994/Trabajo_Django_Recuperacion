@@ -8,12 +8,12 @@
 <div class="container-fluid mx-auto bg-light rounded pr-5 pl-5 mt-4 pb-5 pt-5">    
     <div class="container-fluid mx-auto bg-light rounded mt-2">
         {% if request.user.is_authenticated %}     
-            {% if not historial_citas %}
+            {% if not historial_citas_realizadas %}
             <div class="container-fluid">
-                <div class="alert alert-warning text-center">El paciente {{ request.user }} no tiene citas anteriores</div>
+                <div class="alert alert-warning text-center">{{ request.user }} no tiene citas realizadas anteriormente</div>
             </div>
             {% else %}
-            <nav class="navbar navbar-white bg-white mb-4 ml-5 mb-5">
+            <nav class="navbar navbar-white bg-white mb-4 ml-3">
                 {# Mostramos este botón cuando hemos buscado por una fecha #}
                 {% if not fecha_historial or mostrar_historial %}
                 <a href="{% url 'historial_paciente' %}" class="btn btn-info ml-2">
@@ -28,7 +28,7 @@
                     <input class="form-control form-control-sm me-5 pr-5" name="fecha" id="fecha" type="search"
                     placeholder="Filtrar por fecha (formato dd/mm/yyyy)" aria-label="Filtrar por fecha" size="34"/>
                     
-                    <button class="btn btn-secondary ml-2" type="submit" name="boton" id="boton" disabled>
+                    <button class="btn btn-secondary ml-2 mr-1" type="submit" name="boton" id="boton" disabled>
                         <span class="fas fa-solid fa-search"></span>
                     </button>
                 </form>
@@ -36,8 +36,8 @@
 
             {# Filtrado por fechas #}
             {% if not fecha_historial %}
-            <div class="container-fluid alert alert-warning text-center">
-                Citas con la fecha {{ fecha_sin_cita }} no encontradas en su historial
+            <div class="container-fluid alert alert-warning text-center ml-3">
+                No se han encontrado citas realizadas con la fecha {{ fecha_cita_no_realizada }} en su historial
             </div>
             {% else %}
             <h1 class="text-primary text-center mb-5 p-md-3">Historial de {{ request.user }}</h1>
@@ -51,19 +51,21 @@
                             <th>Fecha de alta del médico</th>
                             <th>Especialidad</th>
                             <th>Fecha de cita de paciente</th>
+                            <th>Tratamiento</th>
                             <th>Observaciones</th>
                         </tr>
                     </thead>
                     <tbody class="table table-light">
                         {# Para mostrar el historial de las citas #}
                         {% if not fecha_historial %}
-                            {% for cita in historial_citas %}
+                            {% for cita in historial_citas_realizadas %}
                             <tr>
                                 <td>{{ cita.idMedico.nombre }} {{ cita.idMedico.apellidos }}</td>
                                 <td>{{ cita.idMedico.edad }}</td>
                                 <td>{{ cita.idMedico.fechaalta|date:"d/m/Y" }}</td>
                                 <td>{{ cita.idMedico.especialidad }}</td>
                                 <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                                <td>{{ cita.tratamiento }}</td>
                                 <td>{{ cita.observaciones }}</td>
                             </tr>
                             {% endfor %}
@@ -75,6 +77,7 @@
                                 <td>{{ cita.idMedico.fechaalta|date:"d/m/Y" }}</td>
                                 <td>{{ cita.idMedico.especialidad }}</td>
                                 <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                                <td>{{ cita.tratamiento }}</td>
                                 <td>{{ cita.observaciones }}</td>
                             </tr>
                             {% endfor %}
