@@ -2,7 +2,7 @@
 # $ conda create --name <env> --file <this file>
 # platform: win-64
 @EXPLICIT
-https://conda.anaconda.org/conda-forge/win-64/ca-certificates-2021.10.8-h5b45459_0.tar.bz2
+https://conda.anaconda.org/conda-forge/win-64/ca-certificates-2022.5.18.1-h5b45459_0.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/vs2015_runtime-14.16.27012-hf0eaf9b_3.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/vc-14.1-h0510ff6_4.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/jpeg-9b-vc14h4d7706e_1.tar.bz2
@@ -27,9 +27,12 @@ https://conda.anaconda.org/anaconda/noarch/pytz-2020.1-py_0.tar.bz2
 https://conda.anaconda.org/anaconda/noarch/sqlparse-0.4.1-py_0.tar.bz2
 https://conda.anaconda.org/anaconda/noarch/wheel-0.35.1-py_0.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/wincertstore-0.2-py38_0.tar.bz2
-https://conda.anaconda.org/conda-forge/win-64/certifi-2021.10.8-py38haa244fe_2.tar.bz2
+https://conda.anaconda.org/conda-forge/win-64/certifi-2022.5.18.1-py38haa244fe_0.tar.bz2
 https://conda.anaconda.org/anaconda/noarch/django-3.1.2-py_0.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/pillow-8.0.0-py38hca74424_0.tar.bz2
 https://conda.anaconda.org/conda-forge/noarch/django-cleanup-6.0.0-pyhd8ed1ab_0.tar.bz2
+https://conda.anaconda.org/conda-forge/noarch/django-cors-headers-3.13.0-pyhd8ed1ab_0.tar.bz2
+https://conda.anaconda.org/conda-forge/noarch/djangorestframework-3.13.1-pyhd8ed1ab_0.tar.bz2
+https://repo.anaconda.com/pkgs/main/win-64/reportlab-3.5.67-py38h52c0f85_1.conda
 https://conda.anaconda.org/anaconda/win-64/setuptools-50.3.0-py38h9490d1a_1.tar.bz2
 https://conda.anaconda.org/anaconda/win-64/pip-20.2.4-py38_0.tar.bz2
