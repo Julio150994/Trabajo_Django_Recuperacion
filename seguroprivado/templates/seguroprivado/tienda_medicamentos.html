@@ -11,12 +11,15 @@
             <div class="alert alert-warning text-center">No se han encontrado medicamentos en el sistema</div>
             {% else %}
             {# Para mostrar el informe PDF de la factura #}
+
+            {% if request.session.carrito.items %}
             <nav class="navbar navbar-white bg-white ml-5 mb-4 justify-content-md-start">
                 <a href="{% url 'factura' %}" class="btn btn-info ml-2">
                     <span class="fas fa-file-pdf"></span>
                     <span>Factura de compra</span>
                 </a>
             </nav>
+            {% endif %}
 
              {# Mensaje para cuando el paciente realiza su compra #}
              {% if messages %}
@@ -68,17 +71,12 @@
                                             <td>{{ medicamento.stock }}</td>
                                             <td>
                                                 {% if request.session.carrito.items %}
-                                                    {% for key, value in request.session.carrito.items %}
-                                                        {% if value.medicamento_id == medicamento.id %}
+                                                    {% for clave, valor in request.session.carrito.items %}
+                                                        {% if valor.medicamento_id %}
                                                         <button class="btn btn-secondary" disabled>
                                                             <span class="fas fa-plus"></span>
                                                             <span>Añadido</span>
                                                         </button>
-                                                        {% else %}
-                                                        <a href="{% url 'aniadir_carrito' medicamento.id %}" name="carrito" id="carrito" class="btn btn-primary">
-                                                            <span class="fas fa-cart-plus"></span>
-                                                            <span>Añadir al carrito</span>
-                                                        </a>
                                                         {% endif %}
                                                     {% endfor %}
                                                 {% else %}

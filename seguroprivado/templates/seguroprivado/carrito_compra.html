@@ -1,11 +1,11 @@
 <div class="rounded ml-2 text-center" style="background-color: #8DC9F1; margin-top: -13%;">
     <span class="navbar-brand text-white mt-2 mb-4 ml-3">Carrito de compra</span>
-    <div class="container-fluid" style="max-height: 300px; overflow: auto; display: inline-block;">
+    <div class="container-fluid" style="max-height: 210px; overflow: auto; display: inline-block;">
       <table class="container">
         <thead class="text-white text-center">
             <tr>
                 <th>Medicamento</th>
-                <th class="pl-4">Precio (unidad)</th>
+                <th class="pl-4">Precio</th>
                 <th class="pl-4">Cantidad</th>
                 <th class="pl-1">Eliminar</th>
             </tr>
@@ -17,11 +17,19 @@
               {% for clave, valor in request.session.carrito.items %}
               <tr>
                 <td>{{valor.nombre}}</td>
-                <td>{{valor.precio}}</td>
+                <td>{{ valor.precio_acumulado }}</td>
                 <td>
                   {{valor.cantidad}}
+                  {# {% url 'aniadir_carrito' valor.medicamento_id %} #}
                   <a href="#" class="badge btn btn-dark badge-dark">+</a>
+                  {# {% url 'restar_carrito' valor.medicamento_id %} #}
                   <a href="#" class="badge btn btn-dark badge-dark">-</a>
+                </td>
+                <td>
+                  {# {% url 'eliminar_carrito' valor.medicamento_id %} #}
+                  <a href="#" class="btn btn-danger btn-sm">
+                    <span class="fas fa-trash"></span>
+                  </a>
                 </td>
               </tr>
               {% endfor %}
@@ -45,15 +53,14 @@
 
     {# Almacenamos las sesiones de compra del paciente #}
     <div class="text-left ml-3">
-      {% if precio_total != 0.0 %}
-      {# {% url 'limpiar_compra' %} #}
-      <a href="#" class="btn btn-warning mt-5 mb-4">
+      {% if precio_total != 0 %}
+      <a href="{% url 'limpiar_compra' %}" class="btn btn-warning mt-5 mb-4">
         <span class="fas fa-recycle"></span>
         <span>Limpiar</span>
       </a>
       
       {# Esta función la hacemos en sesión #}
-      <a href="{% url 'compra_medicamento' medicamento.id %}" class="btn btn-secondary text-center mt-5 ml-3 mb-4">
+      <a href="{% url 'compra_medicamentos' %}" class="btn btn-secondary text-center mt-5 ml-3 mb-4">
           <span class="fas fa-shopping-bag"></span>
           <span>Comprar</span>
       </a>

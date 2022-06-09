@@ -750,6 +750,27 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         carrito.limpiar()
         return redirect('tienda')
     
+    def comprar_medicamentos(request):
+        carrito = CarritoCompra(request)      
+        
+        #medicamento = Medicamento.objects.get(id=request.session["id_medicamento"])
+        #paciente = Paciente.objects.get(username=request.user)
+        
+        # Compramos los medicamentos que ha seleccionado el paciente
+        #fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
+        #formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
+        # Extraemos dato del médico
+        
+        #medicamento = Medicamento.objects.get(id=id_medicamento)
+        
+        """compra = Compra(fecha=formato_fecha_actual, precio=medicamento.precio, idPaciente=paciente)
+        compra.save()
+        compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
+        compra_medicamento.save()"""
+        
+        messages.add_message(request,level=messages.INFO, message="Su compra ha sido realizada correctamente")
+        return redirect('tienda')
+        
 # ---------Mostrar el informe PDF de la factura de compra--------------- #
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
@@ -782,7 +803,7 @@ class InformeFacturaPDF(View):
         paciente.setStyle(TableStyle(
             [
                 ('ALIGN',(0,0),(6,8),'CENTER'),
-                ('GRID', (0,0),(-1,-1),1,colors.transparent),
+                ('GRID', (0,0),(6,0),1,colors.transparent),
                 ('FONTSIZE', (0,0),(-1,-1),10),
                  ('BACKGROUND',(0,0),(-1,-1),colors.Color(red=(250/255),green=(128/255),blue=(114/255), alpha=(125/255))),
                 ('COLBACKGROUNDS',(0,1),(-1,-1),(colors.beige,colors.lightyellow)),
