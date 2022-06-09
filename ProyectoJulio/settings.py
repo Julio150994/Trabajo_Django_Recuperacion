@@ -139,11 +139,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'seguroprivado\\static\\assets\\img\\')
-MEDIA_URL = 'seguroprivado/static/assets/img/'
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,"seguroprivado/static"),
-]
-
 LOGIN_REDIRECT_URL = reverse_lazy('inicio')

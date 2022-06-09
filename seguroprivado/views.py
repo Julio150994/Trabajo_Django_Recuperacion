@@ -692,8 +692,8 @@ class HistorialPacientesMedicoView(LoginRequiredMixin, DetailView):
         fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
         formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
         
-        historial_medico = Cita.objects.filter(idMedico=medico).filter(idPaciente=paciente).filter(fecha__lte=formato_fecha_actual).order_by('-fecha')
-        context['historial_pacientes_medico'] = historial_medico
+        historial_medico = Cita.objects.filter(idMedico=medico).filter(idPaciente=paciente).filter(fecha__lte=formato_fecha_actual).filter(realizada=True).order_by('-fecha')
+        context['historial_pacientes_medico'] = historial_medico # mostramos las citas del paciente que se han realizado 
         return context
 
 # Clases para la parte del carrito de la compra simulado
@@ -759,7 +759,7 @@ class InformeFacturaPDF(View):
     style = getSampleStyleSheet()['Normal']
     
     def cabecera(self, factura_pdf):
-        logo_seguro = settings.MEDIA_ROOT+'logo_seguro_privado.png'
+        logo_seguro = 'seguroprivado/static/assets/img/logo_seguro_privado.png'
         factura_pdf.drawImage(logo_seguro, 10, 750, 70, 90, preserveAspectRatio=True)
 
         factura_pdf.setFont('Helvetica-Bold', 25)

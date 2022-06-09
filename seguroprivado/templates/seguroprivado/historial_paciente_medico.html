@@ -11,7 +11,7 @@
             {# Lanzamos mensaje para cuando no se han encontrado citas de los pacientes del médico #}
             {% if not historial_pacientes_medico %}
             <div class="container-fluid">
-                <div class="alert alert-warning text-center">El médico {{ request.user }} no tiene citas anteriores del paciente {{ nombre_usuario_paciente }}</div>
+                <div class="alert alert-warning text-center">{{ request.user }} no tiene citas realizadas con el paciente {{ nombre_usuario_paciente }}</div>
             </div>
             {% else %}
                 <h1 class="text-primary text-center p-md-3">Historial de citas de {{ nombre_usuario_paciente }}</h1>
@@ -26,6 +26,7 @@
                                 <th>Foto</th>
                                 <th>Nombre de usuario</th>
                                 <th>Fecha de cita</th>
+                                <th>Tratamiento</th>
                                 <th>Observaciones</th>
                             </tr>
                         </thead>
@@ -38,6 +39,7 @@
                             <td><img src="{{ cita.idPaciente.foto.url }}" class="img-circle" width="80" height="80"></td>
                             <td>{{ cita.idPaciente.username }}</td>
                             <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+                            <td>{{ cita.tratamiento }}</td>
                             <td>{{ cita.observaciones }}</td>
                         </tr>
                         {% endfor %}
