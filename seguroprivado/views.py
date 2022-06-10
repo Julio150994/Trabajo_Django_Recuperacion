@@ -727,7 +727,7 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         
         # Cuando haya al menos una compra realizada, mostramos el informe PDF
         compra = Compra.objects.all().filter(idPaciente=paciente)
-        compras_paciente = CompraMedicamento.objects.all().filter(idCompra=compra)
+        compras_paciente = CompraMedicamento.objects.all()
         context['compras_paciente'] = compras_paciente        
         return context
     
@@ -756,32 +756,32 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         return redirect('tienda')
     
     def comprar_medicamentos(request):
-        carrito = CarritoCompra(request)      
-        
-        paciente = Paciente.objects.get(username=request.user)
-        print("Paciente logueado: "+str(paciente))
-        
+        carrito = CarritoCompra(request)# para extraer las sesiones a la vista        
         # Compramos los medicamentos que ha seleccionado el paciente
+        paciente = Paciente.objects.get(username=request.user)
+        total_compra = carrito.session["precio_acumulado"]
+        print("Precio total compra: "+str(total_compra))
+        
         fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
         fecha_compra = datetime.strftime(fecha_actual,'%Y-%m-%d')
-        print("Fecha de compra: "+str(fecha_compra))
         
-        #print("Id de medicamento: "+str(carrito.session["medicamento_id"]))
-        #print(type(carrito.session["medicamento_id"]))
+        nombre_medicamento = carrito.session["nombre"]
+        medicamento = Medicamento.objects.get(nombre=nombre_medicamento)
         
-        #medicamento = Medicamento.objects.get(id=int(carrito.session["medicamento_id"]))
-        #print("Medicamento comprado: "+str(medicamento.nombre))
-        #print("Precio medicamento comprado: "+str(medicamento.precio))
+        lista_medicamentos = carrito.session["lista_medicamentos"]
+        print("\nNombres de medicamentos: "+str(lista_medicamentos))
         
-        compra = Compra(fecha=fecha_compra, precio=59.31, idPaciente=paciente)
+        compra = Compra(fecha=fecha_compra, precio=total_compra, idPaciente=paciente)
         compra.save()
-        """compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
-        compra_medicamento.save()"""
+        
+        compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
+        compra_medicamento.save()
         
         messages.add_message(request,level=messages.INFO, message="Su compra ha sido realizada correctamente")
-        carrito.limpiar()# recargamos de nuevo el carrito
+        carrito.limpiar()# recargamos de nuevo el carrito al comprar
         return redirect('tienda')
-        
+
+
 # ---------Mostrar el informe PDF de la factura de compra--------------- #
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente

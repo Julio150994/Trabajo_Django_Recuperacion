@@ -4,6 +4,7 @@ class CarritoCompra(object):
     def __init__(self, request):
         self.request = request
         self.session = request.session
+        self.lista_medicamentos = list()
         carrito_compra = self.session.get("carrito")
         
         if not carrito_compra:
@@ -29,7 +30,14 @@ class CarritoCompra(object):
         else:
             self.carrito_compra[id]["cantidad"] += 1
             self.carrito_compra[id]["precio_acumulado"] = multiplicar_precio(medicamento.precio, self.carrito_compra[id]["cantidad"])
-            self.carrito_compra[id]["precio"] = medicamento.precio # precio sin acumular
+            self.carrito_compra[id]["nombre"] = medicamento.nombre
+            self.carrito_compra[id]["precio"] = medicamento.precio # precio sin aumentar
+            
+        self.session["nombre"] = medicamento.nombre
+        self.session["precio"] = medicamento.precio
+        
+        self.lista_medicamentos.append(self.session["nombre"])
+        self.session["lista_medicamentos"] = self.lista_medicamentos
         self.comprar()
 
     def comprar(self):
@@ -48,11 +56,18 @@ class CarritoCompra(object):
         
         if id in self.carrito_compra.keys():
             self.carrito_compra[id]["cantidad"] -= 1
+            self.carrito_compra[id]["nombre"] = medicamento.nombre
             self.carrito_compra[id]["precio_acumulado"] -= medicamento.precio
             self.carrito_compra[id]["precio"] = medicamento.precio # precio sin reducir
             # Verificamos las cantidades de los medicamentos
             if self.carrito_compra[id]["cantidad"] == 0:
                 self.eliminar(medicamento)
+                
+            self.session["nombre"] = medicamento.nombre
+            self.session["precio"] = medicamento.precio
+            
+            self.lista_medicamentos.append(self.session["nombre"])    
+            self.session["lista_medicamentos"] = self.lista_medicamentos
             self.comprar()
         
     def limpiar(self):
@@ -66,4 +81,4 @@ def multiplicar_precio(num1, num2):
     elif num2 == 1:
         return num1
     else:
-        return num1 + multiplicar_precio(num1, num2-1)        
+        return num1 + multiplicar_precio(num1, num2-1)

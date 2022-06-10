@@ -7,5 +7,5 @@ def precio_total(request):
         if "carrito" in request.session.keys():
             for clave, valor in request.session["carrito"].items():
                 total += float(valor["precio_acumulado"])
-                
+                request.session["precio_acumulado"] = total
     return {"precio_total": total}
