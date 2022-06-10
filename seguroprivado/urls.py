@@ -49,15 +49,15 @@ urlpatterns = [
     
     path('historial_paciente/',views.HistorialPacienteView.as_view(), name="historial_paciente"),
     path('historial_paciente_medico/<int:pk>/',views.HistorialPacientesMedicoView.as_view(), name="historial_pacientes_medico"),
-    path('tienda_medicamentos/',views.MedicamentosPacienteView.as_view(), name="tienda"),
     
+    path('tienda_medicamentos/',views.MedicamentosPacienteView.as_view(), name="tienda"),
     path('aniadir_carrito/<int:medicamento_id>/',views.GestionaCarritoView.aniadir_medicamento, name="aniadir_carrito"),
     path('restar/<int:medicamento_id>/',views.GestionaCarritoView.restar_medicamento, name="restar_carrito"),
     path('eliminar_carrito/<int:medicamento_id>/',views.GestionaCarritoView.eliminar_medicamento, name="eliminar_carrito"),
     path('limpiar_carrito/',views.GestionaCarritoView.limpiar_carrito, name="limpiar_compra"),
     path('compra_medicamentos/',views.GestionaCarritoView.comprar_medicamentos, name="compra_medicamentos"),
     
-    path('tienda_medicamentos/factura',views.InformeFacturaPDF.as_view(), name="factura"),
+    path('tienda_medicamentos/factura/',views.InformeFacturaPDF.as_view(), name="factura"),
     
     path('api/token/',views.TokenRestView.as_view(), name="api_token"),
     

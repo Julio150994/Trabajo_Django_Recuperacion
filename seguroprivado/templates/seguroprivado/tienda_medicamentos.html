@@ -12,7 +12,7 @@
             {% else %}
             
             {# Para mostrar el informe PDF de la factura cuando el paciente haya terminado al menos una compra #}
-            {% if compras_paciente %}
+            {% if not compras_paciente %}
             <nav class="navbar navbar-white bg-white ml-5 mb-4 justify-content-md-start">
                 <a href="{% url 'factura' %}" class="btn btn-info ml-2">
                     <span class="fas fa-file-pdf"></span>

@@ -726,9 +726,12 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         context['paciente_logueado'] = paciente
         
         # Cuando haya al menos una compra realizada, mostramos el informe PDF
-        compra = Compra.objects.all().filter(idPaciente=paciente)
-        compras_paciente = CompraMedicamento.objects.all()
-        context['compras_paciente'] = compras_paciente        
+        #compra = Compra.objects.all().filter(idPaciente=paciente)
+        fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
+        fecha_compra = datetime.strftime(fecha_actual,'%Y-%m-%d')
+        
+        compras_paciente = CompraMedicamento.objects.all().filter(fecha=fecha_compra)
+        context['compras_paciente'] = compras_paciente
         return context
     
     #---------- Reutilizamos en la vista los métodos del carrito de compra -------------
