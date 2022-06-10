@@ -4,9 +4,9 @@
       <table class="container">
         <thead class="text-white text-center">
             <tr>
-                <th>Medicamento</th>
-                <th class="pl-4">Precio</th>
-                <th class="pl-4">Cantidad</th>
+                <th class="pl-3">Medicamento</th>
+                <th class="pr-2">Precio</th>
+                <th class="pr-2">Cantidad</th>
                 <th class="pl-1">Eliminar</th>
             </tr>
         </thead>
@@ -17,17 +17,14 @@
               {% for clave, valor in request.session.carrito.items %}
               <tr>
                 <td>{{valor.nombre}}</td>
-                <td>{{ valor.precio_acumulado }}</td>
+                <td>{{ valor.precio }} €</td>
                 <td>
                   {{valor.cantidad}}
-                  {# {% url 'aniadir_carrito' valor.medicamento_id %} #}
-                  <a href="#" class="badge btn btn-dark badge-dark">+</a>
-                  {# {% url 'restar_carrito' valor.medicamento_id %} #}
-                  <a href="#" class="badge btn btn-dark badge-dark">-</a>
+                  <a href="{% url 'aniadir_carrito' valor.medicamento_id %}" class="badge btn btn-dark badge-dark p-2 ml-2 mr-1">+</a>
+                  <a href="{% url 'restar_carrito' valor.medicamento_id %}" class="badge btn btn-dark badge-dark p-2">-</a>
                 </td>
                 <td>
-                  {# {% url 'eliminar_carrito' valor.medicamento_id %} #}
-                  <a href="#" class="btn btn-danger btn-sm">
+                  <a href="{% url 'eliminar_carrito' valor.medicamento_id %}" class="btn btn-danger btn-sm p-1">
                     <span class="fas fa-trash"></span>
                   </a>
                 </td>

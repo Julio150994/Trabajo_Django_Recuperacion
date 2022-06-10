@@ -21,6 +21,7 @@ class CarritoCompra(object):
                 "nombre": medicamento.nombre,
                 "descripcion": medicamento.descripcion,
                 "receta": medicamento.receta,
+                "precio": medicamento.precio,
                 "precio_acumulado": medicamento.precio,
                 "stock": medicamento.stock,
                 "cantidad": 1,
@@ -28,6 +29,7 @@ class CarritoCompra(object):
         else:
             self.carrito_compra[id]["cantidad"] += 1
             self.carrito_compra[id]["precio_acumulado"] = multiplicar_precio(medicamento.precio, self.carrito_compra[id]["cantidad"])
+            self.carrito_compra[id]["precio"] = medicamento.precio # precio sin acumular
         self.comprar()
 
     def comprar(self):
@@ -47,8 +49,9 @@ class CarritoCompra(object):
         if id in self.carrito_compra.keys():
             self.carrito_compra[id]["cantidad"] -= 1
             self.carrito_compra[id]["precio_acumulado"] /= 2
+            self.carrito_compra[id]["precio"] = medicamento.precio # precio sin reducir
             # Verificamos las cantidades de los medicamentos
-            if self.carrito[id]["cantidad"] == 0:
+            if self.carrito_compra[id]["cantidad"] == 0:
                 self.eliminar(medicamento)
             self.comprar()
         

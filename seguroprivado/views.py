@@ -724,7 +724,12 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         context = super(GestionaCarritoView, self).get_context_data(**kwargs)
         paciente = Paciente.objects.get(username=self.request.user)
         context['paciente_logueado'] = paciente
-        return super().get_context_data(**kwargs)
+        
+        # Cuando haya al menos una compra realizada, mostramos el informe PDF
+        compra = Compra.objects.all().filter(idPaciente=paciente)
+        compras_paciente = CompraMedicamento.objects.all().filter(idCompra=compra)
+        context['compras_paciente'] = compras_paciente        
+        return context
     
     #---------- Reutilizamos en la vista los métodos del carrito de compra -------------
     def aniadir_medicamento(request, medicamento_id):
@@ -753,15 +758,17 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
     def comprar_medicamentos(request):
         carrito = CarritoCompra(request)      
         
-        #medicamento = Medicamento.objects.get(id=request.session["id_medicamento"])
-        #paciente = Paciente.objects.get(username=request.user)
+        paciente = Paciente.objects.get(username=request.user)
+        print("Id de medicamento: "+str(carrito.session["medicamento_id"]))
+        print(type(carrito.session["medicamento_id"]))
+        
+        medicamento = Medicamento.objects.get(id=int(carrito.session["medicamento_id"]))
+        print("Medicamento comprado: "+str(medicamento.nombre))
+        print("Precio medicamento comprado: "+str(medicamento.precio))
         
         # Compramos los medicamentos que ha seleccionado el paciente
         #fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
         #formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
-        # Extraemos dato del médico
-        
-        #medicamento = Medicamento.objects.get(id=id_medicamento)
         
         """compra = Compra(fecha=formato_fecha_actual, precio=medicamento.precio, idPaciente=paciente)
         compra.save()
@@ -769,6 +776,7 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         compra_medicamento.save()"""
         
         messages.add_message(request,level=messages.INFO, message="Su compra ha sido realizada correctamente")
+        carrito.limpiar()# recargamos de nuevo el carrito
         return redirect('tienda')
         
 # ---------Mostrar el informe PDF de la factura de compra--------------- #

@@ -10,9 +10,9 @@
             {% if not medicamentos %}
             <div class="alert alert-warning text-center">No se han encontrado medicamentos en el sistema</div>
             {% else %}
-            {# Para mostrar el informe PDF de la factura #}
-
-            {% if request.session.carrito.items %}
+            
+            {# Para mostrar el informe PDF de la factura cuando el paciente haya terminado al menos una compra #}
+            {% if compras_paciente %}
             <nav class="navbar navbar-white bg-white ml-5 mb-4 justify-content-md-start">
                 <a href="{% url 'factura' %}" class="btn btn-info ml-2">
                     <span class="fas fa-file-pdf"></span>
@@ -52,7 +52,7 @@
                                                 <th>Receta</th>
                                                 <th>Precio (por unidad)</th>
                                                 <th>Stock</th>
-                                                <th>Compra</th>
+                                                <th>Operaciones</th>
                                             </tr>
                                         </thead>
                                         <tbody class="table table-light">
@@ -72,11 +72,16 @@
                                             <td>
                                                 {% if request.session.carrito.items %}
                                                     {% for clave, valor in request.session.carrito.items %}
-                                                        {% if valor.medicamento_id %}
+                                                        {% if valor.medicamento_id == medicamento.id %}
                                                         <button class="btn btn-secondary" disabled>
                                                             <span class="fas fa-plus"></span>
                                                             <span>Añadido</span>
                                                         </button>
+                                                        {% else %}
+                                                        <a href="{% url 'aniadir_carrito' medicamento.id %}" name="carrito" id="carrito" class="btn btn-primary">
+                                                            <span class="fas fa-cart-plus"></span>
+                                                            <span>Añadir al carrito</span>
+                                                        </a>
                                                         {% endif %}
                                                     {% endfor %}
                                                 {% else %}
