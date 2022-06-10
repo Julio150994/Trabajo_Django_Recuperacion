@@ -784,12 +784,12 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         
         dict_medicamentos = carrito.session["dict_medicamentos"]
         print("\nMedicamentos del paciente: "+str(dict_medicamentos))
-        #compra = Compra(fecha=fecha_compra, precio=total_compra, idPaciente=paciente)
-        #compra.save()
+        compra = Compra(fecha=fecha_compra, precio=total_compra, idPaciente=paciente)
+        compra.save()
         
         #compra_individual = Compra(fecha=fecha_compra, precio=precio_medicamento, idPaciente=paciente)
-        #compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra_individual)
-        #compra_medicamento.save()
+        compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
+        compra_medicamento.save()
         
         messages.add_message(request,level=messages.INFO, message="Su compra ha sido realizada correctamente")
         carrito.limpiar()# recargamos de nuevo el carrito al comprar
