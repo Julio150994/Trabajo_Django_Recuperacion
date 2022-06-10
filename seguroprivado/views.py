@@ -828,7 +828,7 @@ class InformeFacturaPDF(View):
         paciente.setStyle(TableStyle(
             [
                 ('ALIGN',(0,0),(6,8),'CENTER'),
-                ('GRID', (0,0),(6,0),1,colors.transparent),
+                ('GRID', (0,0),(2,6),1,colors.transparent),
                 ('FONTSIZE', (0,0),(-1,-1),10),
                  ('BACKGROUND',(0,0),(-1,-1),colors.Color(red=(250/255),green=(128/255),blue=(114/255), alpha=(125/255))),
                 ('COLBACKGROUNDS',(0,1),(-1,-1),(colors.beige,colors.lightyellow)),
