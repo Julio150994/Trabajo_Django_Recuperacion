@@ -759,20 +759,23 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         carrito = CarritoCompra(request)      
         
         paciente = Paciente.objects.get(username=request.user)
-        print("Id de medicamento: "+str(carrito.session["medicamento_id"]))
-        print(type(carrito.session["medicamento_id"]))
-        
-        medicamento = Medicamento.objects.get(id=int(carrito.session["medicamento_id"]))
-        print("Medicamento comprado: "+str(medicamento.nombre))
-        print("Precio medicamento comprado: "+str(medicamento.precio))
+        print("Paciente logueado: "+str(paciente))
         
         # Compramos los medicamentos que ha seleccionado el paciente
-        #fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
-        #formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
+        fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
+        fecha_compra = datetime.strftime(fecha_actual,'%Y-%m-%d')
+        print("Fecha de compra: "+str(fecha_compra))
         
-        """compra = Compra(fecha=formato_fecha_actual, precio=medicamento.precio, idPaciente=paciente)
+        #print("Id de medicamento: "+str(carrito.session["medicamento_id"]))
+        #print(type(carrito.session["medicamento_id"]))
+        
+        #medicamento = Medicamento.objects.get(id=int(carrito.session["medicamento_id"]))
+        #print("Medicamento comprado: "+str(medicamento.nombre))
+        #print("Precio medicamento comprado: "+str(medicamento.precio))
+        
+        compra = Compra(fecha=fecha_compra, precio=59.31, idPaciente=paciente)
         compra.save()
-        compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
+        """compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
         compra_medicamento.save()"""
         
         messages.add_message(request,level=messages.INFO, message="Su compra ha sido realizada correctamente")
