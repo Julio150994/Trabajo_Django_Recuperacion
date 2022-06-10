@@ -1,4 +1,4 @@
-# Nuestro fichero para el carrito de compra con la utilización de sesiones
+# Para realizar el carrito de compra utilizando nuestras sesiones
 
 class CarritoCompra(object):
     def __init__(self, request):
@@ -15,7 +15,7 @@ class CarritoCompra(object):
     def aniadir(self, medicamento):
         id = str(medicamento.id)
         
-        if id not in self.carrito_compra.keys():            
+        if id not in self.carrito_compra.keys():
             self.carrito_compra[id] = {
                 "medicamento_id": id,
                 "nombre": medicamento.nombre,
@@ -48,7 +48,7 @@ class CarritoCompra(object):
         
         if id in self.carrito_compra.keys():
             self.carrito_compra[id]["cantidad"] -= 1
-            self.carrito_compra[id]["precio_acumulado"] /= 2
+            self.carrito_compra[id]["precio_acumulado"] -= medicamento.precio
             self.carrito_compra[id]["precio"] = medicamento.precio # precio sin reducir
             # Verificamos las cantidades de los medicamentos
             if self.carrito_compra[id]["cantidad"] == 0:
@@ -66,4 +66,4 @@ def multiplicar_precio(num1, num2):
     elif num2 == 1:
         return num1
     else:
-        return num1 + multiplicar_precio(num1, num2 - 1)
+        return num1 + multiplicar_precio(num1, num2-1)        

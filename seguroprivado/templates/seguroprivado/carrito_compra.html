@@ -16,10 +16,10 @@
             {% if request.session.carrito.items %}
               {% for clave, valor in request.session.carrito.items %}
               <tr>
-                <td>{{valor.nombre}}</td>
+                <td>{{ valor.nombre }}</td>
                 <td>{{ valor.precio }} €</td>
                 <td>
-                  {{valor.cantidad}}
+                  {{ valor.cantidad }}
                   <a href="{% url 'aniadir_carrito' valor.medicamento_id %}" class="badge btn btn-dark badge-dark p-2 ml-2 mr-1">+</a>
                   <a href="{% url 'restar_carrito' valor.medicamento_id %}" class="badge btn btn-dark badge-dark p-2">-</a>
                 </td>
@@ -39,7 +39,7 @@
             {% endif %}
             <tr>
               <td scope="row" class="pt-5"><strong>Precio total:</strong></td>
-              <td class="pt-5 mr-5">{{ precio_total }} €</td>
+              <td class="pt-5 mr-5">{{ precio_total|floatformat:2 }} €</td>
               <td></td>
               <td></td>
             </tr>
