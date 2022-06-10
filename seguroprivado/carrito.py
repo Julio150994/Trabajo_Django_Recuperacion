@@ -1,5 +1,8 @@
 # Para realizar el carrito de compra utilizando nuestras sesiones
 
+from seguroprivado.models import Medicamento
+
+
 class CarritoCompra(object):
     def __init__(self, request):
         self.request = request
@@ -32,13 +35,17 @@ class CarritoCompra(object):
             self.carrito_compra[id]["precio_acumulado"] = multiplicar_precio(medicamento.precio, self.carrito_compra[id]["cantidad"])
             self.carrito_compra[id]["nombre"] = medicamento.nombre
             self.carrito_compra[id]["precio"] = medicamento.precio # precio sin aumentar
-            
-        self.session["nombre"] = medicamento.nombre
-        self.session["precio"] = medicamento.precio
         
-        self.lista_medicamentos.append(self.session["nombre"])
-        self.session["lista_medicamentos"] = self.lista_medicamentos
-        self.comprar()
+        self.session["nombre"] = medicamento.nombre
+        self.session["descripcion"] = medicamento.descripcion
+        self.session["receta"] = medicamento.receta
+        self.session["precio"] = medicamento.precio
+        self.session["stock"] = medicamento.stock
+        
+        if self.carrito_compra.keys(): 
+            self.lista_medicamentos.append(self.session["nombre"])
+            self.session["lista_medicamentos"] = self.lista_medicamentos
+            self.comprar()
 
     def comprar(self):
         self.session["carrito"] = self.carrito_compra
@@ -46,28 +53,32 @@ class CarritoCompra(object):
         
     def eliminar(self, medicamento):
         id_medicamento = str(medicamento.id)
-            
+        
         if id_medicamento in self.carrito_compra:
-            del self.carrito_compra[id_medicamento]# eliminamos elemento de lista
+            self.session["nombre"] = medicamento.nombre
+            self.session["precio"] = medicamento.precio
+                        
+            del self.carrito_compra[id_medicamento]# eliminamos medicamento
+            
+            self.session["lista_medicamentos"] = self.lista_medicamentos
             self.comprar()# para persistir durante la sesión actual
             
     def restar(self, medicamento):
         id = str(medicamento.id)
         
         if id in self.carrito_compra.keys():
+            self.session["nombre"] = medicamento.nombre
+            self.session["precio"] = medicamento.precio
+            
             self.carrito_compra[id]["cantidad"] -= 1
             self.carrito_compra[id]["nombre"] = medicamento.nombre
             self.carrito_compra[id]["precio_acumulado"] -= medicamento.precio
             self.carrito_compra[id]["precio"] = medicamento.precio # precio sin reducir
             # Verificamos las cantidades de los medicamentos
             if self.carrito_compra[id]["cantidad"] == 0:
+                # Eliminamos el medicamento del carrito
+                self.session["lista_medicamentos"] = self.lista_medicamentos
                 self.eliminar(medicamento)
-                
-            self.session["nombre"] = medicamento.nombre
-            self.session["precio"] = medicamento.precio
-            
-            self.lista_medicamentos.append(self.session["nombre"])    
-            self.session["lista_medicamentos"] = self.lista_medicamentos
             self.comprar()
         
     def limpiar(self):

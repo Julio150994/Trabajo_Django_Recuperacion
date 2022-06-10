@@ -12,7 +12,7 @@
         </thead>
         <tbody class="table table-light">
           {# Mostramos mediante sesiones lo que está comprando el paciente logueado #}
-          {% if not paciente_logueado %}
+          {% if paciente_logueado %}
             {% if request.session.carrito.items %}
               {% for clave, valor in request.session.carrito.items %}
               <tr>

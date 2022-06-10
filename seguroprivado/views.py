@@ -709,6 +709,18 @@ class MedicamentosPacienteView(LoginRequiredMixin, ListView):
         context = super(MedicamentosPacienteView, self).get_context_data(**kwargs)
         medicamentos = Medicamento.objects.all().order_by('id')
         context['medicamentos'] = medicamentos
+        
+        # Mostramos el botón del PDF
+        paciente = Paciente.objects.get(username=self.request.user)
+        context['paciente_logueado'] = paciente
+        
+        # Cuando haya al menos una compra realizada, mostramos el botón del informe PDF
+        compras = Compra.objects.all().filter(idPaciente=paciente)
+        
+        for compra_realizada in compras:
+            compras_paciente = CompraMedicamento.objects.all().filter(idCompra=compra_realizada)
+            context['compras_paciente'] = compras_paciente
+        
         return context
 
 @method_decorator(login_required, name='dispatch')
@@ -725,12 +737,8 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         paciente = Paciente.objects.get(username=self.request.user)
         context['paciente_logueado'] = paciente
         
-        # Cuando haya al menos una compra realizada, mostramos el informe PDF
-        #compra = Compra.objects.all().filter(idPaciente=paciente)
-        fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
-        fecha_compra = datetime.strftime(fecha_actual,'%Y-%m-%d')
-        
-        compras_paciente = CompraMedicamento.objects.all().filter(fecha=fecha_compra)
+        compra = Compra.objects.all().filter(idPaciente=paciente)
+        compras_paciente = CompraMedicamento.objects.all().filter(idCompra=compra)
         context['compras_paciente'] = compras_paciente
         return context
     
@@ -771,14 +779,17 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         nombre_medicamento = carrito.session["nombre"]
         medicamento = Medicamento.objects.get(nombre=nombre_medicamento)
         
-        lista_medicamentos = carrito.session["lista_medicamentos"]
-        print("\nNombres de medicamentos: "+str(lista_medicamentos))
+        precio_medicamento = carrito.session["precio"]
+        print("Precio/medicamento: "+str(precio_medicamento))
         
-        compra = Compra(fecha=fecha_compra, precio=total_compra, idPaciente=paciente)
-        compra.save()
+        dict_medicamentos = carrito.session["dict_medicamentos"]
+        print("\nMedicamentos del paciente: "+str(dict_medicamentos))
+        #compra = Compra(fecha=fecha_compra, precio=total_compra, idPaciente=paciente)
+        #compra.save()
         
-        compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
-        compra_medicamento.save()
+        #compra_individual = Compra(fecha=fecha_compra, precio=precio_medicamento, idPaciente=paciente)
+        #compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra_individual)
+        #compra_medicamento.save()
         
         messages.add_message(request,level=messages.INFO, message="Su compra ha sido realizada correctamente")
         carrito.limpiar()# recargamos de nuevo el carrito al comprar

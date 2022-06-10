@@ -12,13 +12,17 @@
             {% else %}
             
             {# Para mostrar el informe PDF de la factura cuando el paciente haya terminado al menos una compra #}
-            {% if not compras_paciente %}
-            <nav class="navbar navbar-white bg-white ml-5 mb-4 justify-content-md-start">
+            {% if paciente_logueado and compras_paciente %}
+            <nav class="navbar navbar-white bg-white ml-5 mb-4 justify-content-md-end">
                 <a href="{% url 'factura' %}" class="btn btn-info ml-2">
                     <span class="fas fa-file-pdf"></span>
                     <span>Factura de compra</span>
                 </a>
             </nav>
+            {% else %}
+            <div class="container-fluid alert alert-warning mx-auto mt-auto text-center">
+                {{ request.user }} no ha realizado ninguna compra
+            </div>
             {% endif %}
 
              {# Mensaje para cuando el paciente realiza su compra #}
@@ -70,10 +74,38 @@
                                             <td>{{ medicamento.precio|floatformat:2 }} €</td>
                                             <td>{{ medicamento.stock }}</td>
                                             <td>
+                                                {% if medicamento_id == medicamento.id %}
+                                                <button class="btn btn-secondary" disabled>
+                                                    <span class="fas fa-plus"></span>
+                                                    <span>Añadido</span>
+                                                </button>
+                                                {% else %}
                                                 <a href="{% url 'aniadir_carrito' medicamento.id %}" name="carrito" id="carrito" class="btn btn-primary">
                                                     <span class="fas fa-cart-plus"></span>
                                                     <span>Añadir al carrito</span>
                                                 </a>
+                                                {% endif %}
+
+                                                {% comment %}{% if request.session.carrito.items %}
+                                                    {% for clave, valor in request.session.carrito.items %}
+                                                        {% if valor.medicamento_id == medicamento.id %}
+                                                        <button class="btn btn-secondary" disabled>
+                                                            <span class="fas fa-plus"></span>
+                                                            <span>Añadido</span>
+                                                        </button>
+                                                        {% else %}
+                                                        <a href="{% url 'aniadir_carrito' medicamento.id %}" name="carrito" id="carrito" class="btn btn-primary">
+                                                            <span class="fas fa-cart-plus"></span>
+                                                            <span>Añadir al carrito</span>
+                                                        </a>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                <a href="{% url 'aniadir_carrito' medicamento.id %}" name="carrito" id="carrito" class="btn btn-primary">
+                                                    <span class="fas fa-cart-plus"></span>
+                                                    <span>Añadir al carrito</span>
+                                                </a>
+                                                {% endif %}{% endcomment %}
                                             </td>
                                         </tr>
                                         {% endfor %}
