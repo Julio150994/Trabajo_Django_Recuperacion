@@ -1,0 +1,58 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title align="center">Seguro privado Salesin</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-img src="/assets/images/login.png" id="login_image"></ion-img>
+
+  <h2 id="titulo">Acceso para pacientes</h2>
+
+  <form [formGroup]="user" (ngSubmit)="login()">
+    <ion-item id="dato_usuario">
+      <ion-label position="floating">Username:</ion-label>
+      <!-- pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$" -->
+      <ion-input formControlName="username" type="text" name="username" [(ngModel)]="user.username">
+      </ion-input>
+    </ion-item>
+    <ion-label color="danger" *ngIf="user.controls.username.errors?.required && (user.touched || user.dirty)">
+      * Debe introducir su nombre de usuario.
+    </ion-label>
+
+    <ion-item id="dato_usuario">
+      <ion-label position="floating">Password:</ion-label>
+      <ion-input formControlName="password" type="password" name="password" [(ngModel)]="user.password">
+      </ion-input>
+    </ion-item>
+    <ion-label color="danger" *ngIf="user.controls.password.errors?.required && (user.touched || user.dirty)">
+      * Debe introducir su contraseña.
+    </ion-label>
+    <ion-label color="danger" *ngIf="user.controls.password.errors?.minLength && (user.touched || user.dirty)">
+      * Su contraseña debe tener al menos 8 caracteres.
+    </ion-label>
+
+    <ion-button color="tertiary" expand="full" type="submit" [disabled]="!user.valid" id="boton_login">
+      <ion-icon name="log-in"></ion-icon>
+      <span>Login</span>
+    </ion-button>
+  </form>
+
+  <ion-button color="secondary" expand="full" id="boton_login" routerLink="/citas-paciente">
+    <ion-icon name="reorder-three-outline"></ion-icon>
+    <span>Citas del paciente</span>
+  </ion-button>
+
+
+  <!-- Para seleccionar los médicos con un select -->
+  <!--<ion-item *ngFor="let medico of medicoSalesin">
+    <ion-label>{{ medico.username }}</ion-label>
+  </ion-item>
+
+  <ion-item class="mb-3" id="select_medico">
+    <ion-label><strong>Seleccione un médico</strong></ion-label>
+    <ion-select interface="popover" *ngFor="let medico of medicoSalesin">
+      <ion-option>{{ medico.username }}</ion-option>
+    </ion-select>
+  </ion-item>-->
+</ion-content>
