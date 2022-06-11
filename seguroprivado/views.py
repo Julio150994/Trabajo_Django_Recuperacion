@@ -15,16 +15,13 @@ from seguroprivado.models import Cita, CompraMedicamento, Compra, Medicamento, P
 from seguroprivado.forms import CitaForm, MedicamentoForm, MedicoForm, PacienteForm
 from django.db.models import Q
 from seguroprivado.carrito import CarritoCompra # reutilizamos la clase con las funciones del carrito
-from collections import OrderedDict
 from lib2to3.pgen2.parse import ParseError
 
 # Para el informe en PDF de la factura
 from io import BytesIO
-from tkinter.ttk import Style
 from django.http import HttpResponse
-from django.conf import settings
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Table, TableStyle, Paragraph, Image
+from reportlab.platypus import Table, TableStyle, Flowable, SimpleDocTemplate, Paragraph, Spacer, Image
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
@@ -813,51 +810,71 @@ class InformeFacturaPDF(View):
         
         factura_pdf.setFont('Times-Roman',17)
         factura_pdf.setFillColorRGB(0.21, 0.139, 0.37)
-        factura_pdf.drawString(10, 660, u"DATOS DE PACIENTE")
+        factura_pdf.drawString(12, 660, u"DATOS DE PACIENTE")
         
         factura_pdf.setFont('Times-Roman',17)
         factura_pdf.setFillColorRGB(0.21, 0.139, 0.37)
-        factura_pdf.drawString(10, 400, u"FACTURA TOTAL")
+        factura_pdf.drawString(12, 310, u"FACTURA TOTAL")
         
     def datos_paciente(self, factura_pdf, posicion_vertical, paciente_id):
-        encabezados = ('Nombre','Apellidos','Edad','Dirección','Foto','Nombre de usuario')
-        datos_paciente = [(paciente.nombre, paciente.apellidos, paciente.edad, paciente.direccion, paciente.foto,
-                     paciente.username) for paciente in paciente_id]
+        # Diseño pdf con estilo de etiquetas        
+        datos_paciente = [
+            ['Nombre',"".join([(paciente.nombre) for paciente in paciente_id])],
+            ['Apellidos',"".join([(paciente.apellidos) for paciente in paciente_id])],
+            ['Edad',"".join([(str(paciente.edad)) for paciente in paciente_id])],
+            ['Dirección',"".join([(paciente.direccion) for paciente in paciente_id])],
+            ['Foto',"".join([str(paciente.foto.url) for paciente in paciente_id])],
+            ['Nombre de usuario',"".join([(paciente.username) for paciente in paciente_id])],
+        ]
         
-        paciente = Table([encabezados] + datos_paciente, colWidths=[3*cm,3*cm,3*cm])
+        paciente = Table(datos_paciente)
         paciente.setStyle(TableStyle(
             [
-                ('ALIGN',(0,0),(6,8),'CENTER'),
-                ('GRID', (0,0),(2,6),1,colors.transparent),
-                ('FONTSIZE', (0,0),(-1,-1),10),
-                 ('BACKGROUND',(0,0),(-1,-1),colors.Color(red=(250/255),green=(128/255),blue=(114/255), alpha=(125/255))),
-                ('COLBACKGROUNDS',(0,1),(-1,-1),(colors.beige,colors.lightyellow)),
+                ('ALIGN',(0,0),(3,8),'CENTER'),
+                ('GRID',(0,0), (-1, -1), 3,colors.blue),
+                ('FONTSIZE',(0, 0),(-1, -1), 12),
+                ('BACKGROUND', (0, 0), (0, 7), colors.Color(20, 121, 195)),
+                ('BOX',(0, 0),(-1, -1),1.25,colors.black),
+                ('GRID',(0,0),(-1,-1),0.5,colors.black),
+                ('TEXTCOLOR', (0, 0), (0, 6), colors.blue),
             ]
         ))
     
         paciente.wrapOn(factura_pdf,800,600)
-        paciente.drawOn(factura_pdf,10,posicion_vertical)
+        paciente.drawOn(factura_pdf,12,posicion_vertical)
         return paciente
           
     def factura_compra(self, factura_pdf, posicion_vertical, paciente):# para el paciente logueado
-        encabezados = ('Nombre de Medicamento','Descripción','Receta','Fecha de compra','Precio')
-        
         fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
         formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
-           
-        datos_compra = [(factura.idMedicamento.nombre, factura.idMedicamento.descripcion,
-            factura.idMedicamento.receta, datetime.strftime(factura.idCompra.fecha, '%d/%m/%Y'), str(factura.idCompra.precio)+"€")
-            for factura in CompraMedicamento.objects.all()
-            if factura.idCompra.idPaciente.username == paciente and datetime.strftime(factura.idCompra.fecha,'%Y-%m-%d') <= formato_fecha_actual]
         
-        compra_paciente = Table([encabezados] + datos_compra, colWidths=[4*cm,4*cm,4*cm], splitByRow = True)
+        datos_compra = [
+            ['Nombre de Medicamento',"".join([(factura.idMedicamento.nombre) for factura in CompraMedicamento.objects.all()
+                if factura.idCompra.idPaciente.username == paciente and datetime.strftime(factura.idCompra.fecha,'%Y-%m-%d') <= formato_fecha_actual])],
+            
+            ['Descripción',"".join([(factura.idMedicamento.descripcion) for factura in CompraMedicamento.objects.all()
+                if factura.idCompra.idPaciente.username == paciente and datetime.strftime(factura.idCompra.fecha,'%Y-%m-%d') <= formato_fecha_actual])],
+            
+            ['Receta',"".join([(factura.idMedicamento.receta) for factura in CompraMedicamento.objects.all()
+                if factura.idCompra.idPaciente.username == paciente and datetime.strftime(factura.idCompra.fecha,'%Y-%m-%d') <= formato_fecha_actual])],
+            
+            ['Fecha de compra',"".join([(datetime.strftime(factura.idCompra.fecha, '%d/%m/%Y')) for factura in CompraMedicamento.objects.all()
+                if factura.idCompra.idPaciente.username == paciente and datetime.strftime(factura.idCompra.fecha,'%Y-%m-%d') <= formato_fecha_actual])],
+            
+            ['Precio total',"".join([(str(factura.idCompra.precio)+"€") for factura in CompraMedicamento.objects.all()
+                if factura.idCompra.idPaciente.username == paciente and datetime.strftime(factura.idCompra.fecha,'%Y-%m-%d') <= formato_fecha_actual])],
+        ]
+        
+        compra_paciente = Table(datos_compra)
         compra_paciente.setStyle(TableStyle(
             [
-                ('ALIGN',(0,0),(6,8),'CENTER'),
-                ('GRID', (0,0),(6,0),1, colors.transparent),
-                ('FONTSIZE', (0,0),(-1,-1),10),
-                ('BACKGROUND',(0,0),(-1,-1),colors.Color(red=(250/255),green=(128/255),blue=(114/255), alpha=(125/255))),
-                ('COLBACKGROUNDS',(0,1),(-1,-1),(colors.beige,colors.lightyellow)),
+                ('ALIGN',(0,0),(3,16),'CENTER'),
+                ('GRID',(0,0), (-1, -1), 3,colors.blue),
+                ('FONTSIZE',(0, 0),(-1, -1), 12),
+                ('BACKGROUND', (0, 0), (0, 7), colors.Color(20, 121, 195)),
+                ('BOX',(0, 0),(-1, -1),1.25,colors.black),
+                ('GRID',(0,0),(-1,-1),0.5,colors.black),
+                ('TEXTCOLOR', (0, 0), (0, 6), colors.blue),
             ]
         ))
         
@@ -876,10 +893,10 @@ class InformeFacturaPDF(View):
         self.cabecera(factura_pdf)
         
         paciente = Paciente.objects.filter(username=request.user.username)
-        posicion_paciente = 600
+        posicion_paciente = 530
         self.datos_paciente(factura_pdf, posicion_paciente, paciente)
         
-        posicion_factura = 345
+        posicion_factura = 200
         self.factura_compra(factura_pdf, posicion_factura, request.user.username)
         
         factura_pdf.showPage()# mostrar página del PDF
