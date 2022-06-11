@@ -51,9 +51,9 @@ urlpatterns = [
     path('historial_paciente_medico/<int:pk>/',views.HistorialPacientesMedicoView.as_view(), name="historial_pacientes_medico"),
     
     path('tienda_medicamentos/',views.MedicamentosPacienteView.as_view(), name="tienda"),
-    path('aniadir_carrito/<int:medicamento_id>/',views.GestionaCarritoView.aniadir_medicamento, name="aniadir_carrito"),
-    path('restar/<int:medicamento_id>/',views.GestionaCarritoView.restar_medicamento, name="restar_carrito"),
-    path('eliminar_carrito/<int:medicamento_id>/',views.GestionaCarritoView.eliminar_medicamento, name="eliminar_carrito"),
+    path('aniadir_carrito/<int:pk>/',views.GestionaCarritoView.aniadir_medicamento, name="aniadir_carrito"),
+    path('restar/<int:pk>/',views.GestionaCarritoView.restar_medicamento, name="restar_carrito"),
+    path('eliminar_carrito/<int:pk>/',views.GestionaCarritoView.eliminar_medicamento, name="eliminar_carrito"),
     path('limpiar_carrito/',views.GestionaCarritoView.limpiar_carrito, name="limpiar_compra"),
     path('compra_medicamentos/',views.GestionaCarritoView.comprar_medicamentos, name="compra_medicamentos"),
     
