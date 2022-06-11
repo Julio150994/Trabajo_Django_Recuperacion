@@ -18,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
 class PacienteSerializers(serializers.ModelSerializer):
     class Meta:
         model = Paciente
-        fields = ['username','password']
+        fields = ['nombre','apellidos','edad','direccion','foto','activo','username']
         
 
 class MedicoSerializers(serializers.ModelSerializer):
@@ -26,8 +26,11 @@ class MedicoSerializers(serializers.ModelSerializer):
         model = Medico
         fields = ['nombre','apellidos','edad','fechaalta','especialidad','username']
 
-
 class CitaSerializers(serializers.ModelSerializer):
+    paciente_id = serializers.IntegerField(write_only=True)
+    medico_id = serializers.IntegerField(write_only=True)
+    
     class Meta:
         model = Cita
-        fields = ['idPaciente','idMedico','fecha','tratamiento','observaciones']
+        fields = ['idPaciente','paciente_id','idMedico','medico_id','fecha','tratamiento','observaciones']
+        depth = 1 # para bajar un nivel

@@ -1,23 +1,18 @@
 from datetime import datetime
-from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
 from django.http import Http404, HttpResponseRedirect
 from django.contrib import messages
-from django.views.generic import RedirectView, View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.views import LoginView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from seguroprivado.models import Cita, Paciente, Medico
-from seguroprivado.forms import CitaForm, MedicamentoForm, MedicoForm, PacienteForm
 from django.db.models import Q
 
 # Importaciones para el API REST de Django
 from seguroprivado.serializers import MedicoSerializers, CitaSerializers
 from lib2to3.pgen2.parse import ParseError
+from collections import OrderedDict
 from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework import status
@@ -114,12 +109,13 @@ class CitasPacienteApiView(APIView):
     def get(self, request, format=None):
         #medico = self.get_object(pk) # cuando seleccionemos médico
         paciente = Paciente.objects.get(username=request.user)
-        print("Paciente: "+str(paciente.nombre))
         
-        citas_paciente = Cita.objects.filter(idPaciente=paciente).filter(realizada=True)
-        print("Traza: "+str(citas_paciente))
+        fecha_cita_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
+        formato_fecha_cita = datetime.strftime(fecha_cita_actual,'%Y-%m-%d')
+        
+        # Para citas realizadas menores que la fecha actual
+        citas_paciente = Cita.objects.filter(idPaciente=paciente).filter(fecha__lte=formato_fecha_cita).filter(realizada=True)
         serializer_citas = CitaSerializers(citas_paciente, many=True)
-        print("\nTraza(2): "+str(serializer_citas))
         
         if citas_paciente.exists():
             return Response(serializer_citas.data, status=status.HTTP_200_OK)
