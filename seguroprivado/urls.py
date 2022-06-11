@@ -60,6 +60,7 @@ urlpatterns = [
     path('tienda_medicamentos/factura/',views.InformeFacturaPDF.as_view(), name="factura"),
     
     path('api/token/',views_django_rest.TokenRestView.as_view(), name="api_token"),
+    path('api/logout/',views_django_rest.LogoutAPIView.as_view(), name="api_logout"),
     path('api/medicos/', views_django_rest.MedicoApiView.as_view(), name="api_medicos"),
     
 ]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

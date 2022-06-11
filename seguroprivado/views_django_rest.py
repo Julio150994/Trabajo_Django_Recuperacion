@@ -75,6 +75,15 @@ class TokenRestView(APIView):
                     'detail': 'Error. El usuario debe ser un paciente'
                 }, status= status.HTTP_401_UNAUTHORIZED)
 
+# Para cerrar sesión de los pacientes
+class LogoutAPIView(APIView):
+   def get(self, request, *args, **kwargs):
+       token = request.GET.get('token')
+       token_paciente = Token.objects.filter(key=token).first()
+       
+       if token_paciente:
+            paciente = token_paciente.user
+
 # Para poder seleccionar los médicos en la aplicación de ionic
 class MedicoApiView(APIView):
     # Para acceder solamente si hemos iniciado sesión
