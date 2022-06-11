@@ -15,7 +15,6 @@ from seguroprivado.models import Cita, CompraMedicamento, Compra, Medicamento, P
 from seguroprivado.forms import CitaForm, MedicamentoForm, MedicoForm, PacienteForm
 from django.db.models import Q
 from seguroprivado.carrito import CarritoCompra # reutilizamos la clase con las funciones del carrito
-from lib2to3.pgen2.parse import ParseError
 
 # Para el informe en PDF de la factura
 from io import BytesIO
@@ -26,15 +25,6 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
 from reportlab.lib.styles import getSampleStyleSheet
-
-# Importaciones para el API REST de Django
-from rest_framework import serializers
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework import authentication, permissions
 
 # Create your views here.
 
@@ -900,52 +890,3 @@ class InformeFacturaPDF(View):
         buffer.close()
         response.write(factura_pdf)
         return response
-
-# Para permitir el acceso a los pacientes e iniciar sesión con Django REST
-class TokenRestView(APIView):
-    def get(self, request, format=None):
-        return Response({'detail':"Respuesta para el paciente"})
-    
-    def post(self, request, format=None, *args, **kwargs):
-        try:
-            data = request.data
-        except ParseError as error:
-            return Response(
-                'Formato JSON inválido - {0}'.format(error.detail),
-                status=status.HTTP_400_BAD_REQUEST
-            )
-            
-        if "user" not in data or "password" not in data:
-            return Response(
-                'Error al introducir las credenciales de usuario',
-                status=status.HTTP_401_UNAUTHORIZED
-            )
-        
-        user = User.objects.get(username=data["user"])
-        
-        # Validación para el usuario del paciente
-        if not user:
-             return Response(
-                'Paciente no encontrado en el sistema.',
-                status=status.HTTP_404_NOT_FOUND
-            )
-        else:
-            # Validamos que es un usuario paciente
-            if not user.is_staff:
-                token, get_token = Token.objects.get_or_create(user=user)
-                
-                if get_token:
-                    # Para generar un nuevo token, después de eliminarse el último utilizado
-                    return Response({
-                        'detail': 'El paciente ha iniciado sesión correctamente',
-                        'token': token.key
-                    }, status = status.HTTP_201_CREATED)
-                else:
-                    token.delete()
-                    Response({
-                        'error': 'Ya se ha iniciado sesión con este paciente',
-                    }, status = status.HTTP_409_CONFLICT)
-            else:
-                return Response({
-                    'detail': 'Error. El usuario debe ser un paciente'
-                }, status= status.HTTP_401_UNAUTHORIZED)
