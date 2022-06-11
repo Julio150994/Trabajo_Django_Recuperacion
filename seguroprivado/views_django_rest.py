@@ -35,14 +35,17 @@ class TokenRestView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        user = User.objects.get(username=data["user"])
-        password = User.password
-        
-        """if user not in data or password:
+        # Validamos las credenciales de usuario
+        if "user" not in data or "password" not in data:
             return Response(
-                'Error al introducir las credenciales de usuario',
-                status=status.HTTP_401_UNAUTHORIZED
-            )"""
+                'Credenciales de usuario erróneas',
+                status = status.HTTP_401_UNAUTHORIZED
+            )
+            
+        user = User.objects.get(username=data["user"])
+        #password = user.password
+        #data["password"]
+        print("Traza: "+str(data))
         
         # Validación para el usuario del paciente
         if not user:
@@ -55,12 +58,12 @@ class TokenRestView(APIView):
             if user.is_superuser:
                 return Response({
                     'detail': 'Error. El usuario no debe ser administrador'
-                }, status= status.HTTP_401_UNAUTHORIZED)
+                }, status = status.HTTP_401_UNAUTHORIZED)
             else:
                 if not user.is_superuser and user.is_staff:
                     return Response({
-                        'detail': 'Error. Este usuario no debe ser médico'
-                    }, status= status.HTTP_401_UNAUTHORIZED)
+                        'detail': 'Error. El usuario no debe ser médico'
+                    }, status = status.HTTP_401_UNAUTHORIZED)
                 else:
                     if not user.is_staff:
                         token, get_token = Token.objects.get_or_create(user=user)
@@ -73,7 +76,7 @@ class TokenRestView(APIView):
                             }, status = status.HTTP_201_CREATED)
                         else:
                             token.delete()
-                            Response({
+                            return Response({
                                 'error': 'Ya se ha iniciado sesión con este paciente',
                             }, status = status.HTTP_409_CONFLICT)
                     
