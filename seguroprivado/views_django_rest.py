@@ -34,41 +34,49 @@ class TokenRestView(APIView):
                 'Formato JSON inválido - {0}'.format(error.detail),
                 status=status.HTTP_400_BAD_REQUEST
             )
-            
-        if "user" not in data or "password" not in data:
+        
+        user = User.objects.get(username=data["user"])
+        password = User.password
+        
+        """if user not in data or password:
             return Response(
                 'Error al introducir las credenciales de usuario',
                 status=status.HTTP_401_UNAUTHORIZED
-            )
-        
-        user = User.objects.get(username=data["user"])
+            )"""
         
         # Validación para el usuario del paciente
         if not user:
              return Response(
-                'Paciente no encontrado en el sistema.',
+                'Usuario no contemplado en el sistema',
                 status=status.HTTP_404_NOT_FOUND
             )
         else:
-            # Validamos que es un usuario paciente
-            if not user.is_staff:
-                token, get_token = Token.objects.get_or_create(user=user)
-                
-                if get_token:
-                    # Para generar un nuevo token, después de eliminarse el último utilizado
-                    return Response({
-                        'detail': 'El paciente ha iniciado sesión correctamente',
-                        'token': token.key
-                    }, status = status.HTTP_201_CREATED)
-                else:
-                    token.delete()
-                    Response({
-                        'error': 'Ya se ha iniciado sesión con este paciente',
-                    }, status = status.HTTP_409_CONFLICT)
-            else:
+            # Validamos que solamente puedan acceder usuarios que sean pacientes
+            if user.is_superuser:
                 return Response({
-                    'detail': 'Error. El usuario debe ser un paciente'
+                    'detail': 'Error. El usuario no debe ser administrador'
                 }, status= status.HTTP_401_UNAUTHORIZED)
+            else:
+                if not user.is_superuser and user.is_staff:
+                    return Response({
+                        'detail': 'Error. Este usuario no debe ser médico'
+                    }, status= status.HTTP_401_UNAUTHORIZED)
+                else:
+                    if not user.is_staff:
+                        token, get_token = Token.objects.get_or_create(user=user)
+                        
+                        if get_token:
+                            # Para generar un nuevo token, después de eliminarse el último utilizado
+                            return Response({
+                                'detail': str(user)+' ha iniciado sesión correctamente',
+                                'token': token.key
+                            }, status = status.HTTP_201_CREATED)
+                        else:
+                            token.delete()
+                            Response({
+                                'error': 'Ya se ha iniciado sesión con este paciente',
+                            }, status = status.HTTP_409_CONFLICT)
+                    
 
 # Para cerrar sesión de los pacientes
 class LogoutAPIView(APIView):
