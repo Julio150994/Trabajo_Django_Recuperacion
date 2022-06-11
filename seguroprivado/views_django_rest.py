@@ -43,9 +43,6 @@ class TokenRestView(APIView):
             )
             
         user = User.objects.get(username=data["user"])
-        #password = user.password
-        #data["password"]
-        print("Traza: "+str(data))
         
         # Validación para el usuario del paciente
         if not user:
