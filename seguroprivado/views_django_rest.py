@@ -111,14 +111,17 @@ class CitasPacienteApiView(APIView):
             raise Http404
         
     # Para obtener las citas realizadas del paciente que ha tenido con el médico seleccionado
-    def get(self, request, pk, format=None):
-        medico = self.get_object(pk)
-        serializer_medico = MedicoSerializers(medico)
-        if serializer_medico.is_valid():
-            serializer_cita = CitaSerializers(data=request.data)
-            if serializer_cita.is_valid():
-                return Response(serializer_cita.data, status=status.HTTP_200_OK)
-            else:
-                return Response(serializer_cita.errors, status=status.HTTP_400_BAD_REQUEST)    
+    def get(self, request, format=None):
+        #medico = self.get_object(pk) # cuando seleccionemos médico
+        paciente = Paciente.objects.get(username=request.user)
+        print("Paciente: "+str(paciente.nombre))
+        
+        citas_paciente = Cita.objects.filter(idPaciente=paciente).filter(realizada=True)
+        print("Traza: "+str(citas_paciente))
+        serializer_citas = CitaSerializers(citas_paciente, many=True)
+        print("\nTraza(2): "+str(serializer_citas))
+        
+        if citas_paciente.exists():
+            return Response(serializer_citas.data, status=status.HTTP_200_OK)
         else:
-            return Response(serializer_medico.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer_citas.errors, status=status.HTTP_400_BAD_REQUEST)

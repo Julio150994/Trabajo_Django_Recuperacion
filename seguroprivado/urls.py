@@ -62,6 +62,7 @@ urlpatterns = [
     path('api/token/',views_django_rest.TokenRestView.as_view(), name="api_token"),
     path('api/logout/',views_django_rest.LogoutAPIView.as_view(), name="api_logout"),
     path('api/medicos/', views_django_rest.MedicoApiView.as_view(), name="api_medicos"),
+    path('api/citas_paciente/', views_django_rest.CitasPacienteApiView.as_view(), name="api_citas"),
     
 ]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns+=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
