@@ -13,15 +13,16 @@ export class LoginPacientesService {
   tok: any;
   token: any;
   paciente: any;
+  usuario: any;
   id: number;
 
-  constructor(private login: HttpClient, private alertPaciente: AlertController) {}
+  constructor(private httpLogin: HttpClient, private alertPaciente: AlertController) {}
 
   /* Para el inicio de sesión con los pacientes */
-  loginPaciente(user, pwd) {
+  loginPaciente(username, pwd) {
     return new Promise(res => {
-      this.login.post<any>(this.apiUrl+'/token/',{
-        username: user,
+      this.httpLogin.post<any>(this.apiUrl+'/token/',{
+        user: username,
         password: pwd
       }).subscribe(data => {
         console.log(data);
@@ -30,35 +31,31 @@ export class LoginPacientesService {
         localStorage.setItem('token',this.paciente);
         res(data);
       }, error => {
-        this.pacienteNoValido();// imprimimos un mensaje de alerta
-        console.error('Error producido al iniciar sesión');
+        console.error('Ya has iniciado sesión con '+username);
       });
     });
   }
 
-  async pacienteNoValido() {
-    const errorPaciente = await this.alertPaciente.create({
-      header: 'ERROR',
-      cssClass: 'loginCss',
-      message: '<strong>Error al iniciar sesión con paciente</strong>',
-      buttons: [
-        {
-          text: 'Aceptar',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (valid) => {
-          }
-        }
-      ]
+  /** Obtenemos los usuarios de la base de datos */
+  obtenerUsuarios() {
+    return new Promise(res => {
+      this.httpLogin.get(this.apiUrl+'/usuarios/',{
+        headers: new HttpHeaders().append('Content-Type','application/json')
+      }).subscribe(data => {
+        this.token = data;
+        this.token = this.token.data;
+        res(data);
+      }, error => {
+        console.log('Error al obtener los usuarios '+error);
+      });
     });
-    await errorPaciente.present();
   }
 
   /** Para obtener todos los médicos */
-  obtenerMedicos() {
+  obtenerMedicos(tok: any) {
     return new Promise(resolve => {
-      this.login.get(this.apiUrl+'/medicos/', {
-        headers: new HttpHeaders().append('Content-Type','application/json')
+      this.httpLogin.get(this.apiUrl+'/medicos/', {
+        headers: new HttpHeaders().set('Authorization', 'Token '+tok)
       }).subscribe(res => {
         resolve(res);
       }, (error) => {

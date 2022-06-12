@@ -14,10 +14,10 @@ export class CitasPacienteService {
   citas: any;
   id: number;
 
-  constructor(private httpCitas: HttpClient, private alertCitasCtrl: AlertController) { }
+  constructor(private httpCitas: HttpClient, private alertCtrl: AlertController) { }
 
   /** Funciones patra gestionar las citas del paciente */
-  getEncabezadoCitasPaciente() {
+  /*getEncabezadoCitasPaciente() {
     return new Promise(res => {
       this.httpCitas.post(this.apiUrl+'/citas_paciente/?id='+localStorage.getItem('medico_id'),{
         //headers: new HttpHeaders().set('Authorization', 'Token '+localStorage.getItem('token'))
@@ -30,12 +30,12 @@ export class CitasPacienteService {
         console.log('Error al mostrar el contador de artículos '+error);
       });
     });
-  }
+  }*/
 
-  async obtenerCitasRealizadasPaciente() {
+  async obtenerCitasRealizadasPaciente(tok: any) {
     return new Promise<any>(res => {
       this.httpCitas.get(this.apiUrl+'/citas_paciente/', {
-        headers: new HttpHeaders().append('Content-Type','application/json')
+        headers: new HttpHeaders().set('Authorization', 'Token '+tok)
       }).subscribe(data => {
         this.citas = data;
         this.citas = this.citas.data;

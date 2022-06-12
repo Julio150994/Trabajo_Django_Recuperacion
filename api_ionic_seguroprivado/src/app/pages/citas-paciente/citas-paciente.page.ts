@@ -16,7 +16,9 @@ export class CitasPacientePage implements OnInit {
   encabezadoCitas: any;
   id: any;
   medicos: any;// funciona al pulsar el botón de logout (ocultando el select de médicos)
+  tok: any;
   token: any;
+  username: any;
   tokenEliminado: any;
   usuarioPaciente: string;
 
@@ -37,7 +39,7 @@ export class CitasPacientePage implements OnInit {
   async loadPaciente(message: string) {
     const loading = await this.loadingCtrl.create({
       message,
-      duration: 2,
+      duration: 3,
     });
 
     await loading.present();
@@ -45,11 +47,10 @@ export class CitasPacientePage implements OnInit {
     const { role, data } = await loading.onDidDismiss();
 
     this.navCtrl.navigateForward('/login-pacientes');
-    console.log('El paciente ha cerrado sesión correctamente');
-    this.alertLogoutPaciente();
+    this.alertLogoutPaciente(this.username);
   }
 
-  async alertLogoutPaciente() {
+  async alertLogoutPaciente(username: string) {
     const logout = await this.alertCtrl.create({
       header: 'Logout',
       cssClass: 'logoutCss',
@@ -70,15 +71,17 @@ export class CitasPacientePage implements OnInit {
 
   /** Para obtener las citas realizadas del paciente */
   async getCitasPaciente() {
+    this.token = localStorage.getItem('token');
+
     // Validaciones de las citas
-    this.apiService.getEncabezadoCitasPaciente()
+    /*this.apiService.getEncabezadoCitasPaciente()
     .then(async data => {
       this.encabezadoCitas = data;
       this.encabezadoCitas = this.encabezadoCitas.data;
-    });
+    });*/
 
-    // Datos de las citas
-    this.apiService.obtenerCitasRealizadasPaciente().then(data => {
+    // Obtenemos los datos de las citas del paciente
+    this.apiService.obtenerCitasRealizadasPaciente(this.token).then(data => {
       this.citasPaciente = data;
       this.citasPaciente = this.citasPaciente.data;
       this.citas = this.citasPaciente;

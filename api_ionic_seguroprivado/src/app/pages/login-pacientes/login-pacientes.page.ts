@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NavController, AlertController, LoadingController } from '@ionic/angular';
 import { LoginPacientesService } from '../../services/login-pacientes.service';
+import { CitasPacienteService } from '../../services/citas-paciente.service';
 
 @Component({
   selector: 'app-login-pacientes',
@@ -9,12 +10,14 @@ import { LoginPacientesService } from '../../services/login-pacientes.service';
   styleUrls: ['./login-pacientes.page.scss'],
 })
 export class LoginPacientesPage implements OnInit {
-  @Input() usuarioPaciente: string;
+  @Input() paciente: string;
 
   tok: any;
   token: any;
+  request: any;
   usuario: any;
-  paciente: any;
+  idUsuario: any;
+  datosPaciente: any;
   username: string;
   password: string;
   medicos: any;
@@ -27,56 +30,65 @@ export class LoginPacientesPage implements OnInit {
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),
   });
 
-  constructor(private apiService: LoginPacientesService, private navCtrl: NavController,
-    private loadingCtrl: LoadingController, private alertCtrl: AlertController) {}
+  constructor(private pacientesService: LoginPacientesService, private citasService: CitasPacienteService,
+    private navCtrl: NavController, private loadingCtrl: LoadingController,
+    private alertCtrl: AlertController) {}
 
 
   ngOnInit() {
     console.log('Página de login de pacientes');
   }
 
-  async login() {
-    // Mostramos médicos cuando pulsamos al botón de login
-    await this.loadLogin('Cargando aplicación...');
-
-    console.log('Médicos del seguro obtenidos');
-    await this.getMedicos();
-
-    /*if (this.user.valid) {
-      this.datosPaciente = this.user.value;
-      this.username = this.datosPaciente.username;
-      this.password = this.datosPaciente.password;
-
-      await this.apiService.loginPaciente(this.username,this.password)
-        .then(async data => {
-          this.tok = data;
-          this.usuario=this.tok.data;
-          this.token = this.usuario.token;
-          localStorage.setItem('token',this.token);
-
-          let usuario: any;
-          usuario = await this.apiService.obtenerMedicos();
-          usuario=usuario.data;
-        });
-    }*/
-  }
-
-  /** Mensaje paar cuando hemos iniciado sesión con el paciente correctamente */
-  async loadLogin(message: string) {
+  /** Mensaje para cuando hemos iniciado sesión con el paciente correctamente */
+  async cargarUsuario(message: string) {
     const loading = await this.loadingCtrl.create({
       message,
-      duration: 1.5,
+      duration: 3,
     });
 
     await loading.present();
 
     const { role, data } = await loading.onDidDismiss();
-
-    console.log('Ha iniciado sesión correctamente');
-    this.alertLogin();
+    this.pacienteLogueado();
   }
 
-  async alertLogin() {
+  async usuarioNoEncontrado(username: string) {
+    const mensajeError = await this.alertCtrl.create({
+      header: 'Message',
+      cssClass: 'messageCss',
+      message: '<strong>Usuario '+username+' no encontrado en la base de datos</strong>',
+      buttons: [
+        {
+          text: 'Aceptar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (deactived) => {
+          }
+        }
+      ]
+    });
+    await mensajeError.present();
+  }
+
+  async usuarioNoValido(username: string) {
+    const mensajeError = await this.alertCtrl.create({
+      header: 'Message',
+      cssClass: 'messageCss',
+      message: '<strong>'+username+' debe ser un usuario paciente</strong>',
+      buttons: [
+        {
+          text: 'Aceptar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (deactived) => {
+          }
+        }
+      ]
+    });
+    await mensajeError.present();
+  }
+
+  async pacienteLogueado() {
     const login = await this.alertCtrl.create({
       header: 'Login',
       cssClass: 'loginCss',
@@ -95,9 +107,44 @@ export class LoginPacientesPage implements OnInit {
     await login.present();
   }
 
-  /** Obtenemos y seleccionamos uno de los médicos obtenidos */
-  async getMedicos() {
-    this.apiService.obtenerMedicos()
+  async login() {
+    if (this.user.valid) {
+      this.datosPaciente = this.user.value;
+      this.username = this.datosPaciente.username;
+      this.password = this.datosPaciente.password;
+
+      await this.pacientesService.loginPaciente(this.username, this.password)
+      .then(async data => {
+        this.tok = data;
+        this.token = this.tok.token;
+
+        // Mostramos mensaje de login de usuario
+        await this.cargarUsuario('Cargando aplicación...');
+
+        // Obtenemos los médicos del sistema con el token de sesión
+        await this.getMedicos(this.token);
+
+        /*let usuarios: any;
+        usuarios = await this.pacientesService.obtenerUsuarios();
+        usuarios = usuarios.data;
+        console.log('Usuarios encontrados: '+usuarios+'\n');
+
+        for (let i = 0; i < usuarios?.length; i++) {
+          if (usuarios[i].username === this.username) {
+            this.username = usuarios[i].username;
+            console.log('Usernames: '+this.username);
+            this.idUsuario = usuarios[i].idUsuario;
+            console.log('Ids usuarios: '+this.idUsuario);
+            break;
+          }
+        }*/
+      });
+    }
+  }
+
+  /** Obtenemos y seleccionamos uno de los médicos obtenidos después de iniciar sesión*/
+  async getMedicos(tok: any) {
+    this.pacientesService.obtenerMedicos(tok)
     .then(medicos => {
       this.medicos = medicos;
       if (this.medicos == null) {
@@ -112,7 +159,6 @@ export class LoginPacientesPage implements OnInit {
   }
 
   async seleccionarMedico() {
-    console.log('Médico seleccionado: '+this.medicoSeleccionado);
     this.medico = this.medicoSeleccionado;
     await this.toCitasPaciente(this.medicoSeleccionado);
   }
