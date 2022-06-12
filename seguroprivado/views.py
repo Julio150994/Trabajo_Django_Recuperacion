@@ -20,12 +20,11 @@ from seguroprivado.carrito import CarritoCompra # reutilizamos la clase con las 
 from io import BytesIO
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Table, TableStyle, Flowable, SimpleDocTemplate, Paragraph, Spacer, Image
+from reportlab.platypus import Table, TableStyle, Image
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
 from reportlab.lib.styles import getSampleStyleSheet
-
 # Create your views here.
 
 class RedirectToInicioView(TemplateView):    
@@ -800,31 +799,26 @@ class InformeFacturaPDF(View):
         factura_pdf.setFillColorRGB(0.21, 0.139, 0.37)
         factura_pdf.drawString(12, 310, u"FACTURA TOTAL")
         
-    def datos_paciente(self, factura_pdf, posicion_vertical, paciente_id):
-        # Diseño pdf con estilo de etiquetas        
-        datos_paciente = [
-            ['Nombre',"".join([(paciente.nombre) for paciente in paciente_id])],
-            ['Apellidos',"".join([(paciente.apellidos) for paciente in paciente_id])],
-            ['Edad',"".join([(str(paciente.edad)) for paciente in paciente_id])],
-            ['Dirección',"".join([(paciente.direccion) for paciente in paciente_id])],
-            ['Foto',"".join([str(paciente.foto.url) for paciente in paciente_id])],
-            ['Nombre de usuario',"".join([(paciente.username) for paciente in paciente_id])],
-        ]
+    def datos_paciente(self, factura_pdf, posicion_vertical, paciente_id):        
+        # Diseño del informe de cliente PDF
+        encabezados = ('Nombre','Apellidos','Edad','Dirección','Foto','Username')
+        datos_paciente = [(paciente.nombre, paciente.apellidos, paciente.edad, paciente.direccion, Image(paciente.foto, width=80, height=80),
+                     paciente.username) for paciente in paciente_id]
         
-        paciente = Table(datos_paciente)
+        paciente = Table([encabezados] + datos_paciente, colWidths=[3 * cm, 3 * cm, 3 * cm])
         paciente.setStyle(TableStyle(
             [
-                ('ALIGN',(0,0),(3,8),'CENTER'),
-                ('GRID',(0,0), (-1, -1), 3,colors.blue),
+                ('ALIGN',(0,0),(6,16),'CENTER'),
+                ('GRID',(0,0), (-1, -1), 2,colors.black),
                 ('FONTSIZE',(0, 0),(-1, -1), 12),
-                ('BACKGROUND', (0, 0), (0, 7), colors.Color(20, 121, 195)),
+                ('BACKGROUND', (6, 0), (0, 7), colors.Color(20, 121, 195)),
                 ('BOX',(0, 0),(-1, -1),1.25,colors.black),
                 ('GRID',(0,0),(-1,-1),0.5,colors.black),
-                ('TEXTCOLOR', (0, 0), (0, 6), colors.blue),
+                ('TEXTCOLOR', (0, 0), (0, 6), colors.black),
             ]
         ))
     
-        paciente.wrapOn(factura_pdf,800,600)
+        paciente.wrapOn(factura_pdf,600,600)
         paciente.drawOn(factura_pdf,12,posicion_vertical)
         return paciente
           
@@ -849,11 +843,11 @@ class InformeFacturaPDF(View):
                 if factura.idCompra.idPaciente.username == paciente and datetime.strftime(factura.idCompra.fecha,'%Y-%m-%d') <= formato_fecha_actual])],
         ]
         
-        compra_paciente = Table(datos_compra)
+        compra_paciente = Table(datos_compra, colWidths=[7 * cm, 10 * cm, 10 * cm, 10 * cm]) 
         compra_paciente.setStyle(TableStyle(
             [
                 ('ALIGN',(0,0),(3,16),'CENTER'),
-                ('GRID',(0,0), (-1, -1), 3,colors.blue),
+                ('GRID',(0,0), (-1, -1), 2,colors.black),
                 ('FONTSIZE',(0, 0),(-1, -1), 12),
                 ('BACKGROUND', (0, 0), (0, 7), colors.Color(20, 121, 195)),
                 ('BOX',(0, 0),(-1, -1),1.25,colors.black),
