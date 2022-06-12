@@ -88,7 +88,7 @@ class LogoutAPIView(APIView):
 # Para poder seleccionar los médicos en la aplicación de ionic
 class MedicoApiView(APIView):
     # Para acceder solamente si hemos iniciado sesión
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     
     def get(self, request, format=None, *args, **kwargs):
         medico = Medico.objects.all()
@@ -102,7 +102,7 @@ class MedicoApiView(APIView):
         return Response(serializer_medico.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class CitasPacienteApiView(APIView):
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
     
     # Para obtener el médico seleccionado
     def get_object(self, pk):
