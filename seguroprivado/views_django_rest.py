@@ -1,6 +1,5 @@
 from datetime import datetime
-from django.http import Http404, HttpResponseRedirect
-from django.contrib import messages
+from django.http import Http404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -10,7 +9,7 @@ from seguroprivado.models import Cita, Paciente, Medico
 from django.db.models import Q
 
 # Importaciones para el API REST de Django
-from seguroprivado.serializers import MedicoSerializers, CitaSerializers
+from seguroprivado.serializers import MedicoSerializers, CitaSerializers, UserSerializer
 from lib2to3.pgen2.parse import ParseError
 from collections import OrderedDict
 from rest_framework import serializers
@@ -68,7 +67,7 @@ class TokenRestView(APIView):
                         if get_token:
                             # Para generar un nuevo token, después de eliminarse el último utilizado
                             return Response({
-                                'detail': str(user)+' ha iniciado sesión correctamente',
+                                'detail': 'El paciente '+str(user)+' ha iniciado sesión correctamente',
                                 'token': token.key
                             }, status = status.HTTP_201_CREATED)
                         else:
@@ -80,15 +79,23 @@ class TokenRestView(APIView):
 
 # Para cerrar sesión de los pacientes eliminando el token de la sesión actual
 class LogoutAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request, format=None):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_200_OK)
 
+# Buscamos los usuarios de la base de datos
+class UsuarioApiView(APIView):
+    def get(self, request, format=None, *args, **kwargs):
+        usuario = User.objects.all()
+        serializer_usuario = UserSerializer(usuario, many=True)
+        return Response(serializer_usuario.data)
 
 # Para poder seleccionar los médicos en la aplicación de ionic
 class MedicoApiView(APIView):
     # Para acceder solamente si hemos iniciado sesión
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request, format=None, *args, **kwargs):
         medico = Medico.objects.all()
@@ -102,7 +109,7 @@ class MedicoApiView(APIView):
         return Response(serializer_medico.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class CitasPacienteApiView(APIView):
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     # Para obtener el médico seleccionado
     def get_object(self, pk):
