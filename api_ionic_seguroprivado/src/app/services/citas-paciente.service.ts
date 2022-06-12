@@ -7,23 +7,41 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class CitasPacienteService {
-  apiSeguroPrivado = environment.api;// poner el enlace de la api en los entornos
+  apiUrl = environment.api;// poner el enlace de la api en los entornos
   tok: any;
   token: any;
   cita: any;
   citas: any;
   id: number;
 
-  constructor(private http: HttpClient, private alertCitasCtrl: AlertController) { }
+  constructor(private httpCitas: HttpClient, private alertCitasCtrl: AlertController) { }
 
-  /** Para mostrar las citas del paciente */
+  /** Funciones patra gestionar las citas del paciente */
+  getEncabezadoCitasPaciente() {
+    return new Promise(res => {
+      this.httpCitas.post(this.apiUrl+'/citas_paciente/?id='+localStorage.getItem('medico_id'),{
+        //headers: new HttpHeaders().set('Authorization', 'Token '+localStorage.getItem('token'))
+        headers: new HttpHeaders().append('Content-Type','application/json')
+      }).subscribe(data => {
+        this.cita = data;
+        this.cita = this.cita.data;
+        res(data);
+      }, error => {
+        console.log('Error al mostrar el contador de artículos '+error);
+      });
+    });
+  }
+
   async obtenerCitasRealizadasPaciente() {
     return new Promise<any>(res => {
-      this.http.get(this.apiSeguroPrivado+'/citas/').subscribe(data => {
+      this.httpCitas.get(this.apiUrl+'/citas_paciente/', {
+        headers: new HttpHeaders().append('Content-Type','application/json')
+      }).subscribe(data => {
         this.citas = data;
         this.citas = this.citas.data;
         res(data);
-      }, error => {
+      }, (error) => {
+        console.log(error);
         console.log('Este paciente no tiene citas realizadas');
       });
     });

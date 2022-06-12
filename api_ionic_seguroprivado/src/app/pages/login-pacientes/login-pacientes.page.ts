@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { NavController, AlertController } from '@ionic/angular';
+import { NavController, AlertController, LoadingController } from '@ionic/angular';
 import { LoginPacientesService } from '../../services/login-pacientes.service';
 
 @Component({
@@ -9,6 +9,8 @@ import { LoginPacientesService } from '../../services/login-pacientes.service';
   styleUrls: ['./login-pacientes.page.scss'],
 })
 export class LoginPacientesPage implements OnInit {
+  @Input() usuarioPaciente: string;
+
   tok: any;
   token: any;
   usuario: any;
@@ -16,9 +18,9 @@ export class LoginPacientesPage implements OnInit {
   username: string;
   password: string;
   medicos: any;
+  medico: any;
   medicoSalesin: any[] = [];
-  pacienteConfirmed: any;
-  datosPaciente: any;
+  medicoSeleccionado: any;
 
   user = new FormGroup({
     username: new FormControl('', [Validators.required]),
@@ -26,15 +28,21 @@ export class LoginPacientesPage implements OnInit {
   });
 
   constructor(private apiService: LoginPacientesService, private navCtrl: NavController,
-    private alertCtrl: AlertController) { }
+    private loadingCtrl: LoadingController, private alertCtrl: AlertController) {}
+
 
   ngOnInit() {
     console.log('Página de login de pacientes');
-    this.login();
   }
 
   async login() {
-    if (this.user.valid) {
+    // Mostramos médicos cuando pulsamos al botón de login
+    await this.loadLogin('Cargando aplicación...');
+
+    console.log('Médicos del seguro obtenidos');
+    await this.getMedicos();
+
+    /*if (this.user.valid) {
       this.datosPaciente = this.user.value;
       this.username = this.datosPaciente.username;
       this.password = this.datosPaciente.password;
@@ -50,11 +58,45 @@ export class LoginPacientesPage implements OnInit {
           usuario = await this.apiService.obtenerMedicos();
           usuario=usuario.data;
         });
-    }
+    }*/
   }
 
+  /** Mensaje paar cuando hemos iniciado sesión con el paciente correctamente */
+  async loadLogin(message: string) {
+    const loading = await this.loadingCtrl.create({
+      message,
+      duration: 1.5,
+    });
+
+    await loading.present();
+
+    const { role, data } = await loading.onDidDismiss();
+
+    console.log('Ha iniciado sesión correctamente');
+    this.alertLogin();
+  }
+
+  async alertLogin() {
+    const login = await this.alertCtrl.create({
+      header: 'Login',
+      cssClass: 'loginCss',
+      message: '<strong>Ha iniciado sesión correctamente</strong>',
+      buttons: [
+        {
+          text: 'Aceptar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (deactived) => {
+          }
+        }
+      ]
+    });
+    // Mostramos la alerta en el inicio
+    await login.present();
+  }
+
+  /** Obtenemos y seleccionamos uno de los médicos obtenidos */
   async getMedicos() {
-    // Obtenemos los médicos para el select
     this.apiService.obtenerMedicos()
     .then(medicos => {
       this.medicos = medicos;
@@ -67,5 +109,17 @@ export class LoginPacientesPage implements OnInit {
         }
       }
     });
+  }
+
+  async seleccionarMedico() {
+    console.log('Médico seleccionado: '+this.medicoSeleccionado);
+    this.medico = this.medicoSeleccionado;
+    await this.toCitasPaciente(this.medicoSeleccionado);
+  }
+
+  /** Para las citas del paciente con el médico seleccionado*/
+  async toCitasPaciente(medico: string) {
+    console.log('Citas realizadas del paciente con el médico '+medico);
+    this.navCtrl.navigateForward('/citas-paciente');
   }
 }

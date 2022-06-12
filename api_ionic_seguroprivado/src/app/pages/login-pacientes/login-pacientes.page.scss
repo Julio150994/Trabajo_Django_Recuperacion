@@ -8,10 +8,17 @@
     margin-left: 10em;
 }
 
+
+/* Elementos a dar estilos  */
+
 #titulo {
     text-align: center;
     margin-bottom: 8%;
     margin-top: 5%;
+}
+
+#paciente {
+    display: none;
 }
 
 #boton_login {
@@ -19,5 +26,6 @@
 }
 
 #select_medico {
-    margin-top: 6%;
+    margin-top: 3em;
+    margin-bottom: 3.3em;
 }

@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class LoginPacientesService {
-  apiSeguroPrivado = environment.api;// poner el enlace de la api en los entornos
+  apiUrl = environment.api;// poner el enlace de la api en los entornos
   username: string;
   password: string;
   tok: any;
@@ -20,7 +20,7 @@ export class LoginPacientesService {
   /* Para el inicio de sesión con los pacientes */
   loginPaciente(user, pwd) {
     return new Promise(res => {
-      this.login.post<any>(this.apiSeguroPrivado+'/token/',{
+      this.login.post<any>(this.apiUrl+'/token/',{
         username: user,
         password: pwd
       }).subscribe(data => {
@@ -57,7 +57,7 @@ export class LoginPacientesService {
   /** Para obtener todos los médicos */
   obtenerMedicos() {
     return new Promise(resolve => {
-      this.login.get(this.apiSeguroPrivado+'/medicos/', {
+      this.login.get(this.apiUrl+'/medicos/', {
         headers: new HttpHeaders().append('Content-Type','application/json')
       }).subscribe(res => {
         resolve(res);
