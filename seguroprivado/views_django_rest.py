@@ -34,6 +34,8 @@ class TokenRestView(APIView):
                 'Formato JSON inválido - {0}'.format(error.detail),
                 status=status.HTTP_400_BAD_REQUEST
             )
+            
+        user = User.objects.get(username=data["user"])
         
         # Validamos las credenciales de usuario
         if "user" not in data or "password" not in data:
@@ -41,8 +43,6 @@ class TokenRestView(APIView):
                 'Credenciales de usuario erróneas',
                 status = status.HTTP_401_UNAUTHORIZED
             )
-            
-        user = User.objects.get(username=data["user"])
         
         # Validación para el usuario del paciente
         if not user:
@@ -78,14 +78,12 @@ class TokenRestView(APIView):
                             }, status = status.HTTP_409_CONFLICT)
                     
 
-# Para cerrar sesión de los pacientes
+# Para cerrar sesión de los pacientes eliminando el token de la sesión actual
 class LogoutAPIView(APIView):
-   def get(self, request, *args, **kwargs):
-       token = request.GET.get('token')
-       token_paciente = Token.objects.filter(key=token).first()
-       
-       if token_paciente:
-            paciente = token_paciente.user
+    def get(self, request, format=None):
+        request.user.auth_token.delete()
+        return Response(status=status.HTTP_200_OK)
+
 
 # Para poder seleccionar los médicos en la aplicación de ionic
 class MedicoApiView(APIView):
