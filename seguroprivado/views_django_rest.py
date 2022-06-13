@@ -13,7 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 # Para permitir el acceso a los pacientes con un token generado #
-class TokenRestView(APIView):
+class LoginAPIView(APIView):
     def get(self, request, format=None):
         return Response({'detail':"Respuesta para el paciente"})
     
