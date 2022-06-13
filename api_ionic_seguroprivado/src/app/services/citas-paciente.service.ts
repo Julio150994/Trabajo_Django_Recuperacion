@@ -20,9 +20,9 @@ export class CitasPacienteService {
   constructor(private httpCitas: HttpClient, private alertCtrl: AlertController) { }
 
 
-  async obtenerCitasRealizadasPaciente(token: any) {
+  async obtenerCitasRealizadasPaciente(idMedico: number, token: any) {
     return new Promise(res => {
-      this.httpCitas.get<any>(this.apiUrl+'/citas_paciente/', {
+      this.httpCitas.get<any>(this.apiUrl+'/citas_paciente/?id='+idMedico, {
         headers: new HttpHeaders().set('Authorization', 'Token '+token)
       }).subscribe(data => {
         this.citas = data;

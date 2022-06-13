@@ -41,8 +41,7 @@
   <ion-item *ngIf="medicos" id="select_medico">
     <ion-label>Seleccione un médico</ion-label>
     <ion-select cancel-text="Cancelar" ok-text="Ok" [(ngModel)]="medicoSeleccionado" (ionChange)="seleccionarMedico()">
-      <!-- {{ medico.id }} ó {{ medico.username }} -->
-      <ion-select-option *ngFor="let medico of medicoSalesin" value="{{ medico.username }}">{{ medico.username }}</ion-select-option>
+      <ion-select-option *ngFor="let medico of medicoSalesin" value="{{ medico.id }}">{{ medico.username }}</ion-select-option>
     </ion-select>
   </ion-item>
 </ion-content>

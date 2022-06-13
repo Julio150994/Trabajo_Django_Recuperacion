@@ -27,12 +27,11 @@ export class CitasPacientePage implements OnInit {
 
   ngOnInit() {
     console.log('Citas realizadas del paciente con médico');
-    this.getCitasPaciente();
+    //this.getCitasPaciente();
   }
 
-  /** Para cerrar la sesión del paciente */
   logout() {
-    localStorage.removeItem('token');
+    // Para cerrar la sesión del paciente
     this.loadPaciente('Cerrando sesión...');
   }
 
@@ -47,7 +46,7 @@ export class CitasPacientePage implements OnInit {
     const { role, data } = await loading.onDidDismiss();
 
     // Cerramos la sesión del paciente durante la carga mediante el token
-    this.token = localStorage.getItem('token');
+    console.log(localStorage.getItem('token'));
     await this.apiService.logoutPacientes(this.token);
 
     this.navCtrl.navigateForward('/login-pacientes');
@@ -83,7 +82,7 @@ export class CitasPacientePage implements OnInit {
     });*/
 
     // Obtenemos los datos de las citas del paciente
-    this.apiService.obtenerCitasRealizadasPaciente(localStorage.getItem('token')).then(data => {
+    /*this.apiService.obtenerCitasRealizadasPaciente(localStorage.getItem('token')).then(data => {
       this.citasPaciente = data;
       this.citasPaciente = this.citasPaciente.data;
       this.citas = this.citasPaciente;
@@ -93,6 +92,6 @@ export class CitasPacientePage implements OnInit {
           this.citasRealizadas.push(this.citas[cita]);
         }
       }
-    });
+    });*/
   }
 }

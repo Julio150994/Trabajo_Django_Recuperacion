@@ -24,7 +24,7 @@ class PacienteSerializers(serializers.ModelSerializer):
 class MedicoSerializers(serializers.ModelSerializer):
     class Meta:
         model = Medico
-        fields = ['nombre','apellidos','edad','fechaalta','especialidad','username']
+        fields = ['id','nombre','apellidos','edad','fechaalta','especialidad','username']
 
 class CitaSerializers(serializers.ModelSerializer):
     # Para relacionar entre serializers

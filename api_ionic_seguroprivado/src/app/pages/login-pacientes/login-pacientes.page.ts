@@ -18,10 +18,11 @@ export class LoginPacientesPage implements OnInit {
   usuario: any;
   idUsuario: any;
   datosPaciente: any;
+  citas: any;
   username: string;
   password: string;
   medicos: any;
-  medico: any;
+  idMedico: any;
   medicoSalesin: any[] = [];
   medicoSeleccionado: any;
 
@@ -117,7 +118,6 @@ export class LoginPacientesPage implements OnInit {
       .then(async data => {
         this.tok = data;
         this.token = this.tok.token;
-
         // Mostramos mensaje de login de usuario
         await this.cargarUsuario('Cargando aplicación...');
 
@@ -159,13 +159,19 @@ export class LoginPacientesPage implements OnInit {
   }
 
   async seleccionarMedico() {
-    this.medico = this.medicoSeleccionado;
-    await this.toCitasPaciente(this.medicoSeleccionado);
+    this.idMedico = this.medicoSeleccionado;
+    await this.toCitasPaciente(this.medicoSeleccionado, this.token);
   }
 
   /** Para las citas del paciente con el médico seleccionado*/
-  async toCitasPaciente(medico: string) {
-    console.log('Citas realizadas del paciente con el médico '+medico);
+  async toCitasPaciente(idMedico: number, token: any) {
+    // Para obtener las citas con el médico seleccionado
+    await this.citasService.obtenerCitasRealizadasPaciente(idMedico, token)
+    .then(async data => {
+      this.citas = data;
+      this.citas = this.citas.data;
+    });
+
     this.navCtrl.navigateForward('/citas-paciente');
   }
 }
