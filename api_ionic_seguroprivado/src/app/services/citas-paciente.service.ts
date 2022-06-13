@@ -12,6 +12,7 @@ export class CitasPacienteService {
   cita: any;
   citas: any;
   mensajeLogout: string;
+  mensajeCitasRealizadas: string;
   token: any;
   refresh: any;
   authPaciente: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
@@ -28,10 +29,31 @@ export class CitasPacienteService {
         this.citas = this.citas.data;
         res(data);
       }, error => {
+        this.mensajeCitasRealizadas = 'El paciente no tiene citas realizadas';
         console.log(error);
-        console.error('Este paciente no tiene citas realizadas');
+        console.error(this.mensajeCitasRealizadas);
+        this.alertCitasRealizadas(this.mensajeCitasRealizadas);
       });
     });
+  }
+
+  // Mensaje de alerta para cuando el paciente no tiene citas realizadas con el médico seleccionado
+  async alertCitasRealizadas(mensajeCitas: string) {
+    const error = await this.alertCtrl.create({
+      header: 'WARNING',
+      cssClass: 'sessionCss',
+      message: '<strong>'+mensajeCitas+'</strong>',
+      buttons: [
+        {
+          text: 'Aceptar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (deactived) => {
+          }
+        }
+      ]
+    });
+    await error.present();
   }
 
   /** Para cerrar sesión de los usuarios pacientes */
