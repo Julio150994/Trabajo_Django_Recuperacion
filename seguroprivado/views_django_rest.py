@@ -6,12 +6,10 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from seguroprivado.models import Cita, Paciente, Medico
-from django.db.models import Q
 
 # Importaciones para el API REST de Django
 from seguroprivado.serializers import MedicoSerializers, CitaSerializers, UserSerializer
 from lib2to3.pgen2.parse import ParseError
-from collections import OrderedDict
 from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework import status
@@ -80,10 +78,21 @@ class TokenRestView(APIView):
 # Para cerrar sesión de los pacientes eliminando el token de la sesión actual
 class LogoutAPIView(APIView):
     permission_classes = [IsAuthenticated]
+    token = list()
     
-    def get(self, request, format=None):
-        request.user.auth_token.delete()
-        return Response(status=status.HTTP_200_OK)
+    def post(self, request, format=None):
+        get_token = Token.objects.get(user=request.user)
+        self.token.append(get_token)
+        
+        if get_token:
+            request.user.auth_token.delete()
+            
+            # Cerramos la sesión eliminando el token
+            return Response({
+                'detail': 'El paciente '+str(request.user)+' ha cerrado sesión éxitosamente',
+                'token': self.token[0].key
+            }, status=status.HTTP_200_OK)
+
 
 # Buscamos los usuarios de la base de datos
 class UsuarioApiView(APIView):
