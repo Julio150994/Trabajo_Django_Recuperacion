@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NavController, AlertController, LoadingController } from '@ionic/angular';
 import { LoginPacientesService } from '../../services/login-pacientes.service';
-import { CitasPacienteService } from '../../services/citas-paciente.service';
 
 @Component({
   selector: 'app-login-pacientes',
@@ -10,31 +9,19 @@ import { CitasPacienteService } from '../../services/citas-paciente.service';
   styleUrls: ['./login-pacientes.page.scss'],
 })
 export class LoginPacientesPage implements OnInit {
-  @Input() paciente: string;
-
   tok: any;
   token: any;
-  request: any;
-  usuario: any;
-  idUsuario: any;
-  datosPaciente: any;
-  citas: any;
+  paciente: any;
   username: string;
   password: string;
-  medicos: any;
-  idMedico: any;
-  medicoSalesin: any[] = [];
-  medicoSeleccionado: any;
 
   user = new FormGroup({
     username: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),
   });
 
-  constructor(private pacientesService: LoginPacientesService, private citasService: CitasPacienteService,
-    private navCtrl: NavController, private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController) {}
-
+  constructor(private apiLoginService: LoginPacientesService, private navCtrl: NavController,
+    private loadingCtrl: LoadingController, private alertCtrl: AlertController) {}
 
   ngOnInit() {
     console.log('Página de login de pacientes');
@@ -50,7 +37,24 @@ export class LoginPacientesPage implements OnInit {
     await loading.present();
 
     const { role, data } = await loading.onDidDismiss();
-    this.pacienteLogueado();
+  }
+
+  async errorCredenciales() {
+    const credenciales = await this.alertCtrl.create({
+      header: 'ERROR',
+      cssClass: 'errorCss',
+      message: '<strong>Error en las credenciales de usuario</strong>',
+      buttons: [
+        {
+          text: 'Aceptar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (deactived) => {
+          }
+        }
+      ]
+    });
+    await credenciales.present();
   }
 
   async usuarioNoEncontrado(username: string) {
@@ -110,19 +114,22 @@ export class LoginPacientesPage implements OnInit {
 
   async login() {
     if (this.user.valid) {
-      this.datosPaciente = this.user.value;
-      this.username = this.datosPaciente.username;
-      this.password = this.datosPaciente.password;
+      this.paciente = this.user.value;
+      this.username = this.paciente.username;
+      this.password = this.paciente.password;
 
-      await this.pacientesService.loginPaciente(this.username, this.password)
+      await this.apiLoginService.loginPaciente(this.username, this.password)
       .then(async data => {
         this.tok = data;
         this.token = this.tok.token;
+        localStorage.setItem('token',this.token);
+
         // Mostramos mensaje de login de usuario
         await this.cargarUsuario('Cargando aplicación...');
 
-        // Obtenemos los médicos del sistema con el token de sesión
-        await this.getMedicos(this.token);
+        // Redirigimos a la otra página y mostramos mensaje en la otra página
+        this.navCtrl.navigateForward('/citas-paciente');
+        this.pacienteLogueado();
 
         /*let usuarios: any;
         usuarios = await this.pacientesService.obtenerUsuarios();
@@ -140,38 +147,5 @@ export class LoginPacientesPage implements OnInit {
         }*/
       });
     }
-  }
-
-  /** Obtenemos y seleccionamos uno de los médicos obtenidos después de iniciar sesión*/
-  async getMedicos(tok: any) {
-    this.pacientesService.obtenerMedicos(tok)
-    .then(medicos => {
-      this.medicos = medicos;
-      if (this.medicos == null) {
-        console.error('No se han encontrado médicos en el sistema.');
-      }
-      else {
-        for (let i = 0; i < this.medicos?.length; i++) {
-          this.medicoSalesin.push(this.medicos[i]);
-        }
-      }
-    });
-  }
-
-  async seleccionarMedico() {
-    this.idMedico = this.medicoSeleccionado;
-    await this.toCitasPaciente(this.medicoSeleccionado, this.token);
-  }
-
-  /** Para las citas del paciente con el médico seleccionado*/
-  async toCitasPaciente(idMedico: number, token: any) {
-    // Para obtener las citas con el médico seleccionado
-    await this.citasService.obtenerCitasRealizadasPaciente(idMedico, token)
-    .then(async data => {
-      this.citas = data;
-      this.citas = this.citas.data;
-    });
-
-    this.navCtrl.navigateForward('/citas-paciente');
   }
 }

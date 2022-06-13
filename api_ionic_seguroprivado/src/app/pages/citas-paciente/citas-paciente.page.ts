@@ -3,6 +3,7 @@ import { LoadingController, AlertController, NavController } from '@ionic/angula
 import { environment } from '../../../environments/environment.prod';
 import { CitasPacienteService } from '../../services/citas-paciente.service';
 
+
 @Component({
   selector: 'app-citas-paciente',
   templateUrl: './citas-paciente.page.html',
@@ -10,32 +11,77 @@ import { CitasPacienteService } from '../../services/citas-paciente.service';
 })
 export class CitasPacientePage implements OnInit {
   url = environment.api;
+  usuario: any;
+  idUsuario: any;
   citasPaciente: any;
   citasRealizadas: any[] = [];
   citas: any;
   encabezadoCitas: any;
-  id: any;
+  idMedico: any;
   medicos: any;// funciona al pulsar el botón de logout (ocultando el select de médicos)
   tok: any;
   token: any;
   username: any;
   tokenEliminado: any;
   paciente: any;
+  medicoSalesin: any[] = [];
+  medicoSeleccionado: any;
+
 
   constructor(private loadingCtrl: LoadingController, private alertCtrl: AlertController,
-    private navCtrl: NavController, private apiService: CitasPacienteService) { }
+    private navCtrl: NavController, private apiCitasService: CitasPacienteService) {}
 
-  ngOnInit() {
-    console.log('Citas realizadas del paciente con médico');
-    //this.getCitasPaciente();
+
+  async ngOnInit() {
+    console.log('Página de las citas del paciente');
+
+    // Establecemos el token de sesión actual para obtener los médicos
+    this.token = localStorage.getItem('token');
+    this.getMedicos(this.token);
+  }
+
+  /** Obtenemos y seleccionamos uno de los médicos obtenidos después de iniciar sesión*/
+  async getMedicos(tok: any) {
+    this.apiCitasService.obtenerMedicos(tok)
+    .then(medicos => {
+      this.medicos = medicos;
+      if (this.medicos == null) {
+        console.error('No se han encontrado médicos en el sistema.');
+      }
+      else {
+        for (let i = 0; i < this.medicos?.length; i++) {
+          this.medicoSalesin.push(this.medicos[i]);
+        }
+      }
+    });
+  }
+
+  async seleccionarMedico() {
+    this.idMedico = this.medicoSeleccionado;
+    await this.toCitasPaciente(this.medicoSeleccionado, this.token);
+  }
+
+  /** Para las citas del paciente con el médico seleccionado */
+  async toCitasPaciente(idMedico: number, token: any) {
+    // Para obtener las citas con el médico seleccionado
+    await this.apiCitasService.obtenerCitasRealizadasPaciente(idMedico, token)
+    .then(async data => {
+      this.citas = data;
+      for (let i = 0; i < this.citas?.length; i++) {
+        this.citasRealizadas.push(this.citas[i]);
+      }
+    });
+
+    this.navCtrl.navigateForward('/citas-paciente');
   }
 
   logout() {
     // Para cerrar la sesión del paciente
-    this.loadPaciente('Cerrando sesión...');
+    this.token = localStorage.getItem('token');
+    this.loadPaciente('Cerrando sesión...', this.token);
   }
 
-  async loadPaciente(message: string) {
+  async loadPaciente(message: string, token: any) {
     const loading = await this.loadingCtrl.create({
       message,
       duration: 3,
@@ -46,8 +92,7 @@ export class CitasPacientePage implements OnInit {
     const { role, data } = await loading.onDidDismiss();
 
     // Cerramos la sesión del paciente durante la carga mediante el token
-    console.log(localStorage.getItem('token'));
-    await this.apiService.logoutPacientes(this.token);
+    await this.apiCitasService.logoutPacientes(token);
 
     this.navCtrl.navigateForward('/login-pacientes');
     this.alertLogoutPaciente();
@@ -70,28 +115,5 @@ export class CitasPacientePage implements OnInit {
     });
     // Mostramos la alerta en el inicio
     await logout.present();
-  }
-
-  /** Para obtener las citas realizadas del paciente */
-  async getCitasPaciente() {
-    // Validaciones de las citas
-    /*this.apiService.getEncabezadoCitasPaciente()
-    .then(async data => {
-      this.encabezadoCitas = data;
-      this.encabezadoCitas = this.encabezadoCitas.data;
-    });*/
-
-    // Obtenemos los datos de las citas del paciente
-    /*this.apiService.obtenerCitasRealizadasPaciente(localStorage.getItem('token')).then(data => {
-      this.citasPaciente = data;
-      this.citasPaciente = this.citasPaciente.data;
-      this.citas = this.citasPaciente;
-
-      for (let cita = 0; cita < this.citas?.length; cita++) {
-        if (this.citas[cita].idMedico.username === localStorage.getItem('medico_id')) {
-          this.citasRealizadas.push(this.citas[cita]);
-        }
-      }
-    });*/
   }
 }

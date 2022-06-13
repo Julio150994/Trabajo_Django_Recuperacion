@@ -36,12 +36,4 @@
       <span>Login</span>
     </ion-button>
   </form>
-
-  <!-- Al hacer login mostramos el select -->
-  <ion-item *ngIf="medicos" id="select_medico">
-    <ion-label>Seleccione un médico</ion-label>
-    <ion-select cancel-text="Cancelar" ok-text="Ok" [(ngModel)]="medicoSeleccionado" (ionChange)="seleccionarMedico()">
-      <ion-select-option *ngFor="let medico of medicoSalesin" value="{{ medico.id }}">{{ medico.username }}</ion-select-option>
-    </ion-select>
-  </ion-item>
 </ion-content>

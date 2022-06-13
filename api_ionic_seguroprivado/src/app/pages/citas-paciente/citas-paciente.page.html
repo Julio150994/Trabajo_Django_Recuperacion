@@ -7,35 +7,42 @@
         Logout
       </ion-button>
     </ion-buttons>
-    <ion-title align="center" id="titulo">Citas del paciente</ion-title>
+    <ion-title align="center" id="titulo">Citas realizadas de paciente</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
+  <!-- Al hacer login mostramos este select -->
+  <ion-item *ngIf="medicos" id="select_medico">
+    <ion-label>Seleccione un médico</ion-label>
+    <ion-select cancel-text="Cancelar" ok-text="Ok" [(ngModel)]="medicoSeleccionado" (ionChange)="seleccionarMedico()">
+      <ion-select-option *ngFor="let medico of medicoSalesin" value="{{ medico.id }}">{{ medico.username }}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
   <!-- Mostramos las citas realizadas del paciente en ion-cards -->
-  <ion-card class="card">
-    <ion-item color="warning" *ngIf="encabezadoCitas?.length === 0">
+  <!--<ion-item color="warning" *ngIf="encabezadoCitas?.length === 0">
       <ion-label class="encabezado">No se han encontrado citas para {{ usuarioPaciente }}.</ion-label>
     </ion-item>
     <ion-item color="tertiary" *ngIf="encabezadoCitas?.length > 0">
       <ion-label class="encabezado">{{ encabezadoCitas?.length }} citas de {{ usuarioPaciente }}</ion-label>
-    </ion-item>
-  </ion-card>
+    </ion-item>-->
   
-  <ion-item-sliding *ngFor="let cita of citasRealizadas" class="sliding">
-      <ion-item>
-      <ion-label>
-        <ion-label slot="start">
-          <h3><strong>Nombre y apellidos del médico: </strong>{{ cita.idMedico.nombre }} {{ cita.idMedico.apellidos }}</h3>
-          <h3><strong>Edad del médico: </strong>{{ cita.idMedico.edad }}</h3>
-          <h3><strong>Fecha de alta del médico: </strong>{{ cita.idMedico.fechaalta }}</h3>
-          <h3><strong>Especialidad: </strong>{{ cita.idMedico.especialidad }}</h3>
-          <h3><strong>Nombre de usuario: </strong>{{ cita.idMedico.username }}</h3>
-          <h3><strong>Fecha de cita: </strong>{{ cita.idMedico.username }}</h3>
-          <h3><strong>Tratamiento: </strong>{{ cita.tratamiento }}</h3>
-          <h3><strong>Observaciones: </strong>{{ cita.observaciones }}</h3>
-        </ion-label>
-      </ion-label>
-    </ion-item>
-  </ion-item-sliding>
+  <ion-label *ngFor="let cita of citasRealizadas">
+    <ion-card class="card" id="datosCita">
+      <ion-card-header color="secondary" id="content">
+          <ion-card-title>Cita de paciente</ion-card-title>
+      </ion-card-header>
+      <ion-card-content class="text-white">
+        <h3><strong>Nombre y apellidos del médico: </strong>{{ cita.nombre }} {{ cita.apellidos }}</h3>
+        <h3><strong>Edad del médico: </strong>{{ cita.edad }}</h3>
+        <h3><strong>Fecha de alta del médico: </strong>{{ cita.fecha_alta }}</h3>
+        <h3><strong>Especialidad: </strong>{{ cita.especialidad }}</h3>
+        <h3><strong>Nombre de usuario: </strong>{{ cita.username }}</h3>
+        <h3><strong>Fecha de cita: </strong>{{ cita.fecha_cita }}</h3>
+        <h3><strong>Tratamiento: </strong>{{ cita.tratamiento }}</h3>
+        <h3><strong>Observaciones: </strong>{{ cita.observaciones }}</h3>
+      </ion-card-content>
+    </ion-card>
+  </ion-label>
 </ion-content>

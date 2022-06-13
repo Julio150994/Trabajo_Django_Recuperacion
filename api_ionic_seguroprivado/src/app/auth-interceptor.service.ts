@@ -20,20 +20,19 @@ export class AuthInterceptorService {
     if (token) {
       request = httpRequest.clone({
         setHeaders: {
-          authorization: `Bearer ${ token }`
+          authorization: `Token ${ token }`
         }
       });
     }
 
     return httpHandler.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
+
         if (error.status === 401) {
-          this.router.navigateByUrl('/login_pacientes');
-          return throwError(error);
+          this.router.navigateByUrl('/login-pacientes');
         }
-        else {
-          this.router.navigateByUrl('/citas_paciente');
-        }
+
+        return throwError(error);
       })
     );
   }

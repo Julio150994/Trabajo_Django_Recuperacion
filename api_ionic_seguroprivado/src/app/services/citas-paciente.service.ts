@@ -19,12 +19,25 @@ export class CitasPacienteService {
 
   constructor(private httpCitas: HttpClient, private alertCtrl: AlertController) { }
 
+  /** Para obtener todos los médicos */
+  obtenerMedicos(tok: any) {
+    return new Promise(resolve => {
+      this.httpCitas.get(this.apiUrl+'/medicos/', {
+        headers: new HttpHeaders().set('Authorization', 'Token '+tok)
+      }).subscribe(res => {
+        resolve(res);
+      }, (error) => {
+        console.error('No se han podido obtener los médicos '+error);
+      });
+    });
+  }
 
   async obtenerCitasRealizadasPaciente(idMedico: number, token: any) {
     return new Promise(res => {
       this.httpCitas.get<any>(this.apiUrl+'/citas_paciente/?id='+idMedico, {
         headers: new HttpHeaders().set('Authorization', 'Token '+token)
       }).subscribe(data => {
+        console.log(data);
         this.citas = data;
         this.citas = this.citas.data;
         res(data);

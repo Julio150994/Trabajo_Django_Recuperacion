@@ -16,7 +16,7 @@ export class LoginPacientesService {
   usuario: any;
   id: number;
 
-  constructor(private httpLogin: HttpClient, private alertPaciente: AlertController) {}
+  constructor(private httpLogin: HttpClient) {}
 
   /* Para el inicio de sesión con los pacientes */
   loginPaciente(username, pwd) {
@@ -47,19 +47,6 @@ export class LoginPacientesService {
         res(data);
       }, error => {
         console.error('Error al obtener los usuarios '+error);
-      });
-    });
-  }
-
-  /** Para obtener todos los médicos */
-  obtenerMedicos(tok: any) {
-    return new Promise(resolve => {
-      this.httpLogin.get(this.apiUrl+'/medicos/', {
-        headers: new HttpHeaders().set('Authorization', 'Token '+tok)
-      }).subscribe(res => {
-        resolve(res);
-      }, (error) => {
-        console.error('No se han podido obtener los médicos '+error);
       });
     });
   }
