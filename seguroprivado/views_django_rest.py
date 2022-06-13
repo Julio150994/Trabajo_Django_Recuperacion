@@ -1,5 +1,4 @@
 from datetime import datetime
-from django.http import Http404
 from django.contrib.auth.models import User
 from seguroprivado.models import Cita, Paciente, Medico
 
@@ -7,7 +6,7 @@ from seguroprivado.models import Cita, Paciente, Medico
 from seguroprivado.serializers import MedicoSerializers, CitaSerializers, UserSerializer
 from lib2to3.pgen2.parse import ParseError
 from rest_framework.response import Response
-from rest_framework import status, viewsets
+from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -43,12 +42,12 @@ class LoginAPIView(APIView):
             # Validamos que solamente puedan acceder usuarios que sean pacientes
             if user.is_superuser:
                 return Response({
-                    'error': 'Error. El usuario no debe ser administrador'
+                    'error': 'El usuario no debe ser administrador'
                 }, status = status.HTTP_401_UNAUTHORIZED)
             else:
                 if not user.is_superuser and user.is_staff:
                     return Response({
-                        'error': 'Error. El usuario no debe ser médico'
+                        'error': 'El usuario no debe ser médico'
                     }, status = status.HTTP_401_UNAUTHORIZED)
                 else:
                     if not user.is_staff:
@@ -63,26 +62,23 @@ class LoginAPIView(APIView):
                         else:
                             token.delete()
                             return Response({
-                                'error': 'Ya se ha iniciado sesión con este paciente',
+                                'error': 'Ya se ha iniciado sesión con el paciente '+str(user),
                             }, status = status.HTTP_409_CONFLICT)
                     
 
 # Para cerrar sesión de los pacientes eliminando el token de la sesión actual
 class LogoutAPIView(APIView):
     permission_classes = [IsAuthenticated]
-    token = list()
     
     def post(self, request, format=None):
         get_token = Token.objects.get(user=request.user)
-        self.token.append(get_token)
         
         if get_token:
             request.user.auth_token.delete()
             
             # Cerramos la sesión eliminando el token
             return Response({
-                'detail': 'El paciente '+str(request.user)+' ha cerrado sesión éxitosamente',
-                'token': self.token[0].key
+                'detail': str(request.user)+' ha cerrado sesión éxitosamente'
             }, status = status.HTTP_200_OK)
 
 
@@ -109,59 +105,41 @@ class MedicosAPIView(APIView):
             return Response(serializer_medico.data, status=status.HTTP_200_OK)
         return Response(serializer_medico.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-# Para encontrar el id del médico
-class MedicoSeleccionadoAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = MedicoSerializers
     
-    def get_queryset(self):
-        medicos = Medico.objects.all()
-        return medicos
-    
-    def get(self, request, format=None):
-        try:
-            medico_id = request.query_params["id"]
-            
-            if medico_id != None:
-                medico = Medico.objects.get(id=medico_id)
-                serializer_medico = MedicoSerializers(medico)
-        except:
-            medico = self.get_queryset()
-            return Response({
-                'error': 'Error. Médico no encontrado en el sistema',
-            }, status = status.HTTP_404_NOT_FOUND)
-        
-        return Response(serializer_medico.data)
-
-    
-# Para obtener las citas del paciente con el médico seleccionado (herencia de clases)
+# Para obtener las citas del paciente con el médico seleccionado
 class CitasPacienteApiView(APIView):
     permission_classes = [IsAuthenticated]
     
     # Para obtener el médico seleccionado
-    def get_object(self, pk):
-        try:
-            return Medico.objects.get(pk=pk)
-        except Medico.DoesNotExist:
-            raise Http404
+    def get_queryset(self):
+        medicos = Medico.objects.all()
+        return medicos
         
     # Para obtener las citas realizadas del paciente que ha tenido con el médico seleccionado
-    def get(self, request, pk, format=None):
-        medico = self.get_object(pk)# encontramos el médico seleccionado
-        print("Médico seleccionado: "+str(medico))
-        paciente = Paciente.objects.get(username=request.user)
-        
-        fecha_cita_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
-        formato_fecha_cita = datetime.strftime(fecha_cita_actual,'%Y-%m-%d')
-        
-        # Para citas realizadas menores que la fecha actual
-        citas_paciente = Cita.objects.filter(idPaciente=paciente).filter(fecha__lte=formato_fecha_cita).filter(realizada=True)
-        serializer_citas = CitaSerializers(citas_paciente, many=True)
-        
-        if citas_paciente.exists():
-            return Response(serializer_citas.data, status=status.HTTP_200_OK)
-        else:
-             return Response({
-                'detail': 'El paciente '+str(request.user)+' no tiene citas realizadas',
+    def get(self, request, format=None):
+        try:
+            # Encontramos el id del médico seleccionado
+            medico_id = request.query_params["id"]
+            
+            if medico_id != None:
+                medico = Medico.objects.get(id=medico_id)
+                paciente = Paciente.objects.get(username=request.user)
+                
+                fecha_cita_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
+                formato_fecha_cita = datetime.strftime(fecha_cita_actual,'%Y-%m-%d')
+                
+                # Para citas realizadas menores que la fecha actual
+                citas_paciente = Cita.objects.filter(idPaciente=paciente).filter(idMedico=medico).filter(fecha__lte=formato_fecha_cita).filter(realizada=True)
+                serializer_citas = CitaSerializers(citas_paciente, many=True)
+                
+                if citas_paciente.exists():
+                    return Response(serializer_citas.data, status=status.HTTP_200_OK)
+                else:
+                    return Response({
+                        'error': str(request.user)+' no tiene citas anteriores realizadas con el médico '+str(medico.username),
+                    }, status = status.HTTP_204_NO_CONTENT)
+        except:
+            medico = self.get_queryset()
+            return Response({
+                'error': 'Médico no contemplado en el sistema',
             }, status = status.HTTP_404_NOT_FOUND)

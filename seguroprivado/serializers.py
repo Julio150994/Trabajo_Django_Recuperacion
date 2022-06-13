@@ -28,12 +28,22 @@ class MedicoSerializers(serializers.ModelSerializer):
 
 class CitaSerializers(serializers.ModelSerializer):
     # Para relacionar entre serializers
-    paciente_id = serializers.IntegerField(write_only=True)
-    # 'idPaciente','paciente_id',
     medico_id = serializers.IntegerField(write_only=True)
     
     class Meta:
         model = Cita
-        fields = ['idPaciente','paciente_id','idMedico','medico_id','fecha','tratamiento','observaciones']
+        fields = ['idMedico','medico_id','fecha','tratamiento','observaciones']
         depth = 1 # para bajar un nivel
-        
+    
+    def to_representation(self, instance):
+        return {
+            'nombre': instance.idMedico.nombre,
+            'apellidos': instance.idMedico.apellidos,
+            'edad': instance.idMedico.edad,
+            'fecha_alta': instance.idMedico.fechaalta,
+            'especialidad': instance.idMedico.especialidad,
+            'username': instance.idMedico.username,
+            'fecha_cita': instance.fecha,
+            'tratamiento': instance.tratamiento,
+            'observaciones': instance.observaciones
+        }
