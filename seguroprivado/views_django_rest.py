@@ -85,7 +85,7 @@ class LogoutAPIView(APIView):
             return Response({
                 'detail': 'El paciente '+str(request.user)+' ha cerrado sesión éxitosamente',
                 'token': self.token[0].key
-            }, status=status.HTTP_200_OK)
+            }, status = status.HTTP_200_OK)
 
 
 # Buscamos los usuarios de la base de datos
@@ -136,4 +136,6 @@ class CitasPacienteApiView(APIView):
         if citas_paciente.exists():
             return Response(serializer_citas.data, status=status.HTTP_200_OK)
         else:
-            return Response(serializer_citas.errors, status=status.HTTP_400_BAD_REQUEST)
+             return Response({
+                'detail': 'El paciente '+str(request.user)+' no tiene citas realizadas',
+            }, status = status.HTTP_404_NOT_FOUND)
