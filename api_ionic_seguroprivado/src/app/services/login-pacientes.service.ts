@@ -46,7 +46,7 @@ export class LoginPacientesService {
         this.token = this.token.data;
         res(data);
       }, error => {
-        console.log('Error al obtener los usuarios '+error);
+        console.error('Error al obtener los usuarios '+error);
       });
     });
   }
@@ -59,7 +59,7 @@ export class LoginPacientesService {
       }).subscribe(res => {
         resolve(res);
       }, (error) => {
-        console.log(error);
+        console.error('No se han podido obtener los médicos '+error);
       });
     });
   }

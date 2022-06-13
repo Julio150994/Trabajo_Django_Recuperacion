@@ -20,7 +20,7 @@ export class CitasPacientePage implements OnInit {
   token: any;
   username: any;
   tokenEliminado: any;
-  usuarioPaciente: string;
+  paciente: any;
 
   constructor(private loadingCtrl: LoadingController, private alertCtrl: AlertController,
     private navCtrl: NavController, private apiService: CitasPacienteService) { }
@@ -30,7 +30,7 @@ export class CitasPacientePage implements OnInit {
     this.getCitasPaciente();
   }
 
-  /** Métodos para cerrar sesión del paciente */
+  /** Para cerrar la sesión del paciente */
   logout() {
     localStorage.removeItem('token');
     this.loadPaciente('Cerrando sesión...');
@@ -46,11 +46,15 @@ export class CitasPacientePage implements OnInit {
 
     const { role, data } = await loading.onDidDismiss();
 
+    // Cerramos la sesión del paciente durante la carga mediante el token
+    this.token = localStorage.getItem('token');
+    await this.apiService.logoutPacientes(this.token);
+
     this.navCtrl.navigateForward('/login-pacientes');
-    this.alertLogoutPaciente(this.username);
+    this.alertLogoutPaciente();
   }
 
-  async alertLogoutPaciente(username: string) {
+  async alertLogoutPaciente() {
     const logout = await this.alertCtrl.create({
       header: 'Logout',
       cssClass: 'logoutCss',
@@ -71,8 +75,6 @@ export class CitasPacientePage implements OnInit {
 
   /** Para obtener las citas realizadas del paciente */
   async getCitasPaciente() {
-    this.token = localStorage.getItem('token');
-
     // Validaciones de las citas
     /*this.apiService.getEncabezadoCitasPaciente()
     .then(async data => {
@@ -81,7 +83,7 @@ export class CitasPacientePage implements OnInit {
     });*/
 
     // Obtenemos los datos de las citas del paciente
-    this.apiService.obtenerCitasRealizadasPaciente(this.token).then(data => {
+    this.apiService.obtenerCitasRealizadasPaciente(localStorage.getItem('token')).then(data => {
       this.citasPaciente = data;
       this.citasPaciente = this.citasPaciente.data;
       this.citas = this.citasPaciente;
