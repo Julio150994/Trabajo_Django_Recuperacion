@@ -27,10 +27,13 @@ class MedicoSerializers(serializers.ModelSerializer):
         fields = ['nombre','apellidos','edad','fechaalta','especialidad','username']
 
 class CitaSerializers(serializers.ModelSerializer):
+    # Para relacionar entre serializers
     paciente_id = serializers.IntegerField(write_only=True)
+    # 'idPaciente','paciente_id',
     medico_id = serializers.IntegerField(write_only=True)
     
     class Meta:
         model = Cita
         fields = ['idPaciente','paciente_id','idMedico','medico_id','fecha','tratamiento','observaciones']
         depth = 1 # para bajar un nivel
+        

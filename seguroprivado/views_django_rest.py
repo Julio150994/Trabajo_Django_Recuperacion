@@ -7,7 +7,7 @@ from seguroprivado.models import Cita, Paciente, Medico
 from seguroprivado.serializers import MedicoSerializers, CitaSerializers, UserSerializer
 from lib2to3.pgen2.parse import ParseError
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -30,27 +30,25 @@ class LoginAPIView(APIView):
         
         # Validamos las credenciales de usuario
         if "user" not in data or "password" not in data:
-            return Response(
-                'Credenciales de usuario erróneas',
-                status = status.HTTP_401_UNAUTHORIZED
-            )
+            return Response({
+                'error': 'Credenciales de usuario erróneas'
+            }, status = status.HTTP_401_UNAUTHORIZED)
         
         # Validación para el usuario del paciente
         if not user:
-             return Response(
-                'Usuario no contemplado en el sistema',
-                status=status.HTTP_404_NOT_FOUND
-            )
+             return Response({
+                 'error': 'Usuario no contemplado en el sistema'
+             }, status = status.HTTP_404_NOT_FOUND)
         else:
             # Validamos que solamente puedan acceder usuarios que sean pacientes
             if user.is_superuser:
                 return Response({
-                    'detail': 'Error. El usuario no debe ser administrador'
+                    'error': 'Error. El usuario no debe ser administrador'
                 }, status = status.HTTP_401_UNAUTHORIZED)
             else:
                 if not user.is_superuser and user.is_staff:
                     return Response({
-                        'detail': 'Error. El usuario no debe ser médico'
+                        'error': 'Error. El usuario no debe ser médico'
                     }, status = status.HTTP_401_UNAUTHORIZED)
                 else:
                     if not user.is_staff:
@@ -89,14 +87,14 @@ class LogoutAPIView(APIView):
 
 
 # Buscamos los usuarios de la base de datos
-class UsuarioApiView(APIView):
+class UsuarioAPIView(APIView):
     def get(self, request, format=None, *args, **kwargs):
         usuario = User.objects.all()
         serializer_usuario = UserSerializer(usuario, many=True)
         return Response(serializer_usuario.data)
 
 # Para poder seleccionar los médicos en la aplicación de ionic
-class MedicoApiView(APIView):
+class MedicosAPIView(APIView):
     # Para acceder solamente si hemos iniciado sesión
     permission_classes = [IsAuthenticated]
     
@@ -110,7 +108,34 @@ class MedicoApiView(APIView):
         if serializer_medico.is_valid():
             return Response(serializer_medico.data, status=status.HTTP_200_OK)
         return Response(serializer_medico.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Para encontrar el id del médico
+class MedicoSeleccionadoAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = MedicoSerializers
+    
+    def get_queryset(self):
+        medicos = Medico.objects.all()
+        return medicos
+    
+    def get(self, request, format=None):
+        try:
+            medico_id = request.query_params["id"]
+            
+            if medico_id != None:
+                medico = Medico.objects.get(id=medico_id)
+                serializer_medico = MedicoSerializers(medico)
+        except:
+            medico = self.get_queryset()
+            return Response({
+                'error': 'Error. Médico no encontrado en el sistema',
+            }, status = status.HTTP_404_NOT_FOUND)
         
+        return Response(serializer_medico.data)
+
+    
+# Para obtener las citas del paciente con el médico seleccionado (herencia de clases)
 class CitasPacienteApiView(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -122,8 +147,9 @@ class CitasPacienteApiView(APIView):
             raise Http404
         
     # Para obtener las citas realizadas del paciente que ha tenido con el médico seleccionado
-    def get(self, request, format=None):
-        #medico = self.get_object(pk) # cuando seleccionemos médico
+    def get(self, request, pk, format=None):
+        medico = self.get_object(pk)# encontramos el médico seleccionado
+        print("Médico seleccionado: "+str(medico))
         paciente = Paciente.objects.get(username=request.user)
         
         fecha_cita_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
