@@ -1,22 +1,16 @@
 from datetime import datetime
 from django.http import Http404
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.contrib.auth.hashers import make_password
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.utils.decorators import method_decorator
 from seguroprivado.models import Cita, Paciente, Medico
 
 # Importaciones para el API REST de Django
 from seguroprivado.serializers import MedicoSerializers, CitaSerializers, UserSerializer
 from lib2to3.pgen2.parse import ParseError
-from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from rest_framework import authentication, permissions
 
 # Para permitir el acceso a los pacientes con un token generado #
 class TokenRestView(APIView):
