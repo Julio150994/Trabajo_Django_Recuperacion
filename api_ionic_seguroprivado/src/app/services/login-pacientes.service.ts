@@ -16,7 +16,7 @@ export class LoginPacientesService {
   usuario: any;
   id: number;
 
-  constructor(private httpLogin: HttpClient) {}
+  constructor(private httpLogin: HttpClient, private alertCtrl: AlertController) {}
 
   /* Para el inicio de sesión con los pacientes */
   loginPaciente(username, pwd) {
@@ -32,22 +32,41 @@ export class LoginPacientesService {
         res(data);
       }, error => {
         console.error('Ya has iniciado sesión con '+username);
+
       });
     });
   }
 
-  /** Obtenemos los usuarios de la base de datos */
-  obtenerUsuarios() {
+  /** Obtenemos los usuarios pacientes de la base de datos */
+  obtenerUsuariosPacientes() {
     return new Promise(res => {
-      this.httpLogin.get(this.apiUrl+'/usuarios/',{
-        headers: new HttpHeaders().append('Content-Type','application/json')
+      this.httpLogin.get(this.apiUrl+'/pacientes/',{
       }).subscribe(data => {
         this.token = data;
         this.token = this.token.data;
         res(data);
       }, error => {
-        console.error('Error al obtener los usuarios '+error);
+        console.error('Error al obtener los usuarios pacientes '+error);
       });
     });
+  }
+
+  // Mensaje para indicar que ya has iniciado sesión con ese paciente
+  async alertCitasRealizadas(mensajeCitas: string) {
+    const error = await this.alertCtrl.create({
+      header: 'MENSAJE DE AVISO',
+      cssClass: 'warningCss',
+      message: '<strong>'+mensajeCitas+'</strong>',
+      buttons: [
+        {
+          text: 'Aceptar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (deactived) => {
+          }
+        }
+      ]
+    });
+    await error.present();
   }
 }

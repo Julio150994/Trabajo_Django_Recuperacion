@@ -7,7 +7,7 @@
         Logout
       </ion-button>
     </ion-buttons>
-    <ion-title align="center" id="titulo">Citas realizadas de paciente</ion-title>
+    <ion-title align="center" id="titulo">Citas realizadas del paciente</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -21,7 +21,7 @@
   </ion-item>
 
   <ion-label *ngFor="let cita of citas; first as isFirst">
-    <h1 align="center" *ngIf="isFirst">Citas realizadas del paciente</h1>
+    <h1 align="center" *ngIf="isFirst">Citas realizadas con el médico seleccionado</h1>
   </ion-label>
   
   <ion-label *ngFor="let cita of citas; let numCita=index">

@@ -14,6 +14,8 @@ export class CitasPacienteService {
   mensajeLogout: string;
   mensajeCitasRealizadas: string;
   token: any;
+  paciente: any;
+  user: string;
   refresh: any;
   authPaciente: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(null);
 
@@ -43,7 +45,6 @@ export class CitasPacienteService {
           this.alertCitasRealizadas(this.mensajeCitasRealizadas);
         }
         else {
-          console.log(data);
           this.citas = data;
         }
         res(data);
@@ -74,21 +75,43 @@ export class CitasPacienteService {
   }
 
   /** Para cerrar sesión de los usuarios pacientes */
-  async logoutPacientes(token: any) {
-    localStorage.removeItem('token');
-
+  logoutPacientes(tok: any) {
     return new Promise(res => {
-      this.httpCitas.post(this.apiUrl+'/logout/', {
-        headers: new HttpHeaders().set('Authorization', 'Token '+token)
+      this.httpCitas.post<any>(this.apiUrl+'/logout/', {
+        headers: new HttpHeaders().set('Authorization', 'Token '+tok)
       }).subscribe(data => {
-        console.log(data);
         res(data);
+        this.mensajeLogout = 'Ha cerrado sesión correctamente';
+        console.log(this.mensajeLogout);
+        this.alertLogoutPaciente(this.mensajeLogout);
       }, error => {
+        console.log(error);
+
         this.mensajeLogout = 'No se ha podido cerrar sesión';
         console.error(this.mensajeLogout+' '+error);
         this.alertErrorLogout(this.mensajeLogout);
       });
     });
+  }
+
+  /** Mensajes para cerrar sesión */
+  async alertLogoutPaciente(mensaje: string) {
+    const logout = await this.alertCtrl.create({
+      header: 'Logout',
+      cssClass: 'logoutCss',
+      message: '<strong>'+mensaje+'</strong>',
+      buttons: [
+        {
+          text: 'Aceptar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (deactived) => {
+          }
+        }
+      ]
+    });
+    // Mostramos la alerta en el inicio
+    await logout.present();
   }
 
   async alertErrorLogout(mensajeError: string) {

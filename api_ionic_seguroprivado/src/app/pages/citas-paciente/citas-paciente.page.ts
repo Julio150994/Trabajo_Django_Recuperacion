@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, AlertController, NavController } from '@ionic/angular';
-import { environment } from '../../../environments/environment.prod';
 import { CitasPacienteService } from '../../services/citas-paciente.service';
 
 
@@ -10,7 +9,6 @@ import { CitasPacienteService } from '../../services/citas-paciente.service';
   styleUrls: ['./citas-paciente.page.scss'],
 })
 export class CitasPacientePage implements OnInit {
-  url = environment.api;
   usuario: any;
   idUsuario: any;
   citasPaciente: any;
@@ -23,6 +21,7 @@ export class CitasPacientePage implements OnInit {
   username: any;
   tokenEliminado: any;
   paciente: any;
+  mensajeLogout: string;
   medicoSalesin: any[] = [];
   medicoSeleccionado: any;
 
@@ -45,7 +44,7 @@ export class CitasPacientePage implements OnInit {
     .then(medicos => {
       this.medicos = medicos;
       if (this.medicos == null) {
-        console.error('No se han encontrado médicos en el sistema.');
+        console.error('No se han encontrado médicos en el sistema');
       }
       else {
         for (let i = 0; i < this.medicos?.length; i++) {
@@ -67,16 +66,15 @@ export class CitasPacientePage implements OnInit {
     .then(async data => {
       this.citas = data;// mostramos las citas del paciente con el médico seleccionado sin repetir
     });
-
-    this.navCtrl.navigateForward('/citas-paciente');
   }
 
   logout() {
-    // Para cerrar la sesión del paciente eliminando el token
-    this.loadPaciente('Cerrando sesión...');
+    // Para cerrar la sesión del paciente eliminando el token en el servicio
+    this.token = localStorage.getItem('token');
+    this.loadPaciente('Cerrando sesión...', this.token);
   }
 
-  async loadPaciente(message: string) {
+  async loadPaciente(message: string, token: any) {
     const loading = await this.loadingCtrl.create({
       message,
       duration: 3,
@@ -87,16 +85,22 @@ export class CitasPacientePage implements OnInit {
     const { role, data } = await loading.onDidDismiss();
 
     // Cerramos la sesión del paciente durante la eliminación del token
-    await this.apiCitasService.logoutPacientes(localStorage.getItem('token'));
+
     this.navCtrl.navigateForward('/login-pacientes');
-    this.alertLogoutPaciente();
+
+    localStorage.removeItem('token');
+    this.mensajeLogout = 'Ha cerrado sesión correctamente';
+    console.log(this.mensajeLogout);
+    this.alertLogoutPaciente(this.mensajeLogout);
+    //await this.apiCitasService.logoutPacientes(token);
   }
 
-  async alertLogoutPaciente() {
+  // Para cerrar sesión
+  async alertLogoutPaciente(mensaje: string) {
     const logout = await this.alertCtrl.create({
       header: 'Logout',
       cssClass: 'logoutCss',
-      message: '<strong>El paciente ha cerrado sesión correctamente</strong>',
+      message: '<strong>'+mensaje+'</strong>',
       buttons: [
         {
           text: 'Aceptar',

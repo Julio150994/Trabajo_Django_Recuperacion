@@ -12,12 +12,15 @@ export class LoginPacientesPage implements OnInit {
   tok: any;
   token: any;
   paciente: any;
+  pacientes: any;
   username: string;
   password: string;
+  idUsuario: any;
+  pacientesEncontrados: any[] = [];
 
   user = new FormGroup({
     username: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
   });
 
   constructor(private apiLoginService: LoginPacientesService, private navCtrl: NavController,
@@ -93,11 +96,11 @@ export class LoginPacientesPage implements OnInit {
     await mensajeError.present();
   }
 
-  async pacienteLogueado() {
+  async pacienteLogueado(username: string) {
     const login = await this.alertCtrl.create({
       header: 'Login',
       cssClass: 'loginCss',
-      message: '<strong>Ha iniciado sesión correctamente</strong>',
+      message: '<strong>'+username+' ha iniciado sesión correctamente</strong>',
       buttons: [
         {
           text: 'Aceptar',
@@ -123,28 +126,12 @@ export class LoginPacientesPage implements OnInit {
         this.tok = data;
         this.token = this.tok.token;
         localStorage.setItem('token',this.token);
-
         // Mostramos mensaje de login de usuario
         await this.cargarUsuario('Cargando aplicación...');
 
         // Redirigimos a la otra página y mostramos mensaje en la otra página
         this.navCtrl.navigateForward('/citas-paciente');
-        this.pacienteLogueado();
-
-        /*let usuarios: any;
-        usuarios = await this.pacientesService.obtenerUsuarios();
-        usuarios = usuarios.data;
-        console.log('Usuarios encontrados: '+usuarios+'\n');
-
-        for (let i = 0; i < usuarios?.length; i++) {
-          if (usuarios[i].username === this.username) {
-            this.username = usuarios[i].username;
-            console.log('Usernames: '+this.username);
-            this.idUsuario = usuarios[i].idUsuario;
-            console.log('Ids usuarios: '+this.idUsuario);
-            break;
-          }
-        }*/
+        this.pacienteLogueado(this.username);
       });
     }
   }
