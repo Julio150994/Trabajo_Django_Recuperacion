@@ -14,11 +14,10 @@ export class CitasPacientePage implements OnInit {
   usuario: any;
   idUsuario: any;
   citasPaciente: any;
-  citasRealizadas: any[] = [];
   citas: any;
   encabezadoCitas: any;
   idMedico: any;
-  medicos: any;// funciona al pulsar el botón de logout (ocultando el select de médicos)
+  medicos: any;
   tok: any;
   token: any;
   username: any;
@@ -66,22 +65,18 @@ export class CitasPacientePage implements OnInit {
     // Para obtener las citas con el médico seleccionado
     await this.apiCitasService.obtenerCitasRealizadasPaciente(idMedico, token)
     .then(async data => {
-      this.citas = data;
-      for (let i = 0; i < this.citas?.length; i++) {
-        this.citasRealizadas.push(this.citas[i]);
-      }
+      this.citas = data;// mostramos las citas del paciente con el médico seleccionado sin repetir
     });
 
     this.navCtrl.navigateForward('/citas-paciente');
   }
 
   logout() {
-    // Para cerrar la sesión del paciente
-    this.token = localStorage.getItem('token');
-    this.loadPaciente('Cerrando sesión...', this.token);
+    // Para cerrar la sesión del paciente eliminando el token
+    this.loadPaciente('Cerrando sesión...');
   }
 
-  async loadPaciente(message: string, token: any) {
+  async loadPaciente(message: string) {
     const loading = await this.loadingCtrl.create({
       message,
       duration: 3,
@@ -91,9 +86,8 @@ export class CitasPacientePage implements OnInit {
 
     const { role, data } = await loading.onDidDismiss();
 
-    // Cerramos la sesión del paciente durante la carga mediante el token
-    await this.apiCitasService.logoutPacientes(token);
-
+    // Cerramos la sesión del paciente durante la eliminación del token
+    await this.apiCitasService.logoutPacientes(localStorage.getItem('token'));
     this.navCtrl.navigateForward('/login-pacientes');
     this.alertLogoutPaciente();
   }

@@ -37,24 +37,28 @@ export class CitasPacienteService {
       this.httpCitas.get<any>(this.apiUrl+'/citas_paciente/?id='+idMedico, {
         headers: new HttpHeaders().set('Authorization', 'Token '+token)
       }).subscribe(data => {
-        console.log(data);
-        this.citas = data;
-        this.citas = this.citas.data;
+        if (data == null) {
+          this.mensajeCitasRealizadas = 'No tiene citas realizadas con este médico';
+          console.warn(this.mensajeCitasRealizadas);
+          this.alertCitasRealizadas(this.mensajeCitasRealizadas);
+        }
+        else {
+          console.log(data);
+          this.citas = data;
+        }
         res(data);
       }, error => {
-        this.mensajeCitasRealizadas = 'El paciente no tiene citas realizadas';
         console.log(error);
-        console.error(this.mensajeCitasRealizadas);
-        this.alertCitasRealizadas(this.mensajeCitasRealizadas);
       });
     });
   }
 
+
   // Mensaje de alerta para cuando el paciente no tiene citas realizadas con el médico seleccionado
   async alertCitasRealizadas(mensajeCitas: string) {
     const error = await this.alertCtrl.create({
-      header: 'WARNING',
-      cssClass: 'sessionCss',
+      header: 'MENSAJE DE AVISO',
+      cssClass: 'warningCss',
       message: '<strong>'+mensajeCitas+'</strong>',
       buttons: [
         {
@@ -71,6 +75,8 @@ export class CitasPacienteService {
 
   /** Para cerrar sesión de los usuarios pacientes */
   async logoutPacientes(token: any) {
+    localStorage.removeItem('token');
+
     return new Promise(res => {
       this.httpCitas.post(this.apiUrl+'/logout/', {
         headers: new HttpHeaders().set('Authorization', 'Token '+token)

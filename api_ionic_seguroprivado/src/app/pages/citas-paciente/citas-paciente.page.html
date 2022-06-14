@@ -20,26 +20,21 @@
     </ion-select>
   </ion-item>
 
-  <!-- Mostramos las citas realizadas del paciente en ion-cards -->
-  <!--<ion-item color="warning" *ngIf="encabezadoCitas?.length === 0">
-      <ion-label class="encabezado">No se han encontrado citas para {{ usuarioPaciente }}.</ion-label>
-    </ion-item>
-    <ion-item color="tertiary" *ngIf="encabezadoCitas?.length > 0">
-      <ion-label class="encabezado">{{ encabezadoCitas?.length }} citas de {{ usuarioPaciente }}</ion-label>
-    </ion-item>-->
+  <ion-label *ngFor="let cita of citas; first as isFirst">
+    <h1 align="center" *ngIf="isFirst">Citas realizadas del paciente</h1>
+  </ion-label>
   
-  <ion-label *ngFor="let cita of citasRealizadas">
+  <ion-label *ngFor="let cita of citas; let numCita=index">
     <ion-card class="card" id="datosCita">
       <ion-card-header color="secondary" id="content">
-          <ion-card-title>Cita de paciente</ion-card-title>
+          <ion-card-title>Cita de paciente {{ numCita + 1 }}</ion-card-title>
       </ion-card-header>
       <ion-card-content class="text-white">
         <h3><strong>Nombre y apellidos del médico: </strong>{{ cita.nombre }} {{ cita.apellidos }}</h3>
         <h3><strong>Edad del médico: </strong>{{ cita.edad }}</h3>
-        <h3><strong>Fecha de alta del médico: </strong>{{ cita.fecha_alta }}</h3>
+        <h3><strong>Fecha de alta del médico: </strong>{{ cita.fecha_alta|date:'dd/MM/yyyy' }}</h3>
         <h3><strong>Especialidad: </strong>{{ cita.especialidad }}</h3>
-        <h3><strong>Nombre de usuario: </strong>{{ cita.username }}</h3>
-        <h3><strong>Fecha de cita: </strong>{{ cita.fecha_cita }}</h3>
+        <h3><strong>Fecha de cita: </strong>{{ cita.fecha_cita|date:'dd/MM/yyyy' }}</h3>
         <h3><strong>Tratamiento: </strong>{{ cita.tratamiento }}</h3>
         <h3><strong>Observaciones: </strong>{{ cita.observaciones }}</h3>
       </ion-card-content>
