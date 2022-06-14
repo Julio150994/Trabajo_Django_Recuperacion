@@ -1,9 +1,10 @@
 from datetime import datetime
 from django.contrib.auth.models import User
 from seguroprivado.models import Cita, Paciente, Medico
+from django.contrib.auth.hashers import check_password
 
 # Importaciones para el API REST de Django
-from seguroprivado.serializers import MedicoSerializers, CitaSerializers, PacienteSerializers
+from seguroprivado.serializers import MedicoSerializers, CitaSerializers
 from lib2to3.pgen2.parse import ParseError
 from rest_framework.response import Response
 from rest_framework import status
@@ -24,46 +25,54 @@ class LoginAPIView(APIView):
                 'Formato JSON inválido - {0}'.format(error.detail),
                 status=status.HTTP_400_BAD_REQUEST
             )
-            
-        user = User.objects.get(username=data["user"])
         
-        # Validamos las credenciales de usuario
-        if "user" not in data or "password" not in data:
+        # Obtenemos los datos del usuario introducido en api rest
+        user = data["user"]
+        password = data["password"]
+        
+        # Validación para cuando un usuario no se encuentra en el sistema
+        usuario = User.objects.filter(username=user)
+        
+        if not usuario.exists():
             return Response({
-                'error': 'Credenciales de usuario erróneas'
-            }, status = status.HTTP_401_UNAUTHORIZED)
-        
-        # Validación para el usuario del paciente
-        if not user:
-             return Response({
-                 'error': 'Usuario no contemplado en el sistema'
-             }, status = status.HTTP_404_NOT_FOUND)
-        else:
-            # Validamos que solamente puedan acceder usuarios que sean pacientes
-            if user.is_superuser:
+                'error': 'Usuario '+str(user)+' no contemplado en el sistema'
+            }, status = status.HTTP_404_NOT_FOUND)
+        else:            
+            # Validamos las credenciales de usuario
+            set_usuario = User.objects.get(username=user)
+            username = set_usuario.username
+            # Para comparar con la contraseña de la base de datos
+            set_password = check_password(password, set_usuario.password)
+            
+            if username is not None and set_password == False:
                 return Response({
-                    'error': 'El usuario no debe ser administrador'
+                    'error': 'Credenciales de usuario erróneas'
                 }, status = status.HTTP_401_UNAUTHORIZED)
             else:
-                if not user.is_superuser and user.is_staff:
+                # Validamos que solamente puedan acceder usuarios que sean pacientes
+                if set_usuario.is_superuser:
                     return Response({
-                        'error': 'El usuario no debe ser médico'
+                        'error': 'El usuario no puede ser administrador'
                     }, status = status.HTTP_401_UNAUTHORIZED)
                 else:
-                    if not user.is_staff:
-                        token, get_token = Token.objects.get_or_create(user=user)
-                        
-                        if get_token:
-                            # Para generar un nuevo token, después de eliminarse el último utilizado
-                            return Response({
-                                'detail': str(user)+' ha iniciado sesión correctamente',
-                                'token': token.key
-                            }, status = status.HTTP_201_CREATED)
-                        else:
-                            token.delete()
-                            return Response({
-                                'error': 'Ya se ha iniciado sesión con el paciente '+str(user),
-                            }, status = status.HTTP_409_CONFLICT)
+                    if not set_usuario.is_superuser and set_usuario.is_staff:
+                        return Response({
+                            'error': 'El usuario no puede ser médico'
+                        }, status = status.HTTP_401_UNAUTHORIZED)
+                    else:
+                        if not set_usuario.is_staff:
+                            token, get_token = Token.objects.get_or_create(user=set_usuario)
+                            
+                            if get_token:
+                                # Para generar un nuevo token, después de eliminarse el último utilizado
+                                return Response({
+                                    'detail': str(user)+' ha iniciado sesión correctamente',
+                                    'token': token.key
+                                }, status = status.HTTP_201_CREATED)
+                            else:
+                                return Response({
+                                    'error': 'Ya se ha iniciado sesión con el paciente '+str(user),
+                                }, status = status.HTTP_409_CONFLICT)
                     
 
 # Para cerrar sesión de los pacientes eliminando el token de la sesión actual
@@ -75,7 +84,8 @@ class LogoutAPIView(APIView):
         
         if get_token:
             # Cerramos la sesión eliminando el token
-            request.user.auth_token.delete()
+            #request.user.auth_token.delete()
+            get_token.delete()
             
             return Response({
                 'detail': str(request.user)+' ha cerrado sesión éxitosamente'
