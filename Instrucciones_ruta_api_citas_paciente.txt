@@ -1,0 +1,4 @@
+Ruta para mostrar las citas del paciente con el médico seleccionado:
+api/citas_paciente/?id=23 ------> con el médico julio1994
+api/citas_paciente/?id=24 ------> con el médico laurala91
+api/citas_paciente/?id=25 ------> médico no contemplado en las citas y/o en el sistema
