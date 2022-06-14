@@ -82,13 +82,6 @@ class LogoutAPIView(APIView):
             }, status = status.HTTP_200_OK)
 
 
-# Buscamos los pacientes de la base de datos para validación de usuarios
-class PacientesAPIView(APIView):
-    def get(self, request, format=None, *args, **kwargs):
-        usuarios_paciente = Paciente.objects.all()
-        serializer_paciente = PacienteSerializers(usuarios_paciente, many=True)
-        return Response(serializer_paciente.data)
-
 # Para poder seleccionar los médicos en la aplicación de ionic
 class MedicosAPIView(APIView):
     # Para acceder solamente si hemos iniciado sesión
