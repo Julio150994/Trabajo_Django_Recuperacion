@@ -38,8 +38,6 @@ class CarritoCompra(object):
         
         self.session["nombre"] = medicamento.nombre
         self.session["precio"] = medicamento.precio
-        
-        print("Traza(1): "+str(self.carrito_compra[id])+"\n")
         self.comprar()
 
     def comprar(self):
@@ -70,12 +68,12 @@ class CarritoCompra(object):
             self.carrito_compra[id]["precio_acumulado"] -= medicamento.precio
             self.carrito_compra[id]["precio"] = medicamento.precio # precio sin reducir
             
-            self.lista_medicamentos.remove(self.carrito_compra[id])
-            print("Lista(3): "+str(self.lista_medicamentos))
-            
             # Verificamos las cantidades de los medicamentos
             if self.carrito_compra[id]["cantidad"] == 0:
                 # Eliminamos el medicamento del carrito
+                self.lista_medicamentos.remove(self.carrito_compra[id])
+                print("Lista(3): "+str(self.lista_medicamentos))
+                
                 self.eliminar(medicamento)
                 self.lista_medicamentos.clear()
             self.comprar()
