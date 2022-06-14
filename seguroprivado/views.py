@@ -765,6 +765,7 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         nombre_medicamento = carrito.session["nombre"]
         medicamento = Medicamento.objects.get(nombre=nombre_medicamento)
         
+        # Compramos 1,N productos a la vez
         compra = Compra(fecha=fecha_compra, precio=total_compra, idPaciente=paciente)
         compra.save()
         
