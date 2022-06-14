@@ -138,5 +138,5 @@ class CitasPacienteApiView(APIView):
         except:
             medico = self.get_queryset()
             return Response({
-                'error': 'Médico no contemplado en el sistema',
+                'error': 'Médico no contemplado en las citas y/o en el sistema',
             }, status = status.HTTP_404_NOT_FOUND)
