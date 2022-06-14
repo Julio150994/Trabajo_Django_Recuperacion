@@ -12,7 +12,7 @@ from seguroprivado.models import Paciente, Medico, Cita
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['user','password']
+        fields = ['user']
 
 # Para hacer las funcionalidades de la api mediante serializers
 class PacienteSerializers(serializers.ModelSerializer):

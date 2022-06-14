@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from seguroprivado.models import Cita, Paciente, Medico
 
 # Importaciones para el API REST de Django
-from seguroprivado.serializers import MedicoSerializers, CitaSerializers, UserSerializer
+from seguroprivado.serializers import MedicoSerializers, CitaSerializers, PacienteSerializers
 from lib2to3.pgen2.parse import ParseError
 from rest_framework.response import Response
 from rest_framework import status
@@ -56,7 +56,7 @@ class LoginAPIView(APIView):
                         if get_token:
                             # Para generar un nuevo token, después de eliminarse el último utilizado
                             return Response({
-                                'detail': 'El paciente '+str(user)+' ha iniciado sesión correctamente',
+                                'detail': str(user)+' ha iniciado sesión correctamente',
                                 'token': token.key
                             }, status = status.HTTP_201_CREATED)
                         else:
@@ -74,20 +74,20 @@ class LogoutAPIView(APIView):
         get_token = Token.objects.get(user=request.user)
         
         if get_token:
+            # Cerramos la sesión eliminando el token
             request.user.auth_token.delete()
             
-            # Cerramos la sesión eliminando el token
             return Response({
                 'detail': str(request.user)+' ha cerrado sesión éxitosamente'
             }, status = status.HTTP_200_OK)
 
 
-# Buscamos los usuarios de la base de datos
-class UsuarioAPIView(APIView):
+# Buscamos los pacientes de la base de datos para validación de usuarios
+class PacientesAPIView(APIView):
     def get(self, request, format=None, *args, **kwargs):
-        usuario = User.objects.all()
-        serializer_usuario = UserSerializer(usuario, many=True)
-        return Response(serializer_usuario.data)
+        usuarios_paciente = Paciente.objects.all()
+        serializer_paciente = PacienteSerializers(usuarios_paciente, many=True)
+        return Response(serializer_paciente.data)
 
 # Para poder seleccionar los médicos en la aplicación de ionic
 class MedicosAPIView(APIView):
@@ -98,12 +98,6 @@ class MedicosAPIView(APIView):
         medico = Medico.objects.all()
         serializer_medico = MedicoSerializers(medico, many=True)
         return Response(serializer_medico.data)
-    
-    def post(self, request, format=None):
-        serializer_medico = MedicoSerializers(data=request.data)
-        if serializer_medico.is_valid():
-            return Response(serializer_medico.data, status=status.HTTP_200_OK)
-        return Response(serializer_medico.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
 # Para obtener las citas del paciente con el médico seleccionado
