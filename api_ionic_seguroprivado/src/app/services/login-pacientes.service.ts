@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -13,10 +13,12 @@ export class LoginPacientesService {
   tok: any;
   token: any;
   paciente: any;
+  mensajeLogin: string;
   usuario: any;
   id: number;
 
-  constructor(private httpLogin: HttpClient, private alertCtrl: AlertController) {}
+  constructor(private httpLogin: HttpClient, private alertCtrl: AlertController,
+    private loadingCtrl: LoadingController) {}
 
   /* Para el inicio de sesión con los pacientes */
   loginPaciente(username, pwd) {
@@ -31,32 +33,31 @@ export class LoginPacientesService {
         localStorage.setItem('token',this.paciente);
         res(data);
       }, error => {
-        console.error('Ya has iniciado sesión con '+username);
-
+        this.mensajeLogin = 'Error al iniciar sesión con '+username;
+        this.cargarLogin(this.mensajeLogin);
       });
     });
   }
 
-  /** Obtenemos los usuarios pacientes de la base de datos */
-  obtenerUsuariosPacientes() {
-    return new Promise(res => {
-      this.httpLogin.get(this.apiUrl+'/pacientes/',{
-      }).subscribe(data => {
-        this.token = data;
-        this.token = this.token.data;
-        res(data);
-      }, error => {
-        console.error('Error al obtener los usuarios pacientes '+error);
-      });
+  async cargarLogin(message: string) {
+    const loading = await this.loadingCtrl.create({
+      message,
+      duration: 3,
     });
+
+    await loading.present();
+
+    const { role, data } = await loading.onDidDismiss();
+    console.error(message);
+    this.alertErrorLogin(message);
   }
 
   // Mensaje para indicar que ya has iniciado sesión con ese paciente
-  async alertCitasRealizadas(mensajeCitas: string) {
+  async alertErrorLogin(mensajeError: string) {
     const error = await this.alertCtrl.create({
       header: 'MENSAJE DE AVISO',
       cssClass: 'warningCss',
-      message: '<strong>'+mensajeCitas+'</strong>',
+      message: '<strong>'+mensajeError+'</strong>',
       buttons: [
         {
           text: 'Aceptar',
