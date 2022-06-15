@@ -775,7 +775,7 @@ class InformeFacturaPDF(View):
         factura_pdf.setFillColorRGB(0.21, 0.139, 0.37)
         factura_pdf.drawString(12, 410, u"FACTURA TOTAL")
         
-    def datos_paciente(self, factura_pdf, posicion_vertical, paciente_id):        
+    def datos_paciente(self, factura_pdf, posicion_vertical, paciente_id):   
         # Diseño del informe de cliente PDF
         encabezados = ('Nombre','Apellidos','Edad','Dirección','Foto','Username')
         datos_paciente = [(paciente.nombre, paciente.apellidos, paciente.edad, paciente.direccion, Image(paciente.foto, width=80, height=80),
@@ -787,14 +787,14 @@ class InformeFacturaPDF(View):
                 ('ALIGN',(0,0),(6,16),'CENTER'),
                 ('GRID',(0,0), (-1, -1), 2,colors.black),
                 ('FONTSIZE',(0, 0),(-1, -1), 12),
-                ('BACKGROUND', (6, 0), (0, 7), colors.Color(20, 121, 195)),
+                ('BACKGROUND', (6, 0), (3, 7), colors.Color(20, 121, 195)),
                 ('BOX',(0, 0),(-1, -1),1.25,colors.black),
                 ('GRID',(0,0),(-1,-1),0.5,colors.black),
-                ('TEXTCOLOR', (0, 0), (0, 6), colors.black),
+                ('TEXTCOLOR', (0, 0), (6, 6), colors.blue),
             ]
         ))
     
-        paciente.wrapOn(factura_pdf,600,600)
+        paciente.wrapOn(factura_pdf,500,500)
         paciente.drawOn(factura_pdf,12,posicion_vertical)
         return paciente
           
@@ -815,7 +815,7 @@ class InformeFacturaPDF(View):
                 ('ALIGN',(0,0),(3,16),'CENTER'),
                 ('GRID',(0,0), (-1, -1), 2,colors.black),
                 ('FONTSIZE',(0, 0),(-1, -1), 12),
-                ('BACKGROUND', (0, 0), (0, 7), colors.Color(20, 121, 195)),
+                ('BACKGROUND', (0, 0), (4, 7), colors.Color(124, 222, 189)),
                 ('BOX',(0, 0),(-1, -1),1.25,colors.black),
                 ('GRID',(0,0),(-1,-1),0.5,colors.black),
                 ('TEXTCOLOR', (0, 0), (0, 6), colors.blue),
@@ -824,8 +824,8 @@ class InformeFacturaPDF(View):
         
         # Imprimimos una etiqueta
         factura_pdf.setFont('Times-Roman',13)
-        factura_pdf.setFillColorRGB(0.56, 0.107, 0.133)
-        factura_pdf.drawString(12, 278, u"Precio total de compra: "+str(round(precio_total_compra,2))+"€")
+        factura_pdf.setFillColorRGB(0.31, 0.109, 0.148)
+        factura_pdf.drawString(12, 278, u"Precio total de compra: "+str(round(precio_total_compra,2))+" €")
         
         compra_paciente.wrapOn(factura_pdf,850,670)
         compra_paciente.drawOn(factura_pdf,12,posicion_vertical)
@@ -833,10 +833,6 @@ class InformeFacturaPDF(View):
         
     def get(self, request, *args, **kwargs):
         carrito = CarritoCompra(request)# para extraer las sesiones a la vista
-        
-        # Mostramos la factura de la compra anterior del paciente al descargar el PDF
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="factura_compra.pdf"'# nombre del archivo pdf
               
         # Compramos los medicamentos que ha seleccionado el paciente
         paciente = Paciente.objects.get(username=request.user)
@@ -865,6 +861,10 @@ class InformeFacturaPDF(View):
         
         carrito.limpiar()# recargamos de nuevo el carrito al comprar
         messages.add_message(request,level=messages.INFO, message="Compra realizada correctamente")
+        
+        # Mostramos la factura de la compra anterior del paciente al descargar el PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="factura_compra.pdf"'# nombre del archivo pdf
         
         buffer = BytesIO()
         factura_pdf = canvas.Canvas(buffer, pagesize=A4)
