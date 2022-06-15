@@ -773,7 +773,7 @@ class InformeFacturaPDF(View):
         
         factura_pdf.setFont('Times-Roman',17)
         factura_pdf.setFillColorRGB(0.21, 0.139, 0.37)
-        factura_pdf.drawString(12, 310, u"FACTURA TOTAL")
+        factura_pdf.drawString(12, 410, u"FACTURA TOTAL")
         
     def datos_paciente(self, factura_pdf, posicion_vertical, paciente_id):        
         # Diseño del informe de cliente PDF
@@ -798,13 +798,15 @@ class InformeFacturaPDF(View):
         paciente.drawOn(factura_pdf,12,posicion_vertical)
         return paciente
           
-    def factura_compra(self, factura_pdf, posicion_vertical, nombres_medicamentos, precios_medicamentos, fecha_compra, precio_total_compra):# para el paciente logueado        
+    def factura_compra(self, factura_pdf, posicion_vertical, nombres_medicamentos, precios_medicamentos, cantidades, fecha_compra, precio_total_compra):# para el paciente logueado        
         datos_compra = [
             ['Nombre de Medicamento',"".join([(str(factura)) for factura in nombres_medicamentos])],
             
             ['Fecha de compra',"".join([(str(fecha_compra)) for factura in nombres_medicamentos])],
             
             ['Precio',"".join([(str(factura)+"€") for factura in precios_medicamentos])],
+            
+            ['Cantidad',"".join([(str(cantidad)) for cantidad in cantidades])]
         ]
         
         compra_paciente = Table(datos_compra, colWidths=[7 * cm, 10 * cm, 10 * cm, 10 * cm]) 
@@ -821,7 +823,9 @@ class InformeFacturaPDF(View):
         ))
         
         # Imprimimos una etiqueta
-        factura_pdf.drawString(12, 200, u"Precio total de compra: "+str(round(precio_total_compra,2))+"€")
+        factura_pdf.setFont('Times-Roman',13)
+        factura_pdf.setFillColorRGB(0.56, 0.107, 0.133)
+        factura_pdf.drawString(12, 278, u"Precio total de compra: "+str(round(precio_total_compra,2))+"€")
         
         compra_paciente.wrapOn(factura_pdf,850,670)
         compra_paciente.drawOn(factura_pdf,12,posicion_vertical)
@@ -845,6 +849,8 @@ class InformeFacturaPDF(View):
         # Para comprar 1 o más medicamentos a la vez
         medicamentos_tienda = carrito.session["medicamentos_tienda"]
         precios_medicamentos = carrito.session["precios_medicamentos"]
+        cantidades_medicamentos = carrito.session["cantidades"]
+        #print("\nCantidades: "+str(cantidades_medicamentos))
         
         for compra in zip(medicamentos_tienda, precios_medicamentos):# recorremos las dos listas a la vez
             nombre_medicamento = compra[0]
@@ -858,7 +864,7 @@ class InformeFacturaPDF(View):
             compra_medicamento.save()
         
         carrito.limpiar()# recargamos de nuevo el carrito al comprar
-        messages.add_message(request,level=messages.INFO, message="Su compra ha sido realizada correctamente")
+        messages.add_message(request,level=messages.INFO, message="Compra realizada correctamente")
         
         buffer = BytesIO()
         factura_pdf = canvas.Canvas(buffer, pagesize=A4)
@@ -869,8 +875,8 @@ class InformeFacturaPDF(View):
         posicion_paciente = 530
         self.datos_paciente(factura_pdf, posicion_paciente, paciente)
         
-        posicion_factura = 245
-        self.factura_compra(factura_pdf, posicion_factura, medicamentos_tienda, precios_medicamentos, fecha_compra, total_compra)
+        posicion_factura = 310
+        self.factura_compra(factura_pdf, posicion_factura, medicamentos_tienda, precios_medicamentos, cantidades_medicamentos, fecha_compra, total_compra)
         
         factura_pdf.showPage()# mostrar página del PDF
         factura_pdf.save()# almacenar los datos en el PDF

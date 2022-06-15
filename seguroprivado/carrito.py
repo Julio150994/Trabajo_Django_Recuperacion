@@ -3,6 +3,7 @@
 class CarritoCompra(object):
     medicamentos_tienda = list()
     precios_medicamentos = list()
+    cantidades = list()
     
     def __init__(self, request):
         self.request = request
@@ -40,11 +41,15 @@ class CarritoCompra(object):
         
         self.medicamentos_tienda.append(self.carrito_compra[id]["nombre"])
         self.precios_medicamentos.append(self.carrito_compra[id]["precio"])
+        self.cantidades.append(self.carrito_compra[id]["cantidad"])
+        
         print("Medicamentos: "+str(self.medicamentos_tienda))
         print("Precios: "+str(self.precios_medicamentos))
+        print("Cantidades: "+str(self.cantidades))
         
         self.session["medicamentos_tienda"] = self.medicamentos_tienda
         self.session["precios_medicamentos"] = self.precios_medicamentos
+        self.session["cantidades"] = self.cantidades
         
         self.comprar()
 
@@ -61,6 +66,7 @@ class CarritoCompra(object):
             
             self.session["medicamentos_tienda"] = self.medicamentos_tienda
             self.session["precios_medicamentos"] = self.precios_medicamentos
+            self.session["cantidades"] = self.cantidades
             
             del self.carrito_compra[id_medicamento]# eliminamos medicamento
             self.comprar()# para persistir durante la sesión actual
@@ -79,19 +85,22 @@ class CarritoCompra(object):
 
             print("Medicamentos: "+str(self.medicamentos_tienda))
             print("Precios: "+str(self.precios_medicamentos))
+            print("Cantidades: "+str(self.cantidades))
+            
             self.session["nombres_medicamentos"] = self.medicamentos_tienda
             self.session["precios"] = self.precios_medicamentos
+            self.session["cantidades"] = self.cantidades
             
             if self.carrito_compra[id]["cantidad"] == 0:
                 # Eliminamos el medicamento del carrito
                 self.eliminar(medicamento)
-                #self.medicamentos_tienda.pop()
                 print("Medicamentos: "+str(self.medicamentos_tienda))
-                #self.precios_medicamentos.pop()
                 print("Precios: "+str(self.precios_medicamentos))
+                print("Cantidades: "+str(self.cantidades))
                 
                 self.session["nombres_medicamentos"] = self.medicamentos_tienda
                 self.session["precios"] = self.precios_medicamentos
+                self.session["cantidades"] = self.cantidades
             self.comprar()
         
     def limpiar(self):
@@ -100,6 +109,8 @@ class CarritoCompra(object):
         print("Medicamentos: "+str(self.medicamentos_tienda))
         self.precios_medicamentos.clear()
         print("Precios: "+str(self.precios_medicamentos))
+        self.cantidades.clear()
+        print("Cantidades: "+str(self.cantidades))
         self.session.modified = True
 
 # Función para la multiplicación de los medicamentos añadidos al carrito
