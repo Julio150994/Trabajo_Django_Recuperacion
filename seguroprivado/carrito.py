@@ -1,8 +1,8 @@
 # Para realizar el carrito de compra utilizando nuestras sesiones
 
 class CarritoCompra(object):
-    lista_compra = list()
-    medicamentos = list()
+    medicamentos_tienda = list()
+    precios_medicamentos = list()
     
     def __init__(self, request):
         self.request = request
@@ -38,15 +38,14 @@ class CarritoCompra(object):
         self.session["nombre"] = medicamento.nombre
         self.session["precio"] = medicamento.precio
         
-        print("Traza: "+str(self.carrito_compra[id].values()))
-        #self.lista_compra.append(set_medicamento)
+        self.medicamentos_tienda.append(self.carrito_compra[id]["nombre"])
+        self.precios_medicamentos.append(self.carrito_compra[id]["precio"])
+        print("Medicamentos: "+str(self.medicamentos_tienda))
+        print("Precios: "+str(self.precios_medicamentos))
         
-        """for compra in self.carrito_compra[id].values():
-            for medicamento in self.medicamentos:    
-                #self.medicamentos.append(compra)
-                self.lista_compra.append(medicamento)
+        self.session["medicamentos_tienda"] = self.medicamentos_tienda
+        self.session["precios_medicamentos"] = self.precios_medicamentos
         
-        print("Traza(1): "+str(self.lista_compra))"""
         self.comprar()
 
     def comprar(self):
@@ -59,7 +58,9 @@ class CarritoCompra(object):
         if id_medicamento in self.carrito_compra:
             self.session["nombre"] = medicamento.nombre
             self.session["precio"] = medicamento.precio
-            print(self.carrito_compra[id_medicamento])
+            
+            self.session["medicamentos_tienda"] = self.medicamentos_tienda
+            self.session["precios_medicamentos"] = self.precios_medicamentos
             
             del self.carrito_compra[id_medicamento]# eliminamos medicamento
             self.comprar()# para persistir durante la sesión actual
@@ -75,19 +76,30 @@ class CarritoCompra(object):
             self.carrito_compra[id]["nombre"] = medicamento.nombre
             self.carrito_compra[id]["precio_acumulado"] -= medicamento.precio
             self.carrito_compra[id]["precio"] = medicamento.precio # precio sin reducir
-            #print(self.carrito_compra[id])
+
+            print("Medicamentos: "+str(self.medicamentos_tienda))
+            print("Precios: "+str(self.precios_medicamentos))
+            self.session["nombres_medicamentos"] = self.medicamentos_tienda
+            self.session["precios"] = self.precios_medicamentos
             
             if self.carrito_compra[id]["cantidad"] == 0:
                 # Eliminamos el medicamento del carrito
                 self.eliminar(medicamento)
-                #self.lista_compra.clear()
-                #print(self.carrito_compra[id])
+                #self.medicamentos_tienda.pop()
+                print("Medicamentos: "+str(self.medicamentos_tienda))
+                #self.precios_medicamentos.pop()
+                print("Precios: "+str(self.precios_medicamentos))
+                
+                self.session["nombres_medicamentos"] = self.medicamentos_tienda
+                self.session["precios"] = self.precios_medicamentos
             self.comprar()
         
     def limpiar(self):
         self.session["carrito"] = {}
-        #self.lista_compra.clear()
-        print(self.carrito_compra)
+        self.medicamentos_tienda.clear()
+        print("Medicamentos: "+str(self.medicamentos_tienda))
+        self.precios_medicamentos.clear()
+        print("Precios: "+str(self.precios_medicamentos))
         self.session.modified = True
 
 # Función para la multiplicación de los medicamentos añadidos al carrito
