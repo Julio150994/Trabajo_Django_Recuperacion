@@ -55,9 +55,7 @@ urlpatterns = [
     path('restar/<int:pk>/',views.GestionaCarritoView.restar_medicamento, name="restar_carrito"),
     path('eliminar_carrito/<int:pk>/',views.GestionaCarritoView.eliminar_medicamento, name="eliminar_carrito"),
     path('limpiar_carrito/',views.GestionaCarritoView.limpiar_carrito, name="limpiar_compra"),
-    path('compra_medicamentos/',views.GestionaCarritoView.comprar_medicamentos, name="compra_medicamentos"),
-    
-    path('tienda_medicamentos/factura/',views.InformeFacturaPDF.as_view(), name="factura"),
+    path('compra_medicamentos/',views.InformeFacturaPDF.as_view(), name="compra_medicamentos"),
     
     path('api/token/',views_django_rest.LoginAPIView.as_view(), name="api_token"),
     path('api/logout/',views_django_rest.LogoutAPIView.as_view(), name="api_logout"),

@@ -11,17 +11,10 @@
             <div class="alert alert-warning text-center">No se han encontrado medicamentos en el sistema</div>
             {% else %}
             
-            {# Para mostrar el informe PDF de la factura cuando el paciente haya terminado al menos una compra #}
             {% if paciente_logueado and compras_paciente %}
-            <nav class="navbar navbar-white bg-white ml-5 mb-4 justify-content-md-end">
-                <a href="{% url 'factura' %}" class="btn btn-info ml-2">
-                    <span class="fas fa-file-pdf"></span>
-                    <span>Factura de compra</span>
-                </a>
-            </nav>
             {% else %}
             <div class="container-fluid alert alert-warning mx-auto mt-auto text-center">
-                {{ request.user }} no tiene compras realizadas
+                {{ request.user }} no tiene compras realizadas anteriormente
             </div>
             {% endif %}
 

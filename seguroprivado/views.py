@@ -751,42 +751,6 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         carrito = CarritoCompra(request)
         carrito.limpiar()
         return redirect('tienda')
-    
-    def comprar_medicamentos(request):
-        carrito = CarritoCompra(request)# para extraer las sesiones a la vista
-              
-        # Compramos los medicamentos que ha seleccionado el paciente
-        paciente = Paciente.objects.get(username=request.user)
-        total_compra = carrito.session["precio_acumulado"]# extraemos el precio total de la compra
-        print("Total de compra: "+str(total_compra)+"€")
-        # Almacenamos el precio total en el pdf
-        
-        fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
-        fecha_compra = datetime.strftime(fecha_actual,'%Y-%m-%d')
-        
-        """nombre_medicamento = carrito.session["nombre"]
-        print("Traza: "+str(nombre_medicamento)+"\n")
-        medicamento = Medicamento.objects.get(nombre=nombre_medicamento)
-        print("Traza(2): "+str(medicamento)+"\n")"""
-        
-        # Para comprar 1 o más medicamentos a la vez
-        medicamentos_tienda = carrito.session["medicamentos_tienda"]
-        precios_medicamentos = carrito.session["precios_medicamentos"]
-        
-        for compra in zip(medicamentos_tienda, precios_medicamentos):# recorremos las dos listas a la vez
-            nombre_medicamento = compra[0]
-            medicamento = Medicamento.objects.get(nombre=nombre_medicamento)
-            precio_medicamento = compra[1]
-            
-            compra = Compra(fecha=fecha_compra, precio=precio_medicamento, idPaciente=paciente)
-            compra.save()
-            compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
-            compra_medicamento.save()
-        
-        messages.add_message(request,level=messages.INFO, message="Su compra ha sido realizada correctamente")
-        carrito.limpiar()# recargamos de nuevo el carrito al comprar
-        return redirect('tienda')
-
 
 # ---------Mostrar el informe PDF de la factura de compra--------------- #
 @method_decorator(login_required, name='dispatch')
@@ -834,25 +798,13 @@ class InformeFacturaPDF(View):
         paciente.drawOn(factura_pdf,12,posicion_vertical)
         return paciente
           
-    def factura_compra(self, factura_pdf, posicion_vertical, paciente):# para el paciente logueado
-        fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
-        formato_fecha_actual = datetime.strftime(fecha_actual,'%Y-%m-%d')
-        
+    def factura_compra(self, factura_pdf, posicion_vertical, nombres_medicamentos, precios_medicamentos, fecha_compra, precio_total_compra):# para el paciente logueado        
         datos_compra = [
-            ['Nombre de Medicamento',"".join([(factura.idMedicamento.nombre) for factura in CompraMedicamento.objects.latest()
-                if factura.idCompra.idPaciente.username == paciente and datetime.strftime(factura.idCompra.fecha,'%Y-%m-%d') <= formato_fecha_actual])],
+            ['Nombre de Medicamento',"".join([(str(factura)) for factura in nombres_medicamentos])],
             
-            ['Descripción',"".join([(factura.idMedicamento.descripcion) for factura in CompraMedicamento.objects.all()
-                if factura.idCompra.idPaciente.username == paciente and datetime.strftime(factura.idCompra.fecha,'%Y-%m-%d') <= formato_fecha_actual])],
+            ['Fecha de compra',"".join([(str(fecha_compra)) for factura in nombres_medicamentos])],
             
-            ['Receta',"".join([(factura.idMedicamento.receta) for factura in CompraMedicamento.objects.all()
-                if factura.idCompra.idPaciente.username == paciente and datetime.strftime(factura.idCompra.fecha,'%Y-%m-%d') <= formato_fecha_actual])],
-            
-            ['Fecha de compra',"".join([(datetime.strftime(factura.idCompra.fecha, '%d/%m/%Y')) for factura in CompraMedicamento.objects.all()
-                if factura.idCompra.idPaciente.username == paciente and datetime.strftime(factura.idCompra.fecha,'%Y-%m-%d') <= formato_fecha_actual])],
-            
-            ['Precio total',"".join([(str(factura.idCompra.precio)+"€") for factura in CompraMedicamento.objects.all()
-                if factura.idCompra.idPaciente.username == paciente and datetime.strftime(factura.idCompra.fecha,'%Y-%m-%d') <= formato_fecha_actual])],
+            ['Precio',"".join([(str(factura)) for factura in precios_medicamentos])],
         ]
         
         compra_paciente = Table(datos_compra, colWidths=[7 * cm, 10 * cm, 10 * cm, 10 * cm]) 
@@ -868,16 +820,46 @@ class InformeFacturaPDF(View):
             ]
         ))
         
+        # Imprimimos una etiqueta
+        factura_pdf.drawString(12, 200, u"Precio total de compra: "+str(round(precio_total_compra,2))+"€")
+        
         compra_paciente.wrapOn(factura_pdf,850,670)
         compra_paciente.drawOn(factura_pdf,12,posicion_vertical)
         return compra_paciente
         
     def get(self, request, *args, **kwargs):
+        carrito = CarritoCompra(request)# para extraer las sesiones a la vista
+        
+        # Mostramos la factura de la compra anterior del paciente al descargar el PDF
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="factura_compra.pdf"'# nombre del archivo pdf
-
-        # Mostramos la factura de la compra anterior del paciente
-        carrito = CarritoCompra(request)# para llamar a las sesiones
+              
+        # Compramos los medicamentos que ha seleccionado el paciente
+        paciente = Paciente.objects.get(username=request.user)
+        total_compra = carrito.session["precio_acumulado"]# extraemos el precio total de la compra
+        # Almacenamos el precio total en el pdf
+        
+        fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
+        fecha_compra = datetime.strftime(fecha_actual,'%Y-%m-%d')
+        
+        # Para comprar 1 o más medicamentos a la vez
+        medicamentos_tienda = carrito.session["medicamentos_tienda"]
+        precios_medicamentos = carrito.session["precios_medicamentos"]
+        
+        for compra in zip(medicamentos_tienda, precios_medicamentos):# recorremos las dos listas a la vez
+            nombre_medicamento = compra[0]
+            medicamento = Medicamento.objects.get(nombre=nombre_medicamento)
+            precio_medicamento = compra[1]
+            
+            compra = Compra(fecha=fecha_compra, precio=precio_medicamento, idPaciente=paciente)
+            compra.save()
+            
+            compra_medicamento = CompraMedicamento(idMedicamento=medicamento, idCompra=compra)
+            compra_medicamento.save()
+        
+        carrito.limpiar()# recargamos de nuevo el carrito al comprar
+        messages.add_message(request,level=messages.INFO, message="Su compra ha sido realizada correctamente")
+        
         buffer = BytesIO()
         factura_pdf = canvas.Canvas(buffer, pagesize=A4)
         
@@ -887,12 +869,8 @@ class InformeFacturaPDF(View):
         posicion_paciente = 530
         self.datos_paciente(factura_pdf, posicion_paciente, paciente)
         
-        # Para mostrar el precio total de compra
-        total_compra = carrito.session["precio_acumulado"]# extraemos el precio total de la compra
-        print("Precio total: "+str(total_compra)+"€")
-        
-        posicion_factura = 200
-        self.factura_compra(factura_pdf, posicion_factura, request.user.username)
+        posicion_factura = 245
+        self.factura_compra(factura_pdf, posicion_factura, medicamentos_tienda, precios_medicamentos, fecha_compra, total_compra)
         
         factura_pdf.showPage()# mostrar página del PDF
         factura_pdf.save()# almacenar los datos en el PDF
