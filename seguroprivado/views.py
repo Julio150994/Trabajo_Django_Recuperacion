@@ -804,7 +804,7 @@ class InformeFacturaPDF(View):
             
             ['Fecha de compra',"".join([(str(fecha_compra)) for factura in nombres_medicamentos])],
             
-            ['Precio',"".join([(str(factura)) for factura in precios_medicamentos])],
+            ['Precio',"".join([(str(factura)+"€") for factura in precios_medicamentos])],
         ]
         
         compra_paciente = Table(datos_compra, colWidths=[7 * cm, 10 * cm, 10 * cm, 10 * cm]) 
