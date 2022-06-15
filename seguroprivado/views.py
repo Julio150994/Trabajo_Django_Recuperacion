@@ -758,6 +758,7 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         # Compramos los medicamentos que ha seleccionado el paciente
         paciente = Paciente.objects.get(username=request.user)
         total_compra = carrito.session["precio_acumulado"]# extraemos el precio total de la compra
+        # Almacenamos el precio total en el pdf
         
         fecha_actual = datetime(int(datetime.today().year),int(datetime.today().month),int(datetime.today().day))
         fecha_compra = datetime.strftime(fecha_actual,'%Y-%m-%d')
@@ -765,7 +766,10 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         nombre_medicamento = carrito.session["nombre"]
         medicamento = Medicamento.objects.get(nombre=nombre_medicamento)
         
-        # Compramos 1,N productos a la vez
+        # Para realizar la compra de 1 o varios medicamentos a la vez
+        #lista_compra = carrito.session["nombres_medicamentos"]
+        #for medicamento in lista_compra:
+            
         compra = Compra(fecha=fecha_compra, precio=total_compra, idPaciente=paciente)
         compra.save()
         
