@@ -1,2 +1,2 @@
-# Enlace del proyecto desplegado con PythonAnyWhere
+# Proyecto desplegado con PythonAnyWhere
 http://julioseguro.pythonanywhere.com/
