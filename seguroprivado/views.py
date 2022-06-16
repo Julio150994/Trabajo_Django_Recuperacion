@@ -752,6 +752,7 @@ class GestionaCarritoView(LoginRequiredMixin, ListView):
         carrito.limpiar()
         return redirect('tienda')
 
+
 # ---------Mostrar el informe PDF de la factura de compra--------------- #
 @method_decorator(login_required, name='dispatch')
 @method_decorator(user_passes_test(lambda user: not user.is_superuser and not user.is_staff), name='dispatch')# Paciente
@@ -763,46 +764,74 @@ class InformeFacturaPDF(View):
         logo_seguro = 'seguroprivado/static/assets/img/logo_seguro_privado.png'
         factura_pdf.drawImage(logo_seguro, 10, 750, 70, 90, preserveAspectRatio=True)
 
-        factura_pdf.setFont('Helvetica-Bold', 25)
+        factura_pdf.setFont('Helvetica-Bold', 30)
         factura_pdf.setFillColorRGB(0.29296875, 0.453125, 0.609375)
         factura_pdf.drawString(150, 780, u"INFORME DE LA COMPRA")
         
-        factura_pdf.setFont('Times-Roman',17)
+        factura_pdf.setFont('Times-Roman',20)
         factura_pdf.setFillColorRGB(0.21, 0.139, 0.37)
         factura_pdf.drawString(12, 660, u"DATOS DE PACIENTE")
         
-        factura_pdf.setFont('Times-Roman',17)
+        factura_pdf.setFont('Times-Roman',20)
         factura_pdf.setFillColorRGB(0.21, 0.139, 0.37)
-        factura_pdf.drawString(12, 410, u"FACTURA TOTAL")
+        factura_pdf.drawString(12, 220, u"FACTURA TOTAL")
         
-    def datos_paciente(self, factura_pdf, posicion_vertical, paciente_id):   
-        # Diseño del informe de cliente PDF
-        encabezados = ('Nombre','Apellidos','Edad','Dirección','Foto','Username')
-        datos_paciente = [(paciente.nombre, paciente.apellidos, paciente.edad, paciente.direccion, Image(paciente.foto, width=80, height=80),
-                     paciente.username) for paciente in paciente_id]
+    def datos_paciente(self, factura_pdf, paciente_id):   
+        # Diseño del informe de paciente PDF        
+        factura_pdf.setFont('Helvetica',13)
+        factura_pdf.setFillColorRGB(0.46, 0.110, 0.138) 
+        factura_pdf.drawString(12, 615, u"Nombre:")
+        factura_pdf.setFont('Times-Roman',13)
+        factura_pdf.setFillColorRGB(0.13, 0.19, 0.22)  
+        factura_pdf.drawString(67, 615, "".join([(paciente.nombre) for paciente in paciente_id]))
+
+        factura_pdf.setFont('Helvetica',13)
+        factura_pdf.setFillColorRGB(0.46, 0.110, 0.138)
+        factura_pdf.drawString(12, 585, u"Apellidos:")
+        factura_pdf.setFont('Times-Roman',13)
+        factura_pdf.setFillColorRGB(0.13, 0.19, 0.22)  
+        factura_pdf.drawString(74, 585, "".join([(paciente.apellidos) for paciente in paciente_id]))
         
-        paciente = Table([encabezados] + datos_paciente, colWidths=[3 * cm, 3 * cm, 3 * cm])
-        paciente.setStyle(TableStyle(
-            [
-                ('ALIGN',(0,0),(6,16),'CENTER'),
-                ('GRID',(0,0), (-1, -1), 2,colors.black),
-                ('FONTSIZE',(0, 0),(-1, -1), 12),
-                ('BACKGROUND', (6, 0), (3, 7), colors.Color(20, 121, 195)),
-                ('BOX',(0, 0),(-1, -1),1.25,colors.black),
-                ('GRID',(0,0),(-1,-1),0.5,colors.black),
-                ('TEXTCOLOR', (0, 0), (6, 6), colors.blue),
-            ]
-        ))
-    
-        paciente.wrapOn(factura_pdf,500,500)
-        paciente.drawOn(factura_pdf,12,posicion_vertical)
-        return paciente
+        factura_pdf.setFont('Helvetica',13)
+        factura_pdf.setFillColorRGB(0.46, 0.110, 0.138)
+        factura_pdf.drawString(12, 555, u"Edad:")
+        factura_pdf.setFont('Times-Roman',13)
+        factura_pdf.setFillColorRGB(0.13, 0.19, 0.22)  
+        factura_pdf.drawString(50, 555, "".join([(str(paciente.edad)) for paciente in paciente_id]))
+        
+        factura_pdf.setFont('Helvetica',13)
+        factura_pdf.setFillColorRGB(0.46, 0.110, 0.138)
+        factura_pdf.drawString(12, 525, u"Dirección:")
+        factura_pdf.setFont('Times-Roman',13)
+        factura_pdf.setFillColorRGB(0.13, 0.19, 0.22)
+        factura_pdf.drawString(75, 525, "".join([(paciente.direccion) for paciente in paciente_id]))
+        
+        factura_pdf.setFont('Helvetica',13)
+        factura_pdf.setFillColorRGB(0.46, 0.110, 0.138)
+        factura_pdf.drawString(12, 472, u"Foto:")
+        factura_pdf.setFont('Times-Roman',13)
+        factura_pdf.setFillColorRGB(0.13, 0.19, 0.22)
+        
+        for paciente in paciente_id:
+            factura_pdf.drawImage(str(paciente.foto), 49, 420, 80, 80, preserveAspectRatio=True)
+        
+        factura_pdf.setFont('Helvetica',13)
+        factura_pdf.setFillColorRGB(0.46, 0.110, 0.138)
+        factura_pdf.drawString(12, 391, u"Nombre de usuario:")
+        factura_pdf.setFont('Times-Roman',13)
+        factura_pdf.setFillColorRGB(0.13, 0.19, 0.22)
+        factura_pdf.drawString(130, 391, "".join([(paciente.username) for paciente in paciente_id]))
+        return
+
           
-    def factura_compra(self, factura_pdf, posicion_vertical, nombres_medicamentos, precios_medicamentos, cantidades, fecha_compra, precio_total_compra):# para el paciente logueado        
+    def factura_compra(self, factura_pdf, posicion_vertical, nombres_medicamentos, precios_medicamentos, cantidades, fecha_compra, precio_total_compra):# para el paciente logueado
+        aux_fecha_compra = datetime.strptime(fecha_compra,'%Y-%m-%d')
+        formato_fecha_compra = datetime.strftime(aux_fecha_compra,'%d/%m/%Y')
+        
         datos_compra = [
             ['Nombre de Medicamento',"".join([(str(factura)) for factura in nombres_medicamentos])],
             
-            ['Fecha de compra',"".join([(str(fecha_compra)) for factura in nombres_medicamentos])],
+            ['Fecha de compra',"".join([(str(formato_fecha_compra)) for factura in nombres_medicamentos])],
             
             ['Precio',"".join([(str(factura)+"€") for factura in precios_medicamentos])],
             
@@ -813,10 +842,10 @@ class InformeFacturaPDF(View):
         compra_paciente.setStyle(TableStyle(
             [
                 ('ALIGN',(0,0),(3,16),'CENTER'),
-                ('GRID',(0,0), (-1, -1), 2,colors.black),
-                ('FONTSIZE',(0, 0),(-1, -1), 12),
+                ('GRID',(0,0),(-1,-1),0.5,colors.grey),
+                ('FONTSIZE', (0, 0), (-1, -1), 12),
                 ('BACKGROUND', (0, 0), (4, 7), colors.Color(124, 222, 189)),
-                ('BOX',(0, 0),(-1, -1),1.25,colors.black),
+                ('BOX',(0,0),(-1,-1),2,colors.black),
                 ('GRID',(0,0),(-1,-1),0.5,colors.black),
                 ('TEXTCOLOR', (0, 0), (0, 6), colors.blue),
             ]
@@ -825,7 +854,7 @@ class InformeFacturaPDF(View):
         # Imprimimos una etiqueta
         factura_pdf.setFont('Times-Roman',13)
         factura_pdf.setFillColorRGB(0.31, 0.109, 0.148)
-        factura_pdf.drawString(12, 278, u"Precio total de compra: "+str(round(precio_total_compra,2))+" €")
+        factura_pdf.drawString(12, 70, u"Precio total de compra: "+str(round(precio_total_compra,2))+" €")
         
         compra_paciente.wrapOn(factura_pdf,850,670)
         compra_paciente.drawOn(factura_pdf,12,posicion_vertical)
@@ -846,7 +875,6 @@ class InformeFacturaPDF(View):
         medicamentos_tienda = carrito.session["medicamentos_tienda"]
         precios_medicamentos = carrito.session["precios_medicamentos"]
         cantidades_medicamentos = carrito.session["cantidades"]
-        #print("\nCantidades: "+str(cantidades_medicamentos))
         
         for compra in zip(medicamentos_tienda, precios_medicamentos):# recorremos las dos listas a la vez
             nombre_medicamento = compra[0]
@@ -872,10 +900,9 @@ class InformeFacturaPDF(View):
         self.cabecera(factura_pdf)
         
         paciente = Paciente.objects.filter(username=request.user.username)
-        posicion_paciente = 530
-        self.datos_paciente(factura_pdf, posicion_paciente, paciente)
+        self.datos_paciente(factura_pdf, paciente)
         
-        posicion_factura = 310
+        posicion_factura = 125
         self.factura_compra(factura_pdf, posicion_factura, medicamentos_tienda, precios_medicamentos, cantidades_medicamentos, fecha_compra, total_compra)
         
         factura_pdf.showPage()# mostrar página del PDF
